@@ -1,0 +1,4 @@
+# Bu dosyalar sunucuda otomatik oluşur, GitHub'a yüklenmemeli.
+data/admin-config.json
+data/ILK-SIFRE-BUNU-SIL.txt
+.DS_Store
