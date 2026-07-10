@@ -37,16 +37,19 @@
       <p style="margin-top:30px; color:var(--label);">Mercanağa Mah. Nasuhiye Sok. No:19/36<br>Fatih, İstanbul, Türkiye</p>
       <p>+90 553 978 92 12</p>
     </div>
-    <form class="teklif" action="gonder.php" method="post">
-      <div class="row2">
-        <div><label for="ad">Full Name</label><input type="text" id="ad" name="ad" required></div>
-        <div><label for="telefon">Phone</label><input type="tel" id="telefon" name="telefon" required></div>
-      </div>
-      <label for="eposta">Email</label>
-      <input type="email" id="eposta" name="eposta" required>
-      <label for="urun">Object of Interest</label>
-      <select id="urun" name="urun">
-        <option value="Ceremonial Helmet &amp; Shield of Mehmed the Conqueror">Ceremonial Helmet &amp; Shield of Mehmed the Conqueror</option>
+    <div>
+      
+      <form class="teklif" action="../gonder.php" method="post">
+        <input type="hidden" name="lang" value="en">
+        <div class="row2">
+          <div><label for="ad">Full Name</label><input type="text" id="ad" name="ad" required></div>
+          <div><label for="telefon">Phone</label><input type="tel" id="telefon" name="telefon" required></div>
+        </div>
+        <label for="eposta">Email</label>
+        <input type="email" id="eposta" name="eposta" required>
+        <label for="urun">Object of Interest</label>
+        <select id="urun" name="urun">
+          <option value="Ceremonial Helmet &amp; Shield of Mehmed the Conqueror">Ceremonial Helmet &amp; Shield of Mehmed the Conqueror</option>
 <option value="Ottoman-Era Miniature Shield, Helmet &amp; Horse Chanfron Set">Ottoman-Era Miniature Shield, Helmet &amp; Horse Chanfron Set</option>
 <option value="Sacred Banner Finial — Ahmet Yesevi Complex Tabletop Model">Sacred Banner Finial — Ahmet Yesevi Complex Tabletop Model</option>
 <option value="Mehmed the Conqueror&#039;s Universal Sundial">Mehmed the Conqueror&#039;s Universal Sundial</option>
@@ -61,12 +64,13 @@
 <option value="Quadrant Board (Astrolabe Quadrant)">Quadrant Board (Astrolabe Quadrant)</option>
 <option value="Muhammad Zaman&#039;s Basmala-Inscribed Astrolabe">Muhammad Zaman&#039;s Basmala-Inscribed Astrolabe</option>
 
-        <option value="Other / Custom Project">Other / Custom Project</option>
-      </select>
-      <label for="mesaj">Your Message</label>
-      <textarea id="mesaj" name="mesaj" placeholder="Size, material or special requests..."></textarea>
-      <button type="submit">Send Quote Request</button>
-    </form>
+          <option value="Other / Custom Project">Other / Custom Project</option>
+        </select>
+        <label for="mesaj">Your Message</label>
+        <textarea id="mesaj" name="mesaj" placeholder="Size, material or special requests..."></textarea>
+        <button type="submit">Send Quote Request</button>
+      </form>
+    </div>
   </div>
 </section><footer>
   <div class="wrap">

@@ -11,6 +11,8 @@ admin_head('Yönetim Paneli');
   <div>
     <a href="../index.html" target="_blank">Siteyi Gör ↗</a>
     &nbsp;·&nbsp;
+    <a href="submissions.php">Teklif Talepleri</a>
+    &nbsp;·&nbsp;
     <a href="change-password.php">Şifre Değiştir</a>
     &nbsp;·&nbsp;
     <a href="logout.php">Çıkış</a>

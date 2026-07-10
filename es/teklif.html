@@ -37,16 +37,19 @@
       <p style="margin-top:30px; color:var(--label);">Mercanağa Mah. Nasuhiye Sok. No:19/36<br>Fatih, Estambul, Turquía</p>
       <p>+90 553 978 92 12</p>
     </div>
-    <form class="teklif" action="gonder.php" method="post">
-      <div class="row2">
-        <div><label for="ad">Nombre Completo</label><input type="text" id="ad" name="ad" required></div>
-        <div><label for="telefon">Teléfono</label><input type="tel" id="telefon" name="telefon" required></div>
-      </div>
-      <label for="eposta">Correo Electrónico</label>
-      <input type="email" id="eposta" name="eposta" required>
-      <label for="urun">Pieza de Interés</label>
-      <select id="urun" name="urun">
-        <option value="Casco y Escudo Ceremonial de Mehmed el Conquistador">Casco y Escudo Ceremonial de Mehmed el Conquistador</option>
+    <div>
+      
+      <form class="teklif" action="../gonder.php" method="post">
+        <input type="hidden" name="lang" value="es">
+        <div class="row2">
+          <div><label for="ad">Nombre Completo</label><input type="text" id="ad" name="ad" required></div>
+          <div><label for="telefon">Teléfono</label><input type="tel" id="telefon" name="telefon" required></div>
+        </div>
+        <label for="eposta">Correo Electrónico</label>
+        <input type="email" id="eposta" name="eposta" required>
+        <label for="urun">Pieza de Interés</label>
+        <select id="urun" name="urun">
+          <option value="Casco y Escudo Ceremonial de Mehmed el Conquistador">Casco y Escudo Ceremonial de Mehmed el Conquistador</option>
 <option value="Set Miniatura Otomano de Escudo, Casco y Testera de Caballo">Set Miniatura Otomano de Escudo, Casco y Testera de Caballo</option>
 <option value="Remate de Estandarte Sagrado — Modelo de Mesa del Complejo Ahmet Yesevi">Remate de Estandarte Sagrado — Modelo de Mesa del Complejo Ahmet Yesevi</option>
 <option value="Reloj de Sol Universal de Mehmed el Conquistador">Reloj de Sol Universal de Mehmed el Conquistador</option>
@@ -61,12 +64,13 @@
 <option value="Tablero de Cuadrante (Cuadrante de Astrolabio)">Tablero de Cuadrante (Cuadrante de Astrolabio)</option>
 <option value="Astrolabio con Inscripción de la Basmala de Muhammad Zaman">Astrolabio con Inscripción de la Basmala de Muhammad Zaman</option>
 
-        <option value="Otro / Proyecto Personalizado">Otro / Proyecto Personalizado</option>
-      </select>
-      <label for="mesaj">Su Mensaje</label>
-      <textarea id="mesaj" name="mesaj" placeholder="Medidas, material o solicitudes especiales..."></textarea>
-      <button type="submit">Enviar Solicitud de Cotización</button>
-    </form>
+          <option value="Otro / Proyecto Personalizado">Otro / Proyecto Personalizado</option>
+        </select>
+        <label for="mesaj">Su Mensaje</label>
+        <textarea id="mesaj" name="mesaj" placeholder="Medidas, material o solicitudes especiales..."></textarea>
+        <button type="submit">Enviar Solicitud de Cotización</button>
+      </form>
+    </div>
   </div>
 </section><footer>
   <div class="wrap">

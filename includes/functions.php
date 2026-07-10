@@ -285,6 +285,10 @@ function render_teklif_page($lang, $data) {
     $title = htmlspecialchars($u['quote_title']);
     $qbody = htmlspecialchars($u['quote_body']);
     $address = $u['address'];
+    $successBanner = '';
+    if (isset($_GET['ok']) && $_GET['ok'] === '1') {
+        $successBanner = '<div class="flash-success">' . htmlspecialchars($u['form_success']) . '</div>';
+    }
     $body = <<<HTML
 
 <section class="offer" style="padding-top:170px;">
@@ -296,22 +300,26 @@ function render_teklif_page($lang, $data) {
       <p style="margin-top:30px; color:var(--label);">{$address}</p>
       <p>+90 553 978 92 12</p>
     </div>
-    <form class="teklif" action="gonder.php" method="post">
-      <div class="row2">
-        <div><label for="ad">{$u['form_ad']}</label><input type="text" id="ad" name="ad" required></div>
-        <div><label for="telefon">{$u['form_tel']}</label><input type="tel" id="telefon" name="telefon" required></div>
-      </div>
-      <label for="eposta">{$u['form_mail']}</label>
-      <input type="email" id="eposta" name="eposta" required>
-      <label for="urun">{$u['form_urun']}</label>
-      <select id="urun" name="urun">
-        {$options}
-        <option value="{$other}">{$other}</option>
-      </select>
-      <label for="mesaj">{$u['form_mesaj']}</label>
-      <textarea id="mesaj" name="mesaj" placeholder="{$u['form_mesaj_ph']}"></textarea>
-      <button type="submit">{$u['form_submit']}</button>
-    </form>
+    <div>
+      {$successBanner}
+      <form class="teklif" action="{$aroot}gonder.php" method="post">
+        <input type="hidden" name="lang" value="{$lang}">
+        <div class="row2">
+          <div><label for="ad">{$u['form_ad']}</label><input type="text" id="ad" name="ad" required></div>
+          <div><label for="telefon">{$u['form_tel']}</label><input type="tel" id="telefon" name="telefon" required></div>
+        </div>
+        <label for="eposta">{$u['form_mail']}</label>
+        <input type="email" id="eposta" name="eposta" required>
+        <label for="urun">{$u['form_urun']}</label>
+        <select id="urun" name="urun">
+          {$options}
+          <option value="{$other}">{$other}</option>
+        </select>
+        <label for="mesaj">{$u['form_mesaj']}</label>
+        <textarea id="mesaj" name="mesaj" placeholder="{$u['form_mesaj_ph']}"></textarea>
+        <button type="submit">{$u['form_submit']}</button>
+      </form>
+    </div>
   </div>
 </section>
 HTML;

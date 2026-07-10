@@ -37,16 +37,19 @@
       <p style="margin-top:30px; color:var(--label);">مركاناغا، شارع ناصوحية، رقم ١٩/٣٦<br>الفاتح، إسطنبول، تركيا</p>
       <p>+90 553 978 92 12</p>
     </div>
-    <form class="teklif" action="gonder.php" method="post">
-      <div class="row2">
-        <div><label for="ad">الاسم الكامل</label><input type="text" id="ad" name="ad" required></div>
-        <div><label for="telefon">الهاتف</label><input type="tel" id="telefon" name="telefon" required></div>
-      </div>
-      <label for="eposta">البريد الإلكتروني</label>
-      <input type="email" id="eposta" name="eposta" required>
-      <label for="urun">القطعة المطلوبة</label>
-      <select id="urun" name="urun">
-        <option value="خوذة ودرع تذكاريان يمثلان السلطان محمد الفاتح">خوذة ودرع تذكاريان يمثلان السلطان محمد الفاتح</option>
+    <div>
+      
+      <form class="teklif" action="../gonder.php" method="post">
+        <input type="hidden" name="lang" value="ar">
+        <div class="row2">
+          <div><label for="ad">الاسم الكامل</label><input type="text" id="ad" name="ad" required></div>
+          <div><label for="telefon">الهاتف</label><input type="tel" id="telefon" name="telefon" required></div>
+        </div>
+        <label for="eposta">البريد الإلكتروني</label>
+        <input type="email" id="eposta" name="eposta" required>
+        <label for="urun">القطعة المطلوبة</label>
+        <select id="urun" name="urun">
+          <option value="خوذة ودرع تذكاريان يمثلان السلطان محمد الفاتح">خوذة ودرع تذكاريان يمثلان السلطان محمد الفاتح</option>
 <option value="طقم مصغّر عثماني: درع وخوذة ورأسية حصان">طقم مصغّر عثماني: درع وخوذة ورأسية حصان</option>
 <option value="علم السنجق الشريف — نموذج مكتبي من مجمع أحمد يسوي">علم السنجق الشريف — نموذج مكتبي من مجمع أحمد يسوي</option>
 <option value="الساعة الشمسية للسلطان محمد الفاتح">الساعة الشمسية للسلطان محمد الفاتح</option>
@@ -61,12 +64,13 @@
 <option value="لوحة الربع (ربع الأسطرلاب)">لوحة الربع (ربع الأسطرلاب)</option>
 <option value="أسطرلاب محمد زمان بخط البسملة">أسطرلاب محمد زمان بخط البسملة</option>
 
-        <option value="أخرى / مشروع خاص">أخرى / مشروع خاص</option>
-      </select>
-      <label for="mesaj">رسالتك</label>
-      <textarea id="mesaj" name="mesaj" placeholder="المقاس أو الخامة أو أي طلبات خاصة..."></textarea>
-      <button type="submit">إرسال طلب عرض السعر</button>
-    </form>
+          <option value="أخرى / مشروع خاص">أخرى / مشروع خاص</option>
+        </select>
+        <label for="mesaj">رسالتك</label>
+        <textarea id="mesaj" name="mesaj" placeholder="المقاس أو الخامة أو أي طلبات خاصة..."></textarea>
+        <button type="submit">إرسال طلب عرض السعر</button>
+      </form>
+    </div>
   </div>
 </section><footer>
   <div class="wrap">

@@ -293,6 +293,11 @@ html[dir="rtl"] .hero-caption{ right:auto; left:40px; text-align:left; }
 html[dir="rtl"] .walk-nav a.next{ border-left:none; border-right:1px solid var(--hairline); }
 @media (max-width:900px){ html[dir="rtl"] .walk-nav a.next{ border-right:none; } }
 
+.flash-success{
+  background:rgba(169,121,60,0.18); border:1px solid var(--brass); color:var(--brass-light);
+  padding:16px 20px; border-radius:2px; margin-bottom:22px; font-family:'IBM Plex Mono',monospace; font-size:13px;
+}
+
 /* ---------- Teklif page ---------- */
 .offer{ background:var(--wall-deep); }
 .offer-inner{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:90px;}
