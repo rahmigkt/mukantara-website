@@ -20,10 +20,10 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
-          server-dir: ./mukantara.com/
+          server-dir: ./
           exclude: |
             **/.git*
             **/.git*/**
             **/.github/**
             **/README.md
-# redeploy tetikleme 1783760091
+# server-dir düzeltmesi: FTP hesabının ana dizini zaten mukantara.com klasörü, bu yüzden ./ olmalı (iç içe klasör oluşmasın diye)
