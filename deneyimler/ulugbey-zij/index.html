@@ -119,6 +119,17 @@ section{padding:120px 0;}
   color:var(--brass-light); text-align:center; line-height:1.9;
 }
 
+/* ---------- Pull quote ---------- */
+.pullquote-sec{ background:var(--wall); padding:0 0 130px; }
+.pullquote{
+  max-width:760px; margin:0 auto; text-align:center;
+  font-family:'Fraunces', serif; font-style:italic; font-weight:420;
+  font-size:clamp(24px,3.2vw,36px); line-height:1.45; color:var(--brass-light);
+  position:relative; padding:0 20px;
+}
+.pullquote::before, .pullquote::after{ content:''; display:block; width:44px; height:1px; background:var(--hairline); margin:0 auto 26px; }
+.pullquote::after{ margin:26px auto 0; }
+
 /* ---------- Neden önemli ---------- */
 .why{ background:var(--night); }
 .stat-cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--hairline); border:1px solid var(--hairline); margin-top:70px; }
@@ -194,28 +205,48 @@ footer .license{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:v
   <div class="instrument-ring r2"></div>
   <div class="instrument-ring r3"></div>
   <div class="hero-inner">
-    <span class="tag">MUKANTARA · Dijital Gök Küresi</span>
-    <h1>Zīj-i Sulṭānī</h1>
-    <p class="subtitle">Uluğ Bey'in 1437 yılında Semerkant Rasathanesi'nde bizzat kaydettiği 1018 yıldızın, MUKANTARA atölyesinde hazırlanan interaktif dijital yeniden yorumu.</p>
+    <span class="tag">MUKANTARA · Yeni Bir Deneyim</span>
+    <h1>Gökyüzünü Sayan Hükümdar</h1>
+    <p class="subtitle">Bir imparatorluk prensi vardı; tahtından çok gökyüzüyle ilgilendi. Çıplak gözle gördüğü 1018 yıldızın yerini tek tek kaydetti — ve 200 yıl boyunca kimse onu geçemedi. Bu, o mirasın dijital olarak yeniden hayat bulmuş hâli.</p>
     <div class="hero-stats">
       <div><b class="count" data-target="1018">0</b><span>Yıldız</span></div>
       <div><b class="count" data-target="40">0</b><span>Metre Sekstant</span></div>
       <div><b class="count" data-target="200">0</b><span>Yıl Rakipsiz</span></div>
     </div>
   </div>
-  <div class="scroll-cue"><span>Keşfetmek İçin Kaydırın</span><span class="arrow">↓</span></div>
+  <div class="scroll-cue"><span>Hikayeyi Keşfedin</span><span class="arrow">↓</span></div>
 </section>
 
 <section class="intro">
   <div class="wrap intro-grid">
     <div class="reveal">
-      <span class="tag">Ne'dir Bu Eser</span>
-      <h2>Gökyüzünün, elle dokunulabilir hâli</h2>
-      <p>15. yüzyılda Semerkant Rasathanesi'nde, bizzat Uluğ Bey'in yürüttüğü gözlemlerle kaydedilen 1018 yıldızın konumu, bugün MUKANTARA atölyesinde interaktif bir dijital gök küresine dönüştürüldü.</p>
-      <p>Her yıldız, orijinal Zīj-i Sulṭānī kataloğundaki ekliptik koordinatlarıyla ve presesyon düzeltmesiyle yerleştirildi — 600 yıl önceki bir gözlemi bugünün ekranında gerçek zamanlı olarak döndürüp inceleyebilirsiniz.</p>
+      <span class="tag">Kim Bu Adam?</span>
+      <h2>Bir hükümdar, ama asıl tutkusu gökyüzüydü</h2>
+      <p>Uluğ Bey, büyük fatih Timur'un torunuydu. Semerkant tahtına oturdu — ama savaş meydanlarından çok, gece gökyüzünü izlemeyi tercih eden bir hükümdardı.</p>
+      <p>1420'lerde sarayının hemen yanına devasa bir rasathane inşa ettirdi. Kalbinde 40 metrelik bir sekstant vardı — döneminin hiçbir yerinde eşi görülmemiş bir hassasiyetle gökyüzünü ölçebilen bir alet. Uluğ Bey, yıllarca geceler boyu bizzat bu aletin başında durdu.</p>
     </div>
     <div class="motif reveal">
       <div class="core">1437<br>M.S.<br>Semerkant</div>
+    </div>
+  </div>
+</section>
+
+<section class="pullquote-sec">
+  <div class="wrap">
+    <p class="pullquote reveal">"Yıldızları saymak, bir imparatorluğu yönetmekten daha kalıcı çıktı."</p>
+  </div>
+</section>
+
+<section class="intro" style="padding-top:0;">
+  <div class="wrap intro-grid">
+    <div class="motif reveal" style="order:2;">
+      <div class="core">1018<br>YILDIZ<br>Zīj-i Sulṭānī</div>
+    </div>
+    <div class="reveal" style="order:1;">
+      <span class="tag">Zīj-i Sulṭānī Nedir?</span>
+      <h2>Gökyüzünün, elle dokunulabilir hâli</h2>
+      <p>Bu gözlemlerin sonucu bir kataloğa dönüştü: <strong>Zīj-i Sulṭānī</strong> — 1018 yıldızın tam konumunu içeren, dönemin en hassas yıldız haritası.</p>
+      <p>Bugün MUKANTARA atölyesinde, her yıldız orijinal kataloğun ekliptik koordinatlarıyla ve presesyon düzeltmesiyle yeniden yerleştirildi. 600 yıl önceki bu gözlemi, şimdi ekranınızda gerçek zamanlı olarak döndürüp inceleyebilirsiniz.</p>
     </div>
   </div>
 </section>
