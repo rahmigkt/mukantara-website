@@ -55,12 +55,17 @@ a{color:inherit;}
   font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.1em;
   color:var(--label-dim); margin-top:10px; text-transform:uppercase;
 }
-.card p.desc{
-  margin:26px auto 0; max-width:520px; font-size:16.5px; line-height:1.65; color:var(--label-dim);
+.answers{ margin-top:clamp(20px,3vh,30px); text-align:left; max-width:520px; margin-left:auto; margin-right:auto; }
+.answer-row{ display:flex; gap:16px; padding:clamp(10px,1.6vh,14px) 0; border-top:1px solid var(--hairline); }
+.answer-row:last-child{ border-bottom:1px solid var(--hairline); }
+.answer-row .label{
+  flex:none; width:118px; font-family:'IBM Plex Mono', monospace; font-size:10.5px;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--brass-light); padding-top:3px;
 }
+.answer-row p{ margin:0; font-size:clamp(14px,1.9vh,16.5px); line-height:1.55; color:var(--label-dim); }
 .facts{
-  margin:32px 0 0; display:flex; justify-content:center; gap:0; flex-wrap:wrap;
-  border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline);
+  margin:clamp(18px,2.6vh,28px) 0 0; display:flex; justify-content:center; gap:0; flex-wrap:wrap;
+  border-bottom:1px solid var(--hairline);
 }
 .facts div{ padding:18px 26px; border-left:1px solid var(--hairline); flex:1; min-width:110px; }
 .facts div:first-child{ border-left:none; }
@@ -85,10 +90,10 @@ a{color:inherit;}
 .brand a:hover{ color:var(--brass-light); }
 
 @media (max-height:760px), (max-width:480px){
-  .card p.desc{ display:none; }
-  .card h1{ font-size:clamp(26px,7vw,36px); }
-  .facts b{ font-size:18px; }
-  .facts div{ padding:12px 16px; }
+  .card h1{ font-size:clamp(24px,7vw,34px); }
+  .facts b{ font-size:17px; }
+  .facts div{ padding:10px 14px; }
+  .answer-row .label{ width:96px; }
 }
 </style>
 </head>
@@ -103,7 +108,17 @@ a{color:inherit;}
     <span class="tag">MUKANTARA · Dijital Gök Küresi</span>
     <h1>Zīj-i Sulṭānī</h1>
     <div class="subtitle">Uluğ Bey · Semerkant Rasathanesi · M.S. 1437</div>
-    <p class="desc">Uluğ Bey'in (1394–1449) Semerkant Rasathanesi'nde 40 metrelik Fakhri Sekstantı ile gözlemlediği 1018 yıldızın kataloğu. 200 yıl boyunca dünyanın en doğru yıldız haritası oldu; Batılı gökbilimciler bu hassasiyeti ancak 19. yüzyılda aşabildi. Bu gök küresi, katalog verisinin presesyon düzeltmeli, interaktif dijital yorumudur.</p>
+
+    <div class="answers">
+      <div class="answer-row">
+        <div class="label">Nedir</div>
+        <p>Uluğ Bey'in (1394–1449) Semerkant Rasathanesi'nde 40 metrelik Fakhri Sekstantı ile gözlemleyip kaydettiği 1018 yıldızlık Zīj-i Sulṭānī kataloğunun interaktif dijital gök küresi.</p>
+      </div>
+      <div class="answer-row">
+        <div class="label">Neden Önemli</div>
+        <p>200 yıl boyunca dünyanın en doğru yıldız haritası oldu. Batılı gökbilimciler bu hassasiyeti ancak 19. yüzyılda, teleskopla aşabildi.</p>
+      </div>
+    </div>
 
     <div class="facts">
       <div><b>1018</b><span>Yıldız</span></div>
