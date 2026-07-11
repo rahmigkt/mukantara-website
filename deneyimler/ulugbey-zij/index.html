@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zīj-i Sulṭānī — MUKANTARA Dijital Gök Küresi</title>
+<meta name="description" content="Uluğ Bey'in Semerkant Rasathanesi'nde 1437 yılında kaydettiği 1018 yıldızın, MUKANTARA atölyesinde hazırlanan interaktif dijital yeniden yorumu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,480;1,9..144,340;1,9..144,420&family=Newsreader:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --wall:#182420;
+  --night:#05070c;
+  --night-deep:#020306;
+  --label:#ece5d3;
+  --label-dim:rgba(236,229,211,0.62);
+  --brass:#a9793c;
+  --brass-light:#c79a5c;
+  --indigo:#6a63e0;
+  --star:#f6ead0;
+  --hairline:rgba(236,229,211,0.14);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+body{
+  margin:0; background:var(--night); color:var(--label);
+  font-family:'Newsreader', serif; font-size:18px; line-height:1.7;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+h1,h2,h3{ font-family:'Fraunces', serif; font-weight:460; color:var(--label); margin:0; }
+.tag{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.24em;
+  text-transform:uppercase; color:var(--brass-light);
+}
+a{color:inherit;}
+.wrap{max-width:1120px; margin:0 auto; padding:0 40px;}
+section{padding:120px 0;}
+
+/* ---------- reveal-on-scroll ---------- */
+.reveal{opacity:0; transform:translateY(28px); transition:opacity .9s ease, transform .9s ease;}
+.reveal.in{opacity:1; transform:translateY(0);}
+
+/* ---------- Hero ---------- */
+.hero{
+  position:relative; min-height:100vh; display:flex; align-items:center; justify-content:center;
+  text-align:center; overflow:hidden; background:radial-gradient(ellipse at 50% 20%, #0d1424 0%, var(--night) 55%, var(--night-deep) 100%);
+}
+#starfield{position:absolute; inset:0; z-index:0;}
+.star-dot{
+  position:absolute; border-radius:50%; background:var(--star);
+  animation:twinkle var(--dur,4s) ease-in-out infinite; animation-delay:var(--delay,0s);
+}
+@keyframes twinkle{
+  0%,100%{opacity:var(--min-op,0.15);}
+  50%{opacity:var(--max-op,0.9);}
+}
+.instrument-ring{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  border:1px solid rgba(199,154,92,0.28); border-radius:50%;
+  pointer-events:none;
+}
+.instrument-ring.r1{width:640px; height:640px; animation:spin 140s linear infinite;}
+.instrument-ring.r2{width:820px; height:820px; border-color:rgba(106,99,224,0.16); animation:spin 200s linear infinite reverse;}
+.instrument-ring.r3{width:460px; height:460px; border-style:dashed; border-color:rgba(236,229,211,0.12); animation:spin 90s linear infinite;}
+.instrument-ring::before{
+  content:''; position:absolute; top:-3px; left:50%; width:6px; height:6px; margin-left:-3px;
+  border-radius:50%; background:var(--brass-light); box-shadow:0 0 8px var(--brass-light);
+}
+@keyframes spin{from{transform:translate(-50%,-50%) rotate(0deg);} to{transform:translate(-50%,-50%) rotate(360deg);}}
+@media (prefers-reduced-motion: reduce){
+  .star-dot{animation:none; opacity:0.55;}
+  .instrument-ring{animation:none;}
+}
+
+.hero-inner{position:relative; z-index:2; max-width:760px; padding:0 30px;}
+.hero-inner .tag{display:block; margin-bottom:26px;}
+.hero-inner h1{
+  font-size:clamp(42px,7vw,84px); font-style:italic; font-weight:420;
+  letter-spacing:0.01em; line-height:1.05;
+}
+.hero-inner .subtitle{
+  margin:28px auto 0; max-width:560px; color:var(--label-dim); font-size:19px;
+}
+.hero-stats{
+  margin-top:56px; display:flex; gap:0; justify-content:center; flex-wrap:wrap;
+  font-family:'IBM Plex Mono', monospace;
+}
+.hero-stats div{ padding:0 28px; border-left:1px solid var(--hairline); }
+.hero-stats div:first-child{border-left:none;}
+.hero-stats b{ display:block; font-size:26px; color:var(--brass-light); font-weight:500; }
+.hero-stats span{ font-size:10.5px; letter-spacing:0.12em; color:var(--label-dim); text-transform:uppercase; }
+.scroll-cue{
+  position:absolute; bottom:40px; left:50%; transform:translateX(-50%); z-index:2;
+  font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.2em; color:var(--label-dim);
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.scroll-cue .arrow{ animation:bob 2.2s ease-in-out infinite; }
+@keyframes bob{0%,100%{transform:translateY(0);} 50%{transform:translateY(7px);}}
+@media (prefers-reduced-motion: reduce){ .scroll-cue .arrow{animation:none;} }
+
+/* ---------- Nedir bu eser ---------- */
+.intro{ background:var(--wall); }
+.intro-grid{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:70px; align-items:center; }
+.intro h2{ font-size:clamp(30px,3.4vw,42px); font-style:italic; font-weight:420; margin-top:16px; }
+.intro p{ color:var(--label-dim); margin-top:22px; font-size:18px; }
+.motif{
+  position:relative; aspect-ratio:1/1; border-radius:50%;
+  border:1px solid var(--hairline); display:flex; align-items:center; justify-content:center;
+}
+.motif::before, .motif::after{
+  content:''; position:absolute; border-radius:50%; border:1px solid rgba(199,154,92,0.25);
+}
+.motif::before{ inset:14%; }
+.motif::after{ inset:32%; border-color:rgba(236,229,211,0.16); }
+.motif .core{
+  font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--brass-light); text-align:center; line-height:1.9;
+}
+
+/* ---------- Neden önemli ---------- */
+.why{ background:var(--night); }
+.stat-cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--hairline); border:1px solid var(--hairline); margin-top:70px; }
+.stat-card{ background:var(--night); padding:48px 34px; }
+.stat-card b{ font-family:'IBM Plex Mono', monospace; font-size:44px; color:var(--brass-light); font-weight:500; display:block; }
+.stat-card h4{ font-family:'Fraunces', serif; font-size:19px; font-weight:460; margin-top:14px; color:var(--label); }
+.stat-card p{ color:var(--label-dim); font-size:15.5px; margin-top:10px; line-height:1.6; }
+
+/* ---------- Zaman çizgisi ---------- */
+.timeline-sec{ background:var(--wall); }
+.tl{ margin-top:70px; }
+.tl-item{ display:grid; grid-template-columns:64px 1fr; gap:28px; padding:26px 0; border-top:1px solid var(--hairline); }
+.tl-item:last-child{ border-bottom:1px solid var(--hairline); }
+.tl-num{ font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--brass-light); padding-top:4px; }
+.tl-body h4{ font-family:'Fraunces', serif; font-style:italic; font-size:21px; font-weight:460; }
+.tl-body span.yr{ font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.1em; color:var(--brass-light); }
+.tl-body p{ color:var(--label-dim); margin-top:8px; font-size:16px; }
+
+/* ---------- Keşif deneyimi ---------- */
+.experience{ background:var(--night); }
+.exp-list{ display:grid; grid-template-columns:1fr 1fr; gap:28px 50px; margin-top:70px; }
+.exp-item{ display:flex; gap:20px; align-items:flex-start; }
+.exp-icon{
+  flex:none; width:44px; height:44px; border-radius:50%; border:1px solid var(--hairline);
+  display:flex; align-items:center; justify-content:center; color:var(--brass-light);
+}
+.exp-item h4{ font-family:'Fraunces', serif; font-size:19px; font-weight:460; }
+.exp-item p{ color:var(--label-dim); font-size:15.5px; margin-top:6px; }
+
+/* ---------- CTA ---------- */
+.cta-sec{
+  background:radial-gradient(ellipse at 50% 30%, #0d1424 0%, var(--night) 60%);
+  text-align:center; position:relative; overflow:hidden;
+}
+.cta-sec h2{ font-size:clamp(28px,3.6vw,44px); font-style:italic; font-weight:420; }
+.cta-sec p{ color:var(--label-dim); margin:20px auto 0; max-width:480px; }
+.launch-btn{
+  display:inline-flex; align-items:center; gap:12px; margin-top:44px;
+  padding:20px 40px; border-radius:2px; text-decoration:none;
+  background:var(--brass); color:var(--night-deep); font-family:'IBM Plex Mono', monospace;
+  font-size:13px; letter-spacing:0.14em; text-transform:uppercase; font-weight:500;
+  transition:background .25s ease, transform .25s ease; position:relative; z-index:2;
+}
+.launch-btn:hover{ background:var(--brass-light); transform:translateY(-2px); }
+
+/* ---------- Footer ---------- */
+footer{ background:var(--wall-deep,#0f1613); border-top:1px solid var(--hairline); padding:50px 0; }
+.foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+.foot-word{ font-family:'Fraunces', serif; font-style:italic; font-size:19px; }
+footer .back{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--label-dim); text-decoration:none; border:1px solid var(--hairline); padding:10px 18px;
+}
+footer .back:hover{ color:var(--brass-light); border-color:var(--brass-light); }
+footer .license{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--label-dim); margin-top:20px; }
+
+@media (max-width:860px){
+  .wrap{padding:0 24px;}
+  section{padding:80px 0;}
+  .intro-grid{grid-template-columns:1fr; gap:44px;}
+  .motif{max-width:280px; margin:0 auto;}
+  .stat-cards{grid-template-columns:1fr;}
+  .exp-list{grid-template-columns:1fr;}
+  .hero-stats div{padding:0 16px;}
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div id="starfield"></div>
+  <div class="instrument-ring r1"></div>
+  <div class="instrument-ring r2"></div>
+  <div class="instrument-ring r3"></div>
+  <div class="hero-inner">
+    <span class="tag">MUKANTARA · Dijital Gök Küresi</span>
+    <h1>Zīj-i Sulṭānī</h1>
+    <p class="subtitle">Uluğ Bey'in 1437 yılında Semerkant Rasathanesi'nde bizzat kaydettiği 1018 yıldızın, MUKANTARA atölyesinde hazırlanan interaktif dijital yeniden yorumu.</p>
+    <div class="hero-stats">
+      <div><b class="count" data-target="1018">0</b><span>Yıldız</span></div>
+      <div><b class="count" data-target="40">0</b><span>Metre Sekstant</span></div>
+      <div><b class="count" data-target="200">0</b><span>Yıl Rakipsiz</span></div>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Keşfetmek İçin Kaydırın</span><span class="arrow">↓</span></div>
+</section>
+
+<section class="intro">
+  <div class="wrap intro-grid">
+    <div class="reveal">
+      <span class="tag">Ne'dir Bu Eser</span>
+      <h2>Gökyüzünün, elle dokunulabilir hâli</h2>
+      <p>15. yüzyılda Semerkant Rasathanesi'nde, bizzat Uluğ Bey'in yürüttüğü gözlemlerle kaydedilen 1018 yıldızın konumu, bugün MUKANTARA atölyesinde interaktif bir dijital gök küresine dönüştürüldü.</p>
+      <p>Her yıldız, orijinal Zīj-i Sulṭānī kataloğundaki ekliptik koordinatlarıyla ve presesyon düzeltmesiyle yerleştirildi — 600 yıl önceki bir gözlemi bugünün ekranında gerçek zamanlı olarak döndürüp inceleyebilirsiniz.</p>
+    </div>
+    <div class="motif reveal">
+      <div class="core">1437<br>M.S.<br>Semerkant</div>
+    </div>
+  </div>
+</section>
+
+<section class="why">
+  <div class="wrap">
+    <div class="section-head reveal" style="max-width:640px; margin:0 auto; text-align:center;">
+      <span class="tag">Neden Önemli</span>
+      <h2 style="font-size:clamp(28px,3.4vw,40px); font-style:italic; font-weight:420; margin-top:16px;">200 yıl boyunca aşılamayan bir hassasiyet</h2>
+    </div>
+    <div class="stat-cards">
+      <div class="stat-card reveal">
+        <b>40 m</b>
+        <h4>Fakhri Sekstantı</h4>
+        <p>Semerkant Rasathanesi'nde inşa edilen, döneminin en büyük ve en hassas gözlem aleti.</p>
+      </div>
+      <div class="stat-card reveal">
+        <b>1018</b>
+        <h4>Zīj-i Sulṭānī Kataloğu</h4>
+        <p>Uluğ Bey'in bizzat gözlemleyip ekliptik koordinatlarıyla kaydettiği yıldızların tam listesi.</p>
+      </div>
+      <div class="stat-card reveal">
+        <b>200 yıl</b>
+        <h4>Dünyanın En Doğru Haritası</h4>
+        <p>Batılı gökbilimciler bu hassasiyeti ancak 19. yüzyılda, modern teleskoplarla aşabildi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="timeline-sec">
+  <div class="wrap">
+    <div class="section-head reveal" style="max-width:640px; margin:0 auto; text-align:center;">
+      <span class="tag">Bir Zaman Çizelgesi</span>
+      <h2 style="font-size:clamp(28px,3.4vw,40px); font-style:italic; font-weight:420; margin-top:16px;">Semerkant'tan bugüne</h2>
+    </div>
+    <div class="tl">
+      <div class="tl-item reveal">
+        <div class="tl-num">01</div>
+        <div class="tl-body">
+          <span class="yr">M.S. 1437</span>
+          <h4>Semerkant Rasathanesi'nde gözlemler tamamlanır</h4>
+          <p>Uluğ Bey, 40 metrelik Fakhri Sekstantı kullanarak 1018 yıldızın konumunu kaydeder; Zīj-i Sulṭānī doğar.</p>
+        </div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-num">02</div>
+        <div class="tl-body">
+          <span class="yr">16–17. Yüzyıl</span>
+          <h4>Avrupa gökbilimine referans olur</h4>
+          <p>Zīj-i Sulṭānī, Batılı gökbilimcilerin masasında en güvenilir yıldız haritası olarak yerini alır.</p>
+        </div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-num">03</div>
+        <div class="tl-body">
+          <span class="yr">19. Yüzyıl</span>
+          <h4>Ancak modern teleskoplarla aşılır</h4>
+          <p>Uluğ Bey'in çıplak gözle ulaştığı hassasiyet, iki asır sonra teleskopik gözlemle geçilebilir.</p>
+        </div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-num">04</div>
+        <div class="tl-body">
+          <span class="yr">2026</span>
+          <h4>MUKANTARA dijital olarak yeniden yorumluyor</h4>
+          <p>Katalog, presesyon düzeltmeli, interaktif bir dijital gök küresi olarak yeniden hayat buluyor.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="experience">
+  <div class="wrap">
+    <div class="section-head reveal" style="max-width:640px; margin:0 auto; text-align:center;">
+      <span class="tag">Keşif Deneyimi</span>
+      <h2 style="font-size:clamp(28px,3.4vw,40px); font-style:italic; font-weight:420; margin-top:16px;">Ekranın içinde bir rasathane</h2>
+    </div>
+    <div class="exp-list">
+      <div class="exp-item reveal">
+        <div class="exp-icon">◐</div>
+        <div><h4>Küreyi serbestçe döndürün</h4><p>Semerkant gökyüzünü her açıdan, yakınlaştırarak inceleyin.</p></div>
+      </div>
+      <div class="exp-item reveal">
+        <div class="exp-icon">✦</div>
+        <div><h4>Yıldızlara tıklayın</h4><p>Her yıldızın orijinal katalog verisini ve konumunu görün.</p></div>
+      </div>
+      <div class="exp-item reveal">
+        <div class="exp-icon">⟡</div>
+        <div><h4>Takımyıldızları açın</h4><p>48 klasik Batlamyus takımyıldızını görünür kılın.</p></div>
+      </div>
+      <div class="exp-item reveal">
+        <div class="exp-icon">⌒</div>
+        <div><h4>Tarihî ufku görün</h4><p>Semerkant'ın 1437'deki gerçek ufuk çizgisiyle gökyüzünü karşılaştırın.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-sec">
+  <div class="wrap">
+    <span class="tag reveal">Deneyimi Başlat</span>
+    <h2 class="reveal" style="margin-top:16px;">Kendi rasathanenizi açın</h2>
+    <p class="reveal">600 yıl önce Semerkant'ta kaydedilen gökyüzü, şimdi parmaklarınızın ucunda.</p>
+    <a href="gokkuresi.html" class="launch-btn reveal">Gök Küresini Keşfet →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <div>
+      <p class="foot-word">Mukantara</p>
+      <p class="license">Zīj-i Sulṭānī verisi kamuya açık tarihî kaynaklara dayanır · MUKANTARA dijital yorumu © 2026</p>
+    </div>
+    <a class="back" href="https://www.mukantara.com" target="_blank" rel="noopener">← mukantara.com</a>
+  </div>
+</footer>
+
+<script>
+// --- Yıldız alanı ---
+(function(){
+  var field = document.getElementById('starfield');
+  var n = window.innerWidth < 700 ? 90 : 160;
+  for (var i=0; i<n; i++){
+    var s = document.createElement('div');
+    s.className = 'star-dot';
+    var size = (Math.random()*1.6 + 0.6).toFixed(2);
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.left = (Math.random()*100) + '%';
+    s.style.top = (Math.random()*100) + '%';
+    s.style.setProperty('--dur', (3 + Math.random()*5).toFixed(2) + 's');
+    s.style.setProperty('--delay', (Math.random()*6).toFixed(2) + 's');
+    s.style.setProperty('--min-op', (0.1 + Math.random()*0.15).toFixed(2));
+    s.style.setProperty('--max-op', (0.6 + Math.random()*0.4).toFixed(2));
+    field.appendChild(s);
+  }
+})();
+
+// --- Scroll reveal ---
+(function(){
+  var items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)){
+    items.forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.15});
+  items.forEach(function(el){ io.observe(el); });
+})();
+
+// --- Sayaç animasyonu ---
+(function(){
+  var counters = document.querySelectorAll('.count');
+  var done = false;
+  function animate(){
+    if (done) return;
+    done = true;
+    counters.forEach(function(el){
+      var target = parseInt(el.getAttribute('data-target'), 10);
+      var start = 0;
+      var duration = 1400;
+      var startTime = null;
+      function step(ts){
+        if (!startTime) startTime = ts;
+        var progress = Math.min((ts - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(start + (target - start) * eased);
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = target;
+      }
+      requestAnimationFrame(step);
+    });
+  }
+  if (!('IntersectionObserver' in window)){ animate(); }
+  else {
+    var io2 = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) animate(); });
+    }, {threshold:0.5});
+    io2.observe(document.querySelector('.hero-stats'));
+  }
+})();
+</script>
+</body>
+</html>
