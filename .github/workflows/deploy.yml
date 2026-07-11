@@ -26,4 +26,4 @@ jobs:
             **/.git*/**
             **/.github/**
             **/README.md
-# server-dir düzeltmesi: FTP hesabının ana dizini zaten mukantara.com klasörü, bu yüzden ./ olmalı (iç içe klasör oluşmasın diye)
+# yeni ozel FTP hesabi (u2775044) ile yeniden deploy tetikleniyor
