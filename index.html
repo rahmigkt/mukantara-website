@@ -96,9 +96,22 @@
     <a href="eserler/migfer-kalkan.html" class="cta">Fatih Sultan Mehmet Han Temsili Miğfer ve Kalkanı →</a>
   </div>
 </div><div class="showcase">
+  <div class="sc-image"><div class="sc-live" id="prevUlugbey"></div></div>
+  <div class="sc-plate">
+    <span class="tag">Envanter No 03 · Dijital Deneyim</span>
+    <h3>Uluğ Bey Zīj-i Sulṭānī Dijital Gök Küresi</h3>
+    <p>Uluğ Bey'in 1437'de Semerkant Rasathanesi'nde kaydettiği 1018 yıldızlık Zīj-i Sulṭānī kataloğunun, gerçek zamanlı döndürülüp incelenebilen interaktif dijital gök küresi.</p>
+    <div class="sc-facts"><div>Tarih<b>M.S. 1437</b></div>
+<div>Rasathane<b>Semerkant</b></div>
+<div>Kaynak<b>Zīj-i Sulṭānī Kataloğu</b></div>
+<div>Format<b>Dijital Enstalasyon</b></div>
+</div>
+    <a href="deneyimler/ulugbey-zij/index.html" class="cta">Uluğ Bey Zīj-i Sulṭānī →</a>
+  </div>
+</div><div class="showcase">
   <div class="sc-image"><img src="assets/img/12-endulus-gokkuresi.jpg" alt="Endülüs Sahli Gökküresi"></div>
   <div class="sc-plate">
-    <span class="tag">Envanter No 03 · Müze Standartlarında Eserler</span>
+    <span class="tag">Envanter No 04 · Müze Standartlarında Eserler</span>
     <h3>Endülüs Sahli Gökküresi</h3>
     <p>Avrupa&#039;da yapılan ve günümüze ulaşan en eski İslamî gök küresi kabul edilen bu eser, 1085&#039;te Valensiya&#039;da usturlap ustası Sahli ve oğlu Muhammed tarafından üretilmiştir.</p>
     <div class="sc-facts"><div>Tarih<b>H. 478 / M. 1085</b></div>
@@ -111,7 +124,7 @@
 </div><div class="showcase">
   <div class="sc-image"><img src="assets/img/15-rubu-tahtasi.jpg" alt="Rubu Tahtası (Usturlap Kadranı)"></div>
   <div class="sc-plate">
-    <span class="tag">Envanter No 04 · Müze Standartlarında Eserler</span>
+    <span class="tag">Envanter No 05 · Müze Standartlarında Eserler</span>
     <h3>Rubu Tahtası (Usturlap Kadranı)</h3>
     <p>Ünlü astronom ve muvakkit Muhammed el-Mizzi tarafından Şam&#039;da üretilen bu rubu tahtası, usturlabın sadeleştirilmiş ve taşınabilir formudur.</p>
     <div class="sc-facts"><div>Tarih<b>H. 740 / M. 1330–1334</b></div>
@@ -122,9 +135,22 @@
     <a href="eserler/rubu-tahtasi.html" class="cta">Rubu Tahtası (Usturlap Kadranı) →</a>
   </div>
 </div><div class="showcase">
+  <div class="sc-image"><div class="sc-live" id="prevTusi"></div></div>
+  <div class="sc-plate">
+    <span class="tag">Envanter No 06 · Dijital Deneyim</span>
+    <h3>Tusi Çifti Kozmolojik Saati</h3>
+    <p>Nasīr al-Dīn al-Tūsī'nin 1247'de geliştirdiği matematiksel mekanizmanın (Tusi çifti), gün/saat/dakika/saniyeyi iç içe dönen halkalarla gösteren gerçek zamanlı dijital enstalasyonu.</p>
+    <div class="sc-facts"><div>Tarih<b>M.S. 1247</b></div>
+<div>Rasathane<b>Merağa</b></div>
+<div>Kaynak<b>Tusi Çifti Mekanizması</b></div>
+<div>Format<b>Dijital Enstalasyon</b></div>
+</div>
+    <a href="deneyimler/tusi-cifti/index.html" class="cta">Tusi Çifti Kozmolojik Saati →</a>
+  </div>
+</div><div class="showcase">
   <div class="sc-image"><img src="assets/img/03-minyatur-set.jpg" alt="Osmanlı Dönemi Minyatür Kalkan, Miğfer ve At Alınlığı Seti"></div>
   <div class="sc-plate">
-    <span class="tag">Envanter No 05 · İhtisas Hediyelikleri</span>
+    <span class="tag">Envanter No 07 · İhtisas Hediyelikleri</span>
     <h3>Osmanlı Dönemi Minyatür Kalkan, Miğfer ve At Alınlığı Seti</h3>
     <p>Bu özel minyatür set, Osmanlı ordusunun törenlerde sergilediği zarafeti ve Türk metalürji sanatının inceliğini sergi vitrinlerine taşıyan bir tasarımdır.</p>
     <div class="sc-facts"><div>Tarih<b>15-16. Yüzyıl (Osmanlı Dönemi Temsili)</b></div>
@@ -179,5 +205,70 @@
   </div>
 </footer>
 <script src="assets/js/site.js"></script>
+<script>
+// ---- Ana sayfa deneyim kartları: canlı mini önizlemeler ----
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function addBadge(host){
+    var b = document.createElement('div');
+    b.className = 'live-badge';
+    b.innerHTML = '<i></i><span>Canlı Önizleme</span>';
+    host.appendChild(b);
+  }
+
+  // --- Tusi çifti mini animasyonu ---
+  var tusiHost = document.getElementById('prevTusi');
+  if (tusiHost){
+    addBadge(tusiHost);
+    var ns='http://www.w3.org/2000/svg';
+    var size=260, R=size*0.36, cx=size/2, cy=size/2;
+    var svg=document.createElementNS(ns,'svg');
+    svg.setAttribute('width',size); svg.setAttribute('height',size);
+    function el(tag,attrs){ var e=document.createElementNS(ns,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); return e; }
+    var outer=el('circle',{cx:cx,cy:cy,r:R,fill:'none',stroke:'rgba(199,154,92,0.3)','stroke-width':1});
+    var guide=el('line',{x1:cx-R,y1:cy,x2:cx+R,y2:cy,stroke:'rgba(236,229,211,0.14)','stroke-width':1,'stroke-dasharray':'2 5'});
+    var inner=el('circle',{r:R/2,fill:'none',stroke:'rgba(79,217,232,0.55)','stroke-width':1.2});
+    var marker=el('circle',{r:3.6,fill:'#4fd9e8'});
+    svg.appendChild(outer); svg.appendChild(guide); svg.appendChild(inner); svg.appendChild(marker);
+    tusiHost.appendChild(svg);
+    var phi=0;
+    function frame(ts){
+      if(!frame.last) frame.last=ts;
+      var dt=(ts-frame.last)/1000; frame.last=ts;
+      if(!reduced) phi += 0.4*dt;
+      inner.setAttribute('cx', cx+(R/2)*Math.cos(phi));
+      inner.setAttribute('cy', cy+(R/2)*Math.sin(phi));
+      marker.setAttribute('cx', cx+R*Math.cos(phi));
+      marker.setAttribute('cy', cy);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  // --- Uluğ Bey mini yıldız alanı ---
+  var ulugHost = document.getElementById('prevUlugbey');
+  if (ulugHost){
+    addBadge(ulugHost);
+    var ring = document.createElement('div');
+    ring.style.cssText = 'position:absolute; top:50%; left:50%; width:70%; aspect-ratio:1/1; transform:translate(-50%,-50%); border:1px solid rgba(199,154,92,0.25); border-radius:50%;' + (reduced?'':' animation:sc-spin 60s linear infinite;');
+    ulugHost.appendChild(ring);
+    var n = 26;
+    for (var i=0;i<n;i++){
+      var s=document.createElement('div');
+      var size=(Math.random()*1.6+0.6).toFixed(2);
+      s.style.cssText='position:absolute; border-radius:50%; background:#f6ead0; width:'+size+'px; height:'+size+'px; left:'+(Math.random()*100)+'%; top:'+(Math.random()*100)+'%;' +
+        (reduced? 'opacity:0.5;' : 'animation:sc-twinkle '+(3+Math.random()*4).toFixed(2)+'s ease-in-out infinite; animation-delay:'+(Math.random()*4).toFixed(2)+'s;');
+      ulugHost.appendChild(s);
+    }
+  }
+
+  if (!reduced){
+    var styleTag = document.createElement('style');
+    styleTag.textContent = '@keyframes sc-spin{from{transform:translate(-50%,-50%) rotate(0deg);}to{transform:translate(-50%,-50%) rotate(360deg);}} @keyframes sc-twinkle{0%,100%{opacity:.15;}50%{opacity:.85;}}';
+    document.head.appendChild(styleTag);
+  }
+})();
+</script>
 </body>
 </html>
