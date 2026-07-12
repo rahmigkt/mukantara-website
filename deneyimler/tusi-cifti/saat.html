@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tusi Çifti Kozmolojik Saati</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html, body { width:100%; height:100%; overflow:hidden; background:#000; cursor:none; }
+        canvas { display:block; position:fixed; inset:0; z-index:1; }
+
+        /* ── Bloom overlay ── */
+        #bloom {
+            position:fixed; inset:0; z-index:2;
+            pointer-events:none;
+            mix-blend-mode:screen;
+            opacity:0.5;
+        }
+
+        /* ── Vignette ── */
+        #vignette {
+            position:fixed; inset:0; z-index:3;
+            pointer-events:none;
+            background: radial-gradient(ellipse at 50% 55%,
+                transparent 30%,
+                rgba(0,0,0,0.45) 65%,
+                rgba(0,0,0,0.82) 100%);
+        }
+
+        /* ═══════════════════════════════════
+           TOP BAR — title + time
+        ═══════════════════════════════════ */
+        #topBar {
+            position:fixed; top:0; left:0; right:0;
+            z-index:10;
+            padding:36px 52px 0;
+            display:flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, transparent 100%);
+        }
+
+        #titleBlock h1 {
+            font-family:'Cormorant Garamond', serif;
+            font-size:clamp(1.1rem, 2.2vw, 1.9rem);
+            font-weight:300;
+            letter-spacing:0.25em;
+            color:rgba(248,250,252,0.88);
+            text-transform:uppercase;
+        }
+        #titleBlock h2 {
+            font-family:'Courier Prime', monospace;
+            font-size:clamp(0.5rem, 0.9vw, 0.72rem);
+            font-weight:400;
+            letter-spacing:0.5em;
+            color:rgba(100,116,139,0.7);
+            margin-top:6px;
+            text-transform:uppercase;
+        }
+
+        #clockBlock {
+            text-align:right;
+        }
+        #mainTime {
+            font-family:'Courier Prime', monospace;
+            font-size:clamp(1.4rem, 3vw, 2.6rem);
+            font-weight:700;
+            letter-spacing:0.18em;
+            color:#fff;
+            text-shadow: 0 0 30px rgba(255,255,255,0.5), 0 0 80px rgba(56,189,248,0.2);
+        }
+        #timeLabels {
+            font-family:'Courier Prime', monospace;
+            font-size:clamp(0.42rem, 0.75vw, 0.6rem);
+            letter-spacing:0.45em;
+            color:rgba(100,116,139,0.6);
+            margin-top:4px;
+            text-transform:uppercase;
+        }
+
+        /* ═══════════════════════════════════
+           NARRATIVE PANEL — left side
+        ═══════════════════════════════════ */
+        #narrativePanel {
+            position:fixed;
+            top:50%;
+            left:48px;
+            transform:translateY(-50%);
+            width:clamp(240px, 22vw, 320px);
+            z-index:10;
+            pointer-events:none;
+        }
+
+        .narr-card {
+            opacity:0;
+            transform:translateX(-18px);
+            transition: opacity 1.2s ease, transform 1.2s ease;
+            position:absolute;
+            top:0; left:0;
+            width:100%;
+        }
+        .narr-card.visible {
+            opacity:1;
+            transform:translateX(0);
+        }
+        .narr-card.hidden {
+            opacity:0;
+            transform:translateX(18px);
+        }
+
+        .narr-accent {
+            width:2px;
+            height:48px;
+            margin-bottom:18px;
+            border-radius:2px;
+        }
+
+        .narr-tag {
+            font-family:'Courier Prime', monospace;
+            font-size:clamp(0.42rem, 0.75vw, 0.62rem);
+            letter-spacing:0.5em;
+            text-transform:uppercase;
+            margin-bottom:10px;
+            opacity:0.7;
+        }
+
+        .narr-title {
+            font-family:'Cormorant Garamond', serif;
+            font-size:clamp(1.1rem, 2vw, 1.7rem);
+            font-weight:300;
+            line-height:1.25;
+            color:rgba(248,250,252,0.92);
+            margin-bottom:16px;
+            letter-spacing:0.05em;
+        }
+
+        .narr-body {
+            font-family:'Cormorant Garamond', serif;
+            font-size:clamp(0.78rem, 1.2vw, 1rem);
+            font-weight:300;
+            line-height:1.75;
+            color:rgba(148,163,184,0.82);
+        }
+
+        .narr-body em {
+            font-style:italic;
+            color:rgba(203,213,225,0.9);
+        }
+
+        /* ═══════════════════════════════════
+           BOTTOM BAR
+        ═══════════════════════════════════ */
+        #bottomBar {
+            position:fixed; bottom:0; left:0; right:0;
+            z-index:10;
+            padding:0 52px 32px;
+            display:flex;
+            align-items:flex-end;
+            justify-content:space-between;
+            background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 100%);
+        }
+
+        #pulsarBlock {
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+
+        #pulsarDot {
+            width:7px; height:7px;
+            border-radius:50%;
+            background:#06b6d4;
+            box-shadow:0 0 10px #06b6d4, 0 0 24px rgba(6,182,212,0.4);
+            flex-shrink:0;
+            transition:transform 0.08s ease-out, box-shadow 0.08s ease-out;
+        }
+
+        #pulsarInfo {
+            font-family:'Courier Prime', monospace;
+            font-size:clamp(0.42rem, 0.75vw, 0.6rem);
+            letter-spacing:0.3em;
+            color:rgba(6,182,212,0.55);
+            text-transform:uppercase;
+            line-height:1.8;
+        }
+
+        #authorBlock {
+            text-align:right;
+        }
+        #authorName {
+            font-family:'Cormorant Garamond', serif;
+            font-size:clamp(0.75rem, 1.2vw, 1rem);
+            font-weight:300;
+            letter-spacing:0.35em;
+            color:rgba(100,116,139,0.55);
+            text-transform:uppercase;
+        }
+
+        /* ═══════════════════════════════════
+           LAYER FLASH OVERLAY
+        ═══════════════════════════════════ */
+        #layerFlash {
+            position:fixed; inset:0; z-index:4;
+            pointer-events:none;
+            opacity:0;
+            transition:opacity 0.4s ease;
+        }
+
+        /* ═══════════════════════════════════
+           PROGRESS DOTS
+        ═══════════════════════════════════ */
+        #progressDots {
+            position:fixed;
+            bottom:36px;
+            left:50%;
+            transform:translateX(-50%);
+            display:flex;
+            gap:8px;
+            z-index:10;
+            pointer-events:none;
+        }
+        .dot {
+            width:5px; height:5px;
+            border-radius:50%;
+            background:rgba(255,255,255,0.15);
+            transition:background 0.5s, transform 0.5s;
+        }
+        .dot.active {
+            background:rgba(255,255,255,0.7);
+            transform:scale(1.4);
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="three"></canvas>
+<canvas id="bloom"></canvas>
+<div id="vignette"></div>
+<div id="layerFlash"></div>
+
+<!-- TOP -->
+<div id="topBar">
+    <div id="titleBlock">
+        <h1>Tusi Çifti Kozmolojik Saati</h1>
+        <h2>Nasīr al-Dīn al-Tūsī · 1247 · Yeniden Yorumlama</h2>
+    </div>
+    <div id="clockBlock">
+        <div id="mainTime">00·00·00·00</div>
+        <div id="timeLabels">Gün · Saat · Dakika · Saniye</div>
+    </div>
+</div>
+
+<!-- NARRATIVE -->
+<div id="narrativePanel"></div>
+
+<!-- BOTTOM -->
+<div id="bottomBar">
+    <div id="pulsarBlock">
+        <div id="pulsarDot"></div>
+        <div id="pulsarInfo">
+            Yengeç × Vela Pulsarı<br>
+            0.268 sn · 26 sinyal / döngü
+        </div>
+    </div>
+    <div id="authorBlock">
+        <div id="authorName">Hüseyin Rahmi Göktaş</div>
+    </div>
+</div>
+
+<!-- PROGRESS -->
+<div id="progressDots"></div>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ═══════════════════════════════════════════
+//  NARRATIVE SCRIPT
+// ═══════════════════════════════════════════
+const SCRIPT = [
+    {
+        duration: 16,
+        camPos:   [0, 3200, 3000],
+        camTgt:   [0, 180, 0],
+        layer:    'all',
+        accentColor: '#94a3b8',
+        tag:   'Giriş',
+        title: 'Zaman\nÇember\nİçinde Çember',
+        body:  'Önünüzdeki mekanizma, zamanı alışıldık biçimde göstermiyor. Saniye, dakika, saat ve gün — her biri kendi içinde dönen, bir diğerini yaratan ayrı bir evren katmanı.',
+    },
+    {
+        duration: 14,
+        camPos:   [0, 820, 760],
+        camTgt:   [0, 0, 0],
+        layer:    'saniye',
+        accentColor: '#06b6d4',
+        tag:   'Birinci Katman — Saniye',
+        title: 'Pulsarın\nNabzı',
+        body:  '13. yüzyıl matematikçisi Nasīr al-Dīn al-Tūsī, dairenin içine yerleştirilen yarı çaplı başka bir daireyi keşfetti. <em>İki dairesel hareket, birleşince mükemmel bir doğru çizer.</em> Her saniye bu sihirli denklemin bir tamamlanmasıdır.',
+    },
+    {
+        duration: 14,
+        camPos:   [600, 1400, 1100],
+        camTgt:   [0, 120, 0],
+        layer:    'dakika',
+        accentColor: '#f59e0b',
+        tag:   'İkinci Katman — Dakika',
+        title: '60 Saniye\nBir Enerji\nPatlaması',
+        body:  'Dakika katmanı, saniyenin birikimidir. Her altmış döngüde bir, sistem içindeki gerilim dışa vurulur ve genişleyen bir dalga yayılır. Zaman birikir — sonra boşalır.',
+    },
+    {
+        duration: 14,
+        camPos:   [-700, 2000, 1600],
+        camTgt:   [0, 240, 0],
+        layer:    'saat',
+        accentColor: '#8b5cf6',
+        tag:   'Üçüncü Katman — Saat',
+        title: 'Derin\nRezonans',
+        body:  'Saat çarkı 3.600 saniyelik bir rezonansı temsil eder. Bu halka en yavaş, en derindir — kozmik sessizlik içindeki nabız. İnsan algısının sezgisel olarak kavradığı "büyük zaman dilimi" burada görünür hale gelir.',
+    },
+    {
+        duration: 14,
+        camPos:   [1200, 2600, 2000],
+        camTgt:   [0, 360, 0],
+        layer:    'gun',
+        accentColor: '#f43f5e',
+        tag:   'Dördüncü Katman — Gün',
+        title: 'Kozmik\nDenge',
+        body:  '86.400 saniye. Dünya\'nın kendi ekseninde tam bir dönüşü. En dıştaki halka bu mükemmel döngüyü taşır. <em>Tüm sistem buraya akar; her şey burada kapanır ve yeniden başlar.</em>',
+    },
+    {
+        duration: 14,
+        camPos:   [0, 600, 400],
+        camTgt:   [0, -60, 0],
+        layer:    'saniye',
+        accentColor: '#06b6d4',
+        tag:   'Sistem Kalbi',
+        title: 'Yengeç\nPulsarı',
+        body:  'Mekanizmanın temel birimi insan yapımı değil. Yengeç ve Vela Pulsarları — uzayda saniyede onlarca kez dönen nötron yıldızları — bu saatin tik-taklarıdır. İkisinin sinyali 0.268 saniyede kesişir. Bu, bir saniyenin tanımıdır.',
+    },
+    {
+        duration: 16,
+        camPos:   [0, 4200, 3800],
+        camTgt:   [0, 180, 0],
+        layer:    'all',
+        accentColor: '#94a3b8',
+        tag:   'Bütün',
+        title: 'Her An\nBir Denge\nNoktası',
+        body:  'Şu anda izlediğiniz, içinde bulunduğunuz anın matematiksel portresi. Dönen halkalar durmuyor — çünkü zaman durmuyor. Mekanizma sizinle birlikte var oldu ve sizden sonra da var olmaya devam edecek.',
+    },
+];
+
+// ═══════════════════════════════════════════
+//  THREE.JS SETUP
+// ═══════════════════════════════════════════
+const canvas3 = document.getElementById('three');
+const scene   = new THREE.Scene();
+scene.fog     = new THREE.FogExp2(0x000004, 0.000025);
+
+const camera  = new THREE.PerspectiveCamera(52, innerWidth/innerHeight, 1, 60000);
+camera.position.set(0, 3200, 3000);
+
+const renderer = new THREE.WebGLRenderer({ canvas: canvas3, antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.3;
+
+// ── Bloom canvas ──
+const bloomC  = document.getElementById('bloom');
+const bloomCtx = bloomC.getContext('2d');
+function resizeBloom() {
+    const s = 4;
+    bloomC.width  = Math.ceil(innerWidth / s);
+    bloomC.height = Math.ceil(innerHeight / s);
+    bloomC.style.width  = innerWidth + 'px';
+    bloomC.style.height = innerHeight + 'px';
+}
+resizeBloom();
+
+// ═══════════════════════════════════════════
+//  STARS
+// ═══════════════════════════════════════════
+{
+    const N = 10000;
+    const pos = new Float32Array(N*3), col = new Float32Array(N*3), sz = new Float32Array(N);
+    const pal = [[1,1,1],[.55,.75,1],[1,.88,.6],[.7,.5,1],[.35,.85,1],[1,.65,.65]];
+    for (let i=0;i<N;i++){
+        const r=14000+Math.random()*22000, th=Math.random()*Math.PI*2, ph=Math.acos(2*Math.random()-1);
+        pos[i*3]=r*Math.sin(ph)*Math.cos(th); pos[i*3+1]=r*Math.cos(ph); pos[i*3+2]=r*Math.sin(ph)*Math.sin(th);
+        sz[i]=0.7+Math.random()*3.2;
+        const p=pal[Math.floor(Math.random()*pal.length)]; col[i*3]=p[0];col[i*3+1]=p[1];col[i*3+2]=p[2];
+    }
+    const g=new THREE.BufferGeometry();
+    g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    g.setAttribute('color',   new THREE.BufferAttribute(col,3));
+    g.setAttribute('size',    new THREE.BufferAttribute(sz,1));
+    scene.add(new THREE.Points(g,new THREE.PointsMaterial({
+        size:2.4,vertexColors:true,transparent:true,opacity:.88,
+        sizeAttenuation:true,blending:THREE.AdditiveBlending,depthWrite:false
+    })));
+}
+
+// ═══════════════════════════════════════════
+//  NEBULA
+// ═══════════════════════════════════════════
+[[0x030b2e,.18],[0x12041a,.10],[0x041220,.08]].forEach(([c,o],i)=>{
+    scene.add(new THREE.Mesh(
+        new THREE.SphereGeometry(16000+i*2500,16,16),
+        new THREE.MeshBasicMaterial({color:c,side:THREE.BackSide,transparent:true,opacity:o,
+            blending:THREE.AdditiveBlending,depthWrite:false})
+    ));
+});
+
+// ═══════════════════════════════════════════
+//  LIGHTS
+// ═══════════════════════════════════════════
+scene.add(new THREE.AmbientLight(0xffffff, 0.75));
+const sunL = new THREE.PointLight(0xffffff,55,9000);
+sunL.position.set(0,2000,0); scene.add(sunL);
+
+const COLORS  = {saniye:0x06b6d4, dakika:0xf59e0b, saat:0x8b5cf6, gun:0xf43f5e};
+const COL_CSS = {saniye:'#06b6d4', dakika:'#f59e0b', saat:'#8b5cf6', gun:'#f43f5e'};
+const SCALES  = {saniye:340, dakika:680, saat:1020, gun:1360};
+const Y_POS   = {saniye:0,  dakika:120, saat:240,  gun:360};
+const THICK   = 9;
+
+const accentL = {};
+Object.entries(COLORS).forEach(([k,c])=>{
+    const l=new THREE.PointLight(c,0,1800); l.position.set(0,Y_POS[k],0); scene.add(l); accentL[k]=l;
+});
+
+// ═══════════════════════════════════════════
+//  PULSAR CORE
+// ═══════════════════════════════════════════
+const pGrp   = new THREE.Group(); pGrp.position.y=-80;
+const coreMat= new THREE.MeshStandardMaterial({color:0x06b6d4,emissive:0x06b6d4,emissiveIntensity:10,metalness:.9,roughness:.04});
+const coreMsh= new THREE.Mesh(new THREE.SphereGeometry(32,64,64),coreMat); pGrp.add(coreMsh);
+[70,130,220,380].forEach((r,i)=>{
+    const ops=[.18,.09,.04,.015];
+    pGrp.add(new THREE.Mesh(new THREE.SphereGeometry(r,20,20),new THREE.MeshBasicMaterial({
+        color:0x06b6d4,transparent:true,opacity:ops[i],blending:THREE.AdditiveBlending,depthWrite:false})));
+});
+const pLight=new THREE.PointLight(0x06b6d4,0,1400); pGrp.add(pLight);
+const eqRing=new THREE.Mesh(new THREE.TorusGeometry(85,3,16,128),new THREE.MeshBasicMaterial({
+    color:0x06b6d4,transparent:true,opacity:.3,blending:THREE.AdditiveBlending,depthWrite:false}));
+eqRing.rotation.x=Math.PI/2; pGrp.add(eqRing);
+scene.add(pGrp);
+
+// ═══════════════════════════════════════════
+//  TUSI MECHANISMS
+// ═══════════════════════════════════════════
+function mkMat(color){ return new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:5,transparent:true,opacity:.88,metalness:.4,roughness:.08}); }
+function mkPtMat(color){ return new THREE.MeshStandardMaterial({color:0xffffff,emissive:color,emissiveIntensity:32,metalness:1,roughness:0}); }
+
+function createTusi(R,color,y){
+    const r=R/2, grp=new THREE.Group();
+    const outerM=new THREE.Mesh(new THREE.TorusGeometry(R,THICK,32,200),mkMat(color));
+    outerM.rotation.x=Math.PI/2; grp.add(outerM);
+    const iGrp=new THREE.Group();
+    const innerM=new THREE.Mesh(new THREE.TorusGeometry(r,THICK*.8,28,160),mkMat(color));
+    innerM.rotation.x=Math.PI/2; iGrp.add(innerM); grp.add(iGrp);
+    const ptGrp=new THREE.Group();
+    ptGrp.add(new THREE.Mesh(new THREE.SphereGeometry(THICK*4,32,32),mkPtMat(color)));
+    [THICK*9,THICK*17,THICK*30].forEach((pr,i)=>{
+        const ops=[.32,.13,.04];
+        ptGrp.add(new THREE.Mesh(new THREE.SphereGeometry(pr,16,16),new THREE.MeshBasicMaterial({
+            color,transparent:true,opacity:ops[i],blending:THREE.AdditiveBlending,depthWrite:false})));
+    });
+    grp.add(ptGrp);
+    grp.position.y=y; scene.add(grp);
+    return {grp,iGrp,ptGrp,R,r,y};
+}
+const mechs={
+    saniye:createTusi(SCALES.saniye,COLORS.saniye,Y_POS.saniye),
+    dakika:createTusi(SCALES.dakika,COLORS.dakika,Y_POS.dakika),
+    saat:  createTusi(SCALES.saat,  COLORS.saat,  Y_POS.saat),
+    gun:   createTusi(SCALES.gun,   COLORS.gun,   Y_POS.gun),
+};
+
+// Energy columns
+['saniye','dakika','saat'].forEach((k,i)=>{
+    const keys=['saniye','dakika','saat','gun'];
+    const y1=Y_POS[keys[i]], y2=Y_POS[keys[i+1]];
+    const pts=Array.from({length:30},(_,j)=>new THREE.Vector3(0,y1+(y2-y1)*j/29,0));
+    scene.add(new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(pts),
+        new THREE.LineBasicMaterial({color:COLORS[k],transparent:true,opacity:.1,blending:THREE.AdditiveBlending})
+    ));
+});
+
+// ═══════════════════════════════════════════
+//  PARTICLES
+// ═══════════════════════════════════════════
+const MAX_P=1500;
+const pPos=new Float32Array(MAX_P*3), pCol=new Float32Array(MAX_P*3);
+const pVel=Array.from({length:MAX_P},()=>({x:0,y:0,z:0}));
+const pLife=new Float32Array(MAX_P), pMaxL=new Float32Array(MAX_P);
+pPos.fill(99999);
+const pGeo=new THREE.BufferGeometry();
+pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+pGeo.setAttribute('color',   new THREE.BufferAttribute(pCol,3));
+scene.add(new THREE.Points(pGeo,new THREE.PointsMaterial({
+    size:5,vertexColors:true,transparent:true,opacity:.78,
+    blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true})));
+let pH=0;
+
+function spawnP(x,y,z,color,n=12){
+    const c=new THREE.Color(color);
+    for(let i=0;i<n;i++){
+        const idx=pH%MAX_P; pH++;
+        const spd=50+Math.random()*130;
+        const th=Math.random()*Math.PI*2, ph2=Math.acos(2*Math.random()-1);
+        pVel[idx].x=spd*Math.sin(ph2)*Math.cos(th);
+        pVel[idx].y=spd*Math.cos(ph2);
+        pVel[idx].z=spd*Math.sin(ph2)*Math.sin(th);
+        pPos[idx*3]=x; pPos[idx*3+1]=y; pPos[idx*3+2]=z;
+        pCol[idx*3]=c.r; pCol[idx*3+1]=c.g; pCol[idx*3+2]=c.b;
+        pLife[idx]=0; pMaxL[idx]=0.5+Math.random()*.9;
+    }
+}
+
+function tickP(dt){
+    for(let i=0;i<MAX_P;i++){
+        if(pLife[i]>=pMaxL[i]){pPos[i*3]=pPos[i*3+1]=pPos[i*3+2]=99999;continue;}
+        pLife[i]+=dt;
+        const t=pLife[i]/pMaxL[i];
+        const s=dt*(1-t*.75);
+        pPos[i*3]+=pVel[i].x*s; pPos[i*3+1]+=pVel[i].y*s; pPos[i*3+2]+=pVel[i].z*s;
+    }
+    pGeo.attributes.position.needsUpdate=true;
+}
+
+// ═══════════════════════════════════════════
+//  RINGS
+// ═══════════════════════════════════════════
+const rings=[];
+function spawnRing(color,R,y,thick=6){
+    [thick,2].forEach((th,i)=>{
+        const m=new THREE.Mesh(
+            new THREE.TorusGeometry(R,th,12,200),
+            new THREE.MeshBasicMaterial({color,transparent:true,opacity:i?0.45:1,
+                blending:THREE.AdditiveBlending,depthWrite:false}));
+        m.rotation.x=Math.PI/2; m.position.y=y;
+        m.userData={speed:i?1.025:1.017,fade:i?0.003:0.0035};
+        scene.add(m); rings.push(m);
+    });
+}
+
+// ═══════════════════════════════════════════
+//  NARRATIVE UI
+// ═══════════════════════════════════════════
+const narrativePanel = document.getElementById('narrativePanel');
+let currentCard = null;
+
+function buildCard(s) {
+    const div = document.createElement('div');
+    div.className = 'narr-card';
+
+    const accent = document.createElement('div');
+    accent.className = 'narr-accent';
+    accent.style.background = s.accentColor;
+
+    const tag = document.createElement('div');
+    tag.className = 'narr-tag';
+    tag.style.color = s.accentColor;
+    tag.textContent = s.tag;
+
+    const title = document.createElement('div');
+    title.className = 'narr-title';
+    title.innerHTML = s.title.replace(/\n/g,'<br>');
+
+    const body = document.createElement('div');
+    body.className = 'narr-body';
+    body.innerHTML = s.body;
+
+    div.append(accent, tag, title, body);
+    return div;
+}
+
+function showCard(s) {
+    // Fade out old
+    if (currentCard) {
+        currentCard.classList.add('hidden');
+        const old = currentCard;
+        setTimeout(() => old.remove(), 1400);
+    }
+
+    // Build + mount new
+    const card = buildCard(s);
+    narrativePanel.appendChild(card);
+    // Trigger enter transition
+    requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('visible')));
+    currentCard = card;
+}
+
+// ═══════════════════════════════════════════
+//  PROGRESS DOTS
+// ═══════════════════════════════════════════
+const dotsEl = document.getElementById('progressDots');
+SCRIPT.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0?' active':'');
+    dotsEl.appendChild(d);
+});
+function updateDots(idx) {
+    dotsEl.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===idx));
+}
+
+// ═══════════════════════════════════════════
+//  LAYER VISIBILITY
+// ═══════════════════════════════════════════
+const hierarchy = {
+    all:    ['saniye','dakika','saat','gun'],
+    gun:    ['saniye','dakika','saat','gun'],
+    saat:   ['saniye','dakika','saat'],
+    dakika: ['saniye','dakika'],
+    saniye: ['saniye'],
+};
+
+function setLayer(name) {
+    const vis = hierarchy[name] || hierarchy.all;
+    Object.keys(mechs).forEach(k => mechs[k].grp.visible = vis.includes(k));
+}
+
+// ═══════════════════════════════════════════
+//  CAMERA LERP
+// ═══════════════════════════════════════════
+const camPos3 = new THREE.Vector3(0,3200,3000);
+const camTgt3 = new THREE.Vector3(0,180,0);
+
+// ═══════════════════════════════════════════
+//  TOUR STATE
+// ═══════════════════════════════════════════
+let sceneIdx  = 0;
+let sceneClock = 0;
+
+function startScene(idx) {
+    sceneIdx   = idx;
+    sceneClock = 0;
+    const s = SCRIPT[idx];
+    showCard(s);
+    setLayer(s.layer);
+    updateDots(idx);
+
+    // Layer flash
+    const flash = document.getElementById('layerFlash');
+    flash.style.background = `radial-gradient(ellipse at 50% 50%, ${s.accentColor}18 0%, transparent 70%)`;
+    flash.style.opacity = '1';
+    setTimeout(()=>{ flash.style.opacity='0'; }, 600);
+}
+
+startScene(0);
+
+// ═══════════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════════
+const PULSAR_HIT = 0.268;
+const TUSI_SEC   = PULSAR_HIT * 26; // ≈ 6.968s per tusi-second
+
+// ═══════════════════════════════════════════
+//  MAIN LOOP
+// ═══════════════════════════════════════════
+const clk = new THREE.Clock();
+let totalTime = 0;
+let lastS=-1,lastM=-1,lastH=-1,lastD=-1,lastBeat=-1;
+
+function animate(){
+    requestAnimationFrame(animate);
+    const dt = Math.min(clk.getDelta(), 0.05);
+    totalTime += dt;
+    sceneClock += dt;
+
+    // ── Scene advance ────────────────────────
+    const s = SCRIPT[sceneIdx];
+    if (sceneClock >= s.duration) {
+        startScene((sceneIdx+1) % SCRIPT.length);
+    }
+
+    // ── Camera lerp ──────────────────────────
+    const cs = SCRIPT[sceneIdx];
+    camPos3.lerp(new THREE.Vector3(...cs.camPos), 0.025);
+    camTgt3.lerp(new THREE.Vector3(...cs.camTgt), 0.025);
+    camera.position.copy(camPos3);
+    camera.lookAt(camTgt3);
+
+    // ── Time ────────────────────────────────
+    const tSecs = Math.floor(totalTime / TUSI_SEC);
+    const d=Math.floor(tSecs/86400), h=Math.floor((tSecs%86400)/3600),
+          m=Math.floor((tSecs%3600)/60), sec=tSecs%60;
+    document.getElementById('mainTime').textContent =
+        `${String(d).padStart(2,'0')}·${String(h).padStart(2,'0')}·${String(m).padStart(2,'0')}·${String(sec).padStart(2,'0')}`;
+
+    // ── Tusi physics ──────────────────────────
+    const tF = totalTime / TUSI_SEC;
+    function updateT(obj, norm){
+        const phi = norm * Math.PI * 2;
+        obj.iGrp.position.set(obj.r*Math.cos(phi),0,obj.r*Math.sin(phi));
+        obj.iGrp.rotation.y = -2*phi;
+        obj.ptGrp.position.set(obj.R*Math.cos(phi),0,0);
+    }
+    updateT(mechs.saniye, tF%1);
+    updateT(mechs.dakika, (tF/60)%1);
+    updateT(mechs.saat,   (tF/3600)%1);
+    updateT(mechs.gun,    (tF/86400)%1);
+
+    // ── Pulsar beat ───────────────────────────
+    const beat = Math.floor(totalTime / PULSAR_HIT);
+    if(beat!==lastBeat){
+        lastBeat=beat;
+        coreMat.emissiveIntensity=22;
+        pLight.intensity=130;
+        const dotEl=document.getElementById('pulsarDot');
+        dotEl.style.transform='scale(2.6)';
+        dotEl.style.boxShadow='0 0 20px #06b6d4, 0 0 50px rgba(6,182,212,.5)';
+        setTimeout(()=>{
+            dotEl.style.transform='scale(1)';
+            dotEl.style.boxShadow='0 0 10px #06b6d4, 0 0 24px rgba(6,182,212,.4)';
+        },110);
+        spawnP(0, pGrp.position.y, 0, '#06b6d4', 5);
+    } else {
+        coreMat.emissiveIntensity += (9-coreMat.emissiveIntensity)*0.1;
+        pLight.intensity *= 0.84;
+    }
+
+    // ── Tick events ───────────────────────────
+    if(sec!==lastS){
+        lastS=sec;
+        spawnRing(COLORS.saniye,SCALES.saniye,Y_POS.saniye,5);
+        spawnP(mechs.saniye.ptGrp.position.x,Y_POS.saniye,0,COL_CSS.saniye,8);
+        accentL.saniye.intensity=55;
+    }
+    if(m!==lastM){
+        lastM=m;
+        spawnRing(COLORS.dakika,SCALES.dakika,Y_POS.dakika,8);
+        spawnP(mechs.dakika.ptGrp.position.x,Y_POS.dakika,0,COL_CSS.dakika,24);
+        accentL.dakika.intensity=95;
+        const f=document.getElementById('layerFlash');
+        f.style.background=`radial-gradient(ellipse at 50% 45%,${COL_CSS.dakika}14 0%,transparent 65%)`;
+        f.style.opacity='1'; setTimeout(()=>f.style.opacity='0',400);
+    }
+    if(h!==lastH){
+        lastH=h;
+        spawnRing(COLORS.saat,SCALES.saat,Y_POS.saat,10);
+        spawnP(mechs.saat.ptGrp.position.x,Y_POS.saat,0,COL_CSS.saat,42);
+        accentL.saat.intensity=150;
+    }
+    if(d!==lastD){
+        lastD=d;
+        spawnRing(COLORS.gun,SCALES.gun,Y_POS.gun,14);
+        spawnP(mechs.gun.ptGrp.position.x,Y_POS.gun,0,COL_CSS.gun,75);
+        accentL.gun.intensity=220;
+    }
+
+    Object.values(accentL).forEach(l=>l.intensity*=0.91);
+
+    // ── Rings ─────────────────────────────────
+    for(let i=rings.length-1;i>=0;i--){
+        const r=rings[i];
+        r.scale.multiplyScalar(r.userData.speed);
+        r.material.opacity-=r.userData.fade;
+        if(r.material.opacity<=0){scene.remove(r);rings.splice(i,1);}
+    }
+
+    // ── Particles ────────────────────────────
+    tickP(dt);
+
+    // ── Pulsar rotation ───────────────────────
+    pGrp.rotation.y+=0.004;
+    eqRing.rotation.z+=0.002;
+
+    // ── Render ────────────────────────────────
+    renderer.render(scene, camera);
+
+    // ── Bloom ─────────────────────────────────
+    const bw=bloomC.width, bh=bloomC.height;
+    bloomCtx.clearRect(0,0,bw,bh);
+    bloomCtx.drawImage(canvas3,0,0,bw,bh);
+    bloomCtx.filter='blur(8px)';  bloomCtx.globalAlpha=0.65; bloomCtx.drawImage(canvas3,0,0,bw,bh);
+    bloomCtx.filter='blur(18px)'; bloomCtx.globalAlpha=0.38; bloomCtx.drawImage(canvas3,0,0,bw,bh);
+    bloomCtx.filter='blur(32px)'; bloomCtx.globalAlpha=0.18; bloomCtx.drawImage(canvas3,0,0,bw,bh);
+    bloomCtx.filter='none'; bloomCtx.globalAlpha=1;
+}
+
+// ═══════════════════════════════════════════
+//  RESIZE
+// ═══════════════════════════════════════════
+window.addEventListener('resize',()=>{
+    camera.aspect=innerWidth/innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth,innerHeight);
+    resizeBloom();
+});
+
+setLayer('all');
+animate();
+</script>
+</body>
+</html>
