@@ -14,6 +14,7 @@ $ad = trim($_POST['ad'] ?? '');
 $telefon = trim($_POST['telefon'] ?? '');
 $eposta = trim($_POST['eposta'] ?? '');
 $urun = trim($_POST['urun'] ?? '');
+$kurulum_tipi = trim($_POST['kurulum_tipi'] ?? '');
 $mesaj = trim($_POST['mesaj'] ?? '');
 
 // Basit doğrulama
@@ -29,6 +30,7 @@ $body = "Yeni bir teklif talebi alındı.\n\n"
       . "Telefon: {$telefon}\n"
       . "E-posta: {$eposta}\n"
       . "İlgilenilen Eser: {$urun}\n"
+      . "Kurulum Tipi: " . ($kurulum_tipi !== '' ? $kurulum_tipi : 'Belirtilmedi') . "\n"
       . "Dil: {$lang}\n"
       . "Mesaj:\n{$mesaj}\n";
 $headers = "From: no-reply@mukantara.com\r\nReply-To: {$eposta}\r\n";
@@ -41,7 +43,7 @@ $log = file_exists($logPath) ? json_decode(file_get_contents($logPath), true) : 
 $log[] = [
     'tarih' => date('Y-m-d H:i:s'),
     'ad' => $ad, 'telefon' => $telefon, 'eposta' => $eposta,
-    'urun' => $urun, 'mesaj' => $mesaj, 'dil' => $lang,
+    'urun' => $urun, 'kurulum_tipi' => $kurulum_tipi, 'mesaj' => $mesaj, 'dil' => $lang,
     'eposta_gonderildi' => $mailSent,
 ];
 file_put_contents($logPath, json_encode($log, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
