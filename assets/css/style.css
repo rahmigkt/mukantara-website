@@ -44,6 +44,8 @@ nav.links{display:flex; gap:38px; align-items:center;}
 nav.links a{ font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; text-decoration:none; color:rgba(236,229,211,0.65); }
 nav.links a:hover{color:var(--brass-light);}
 nav.links .trlink{ border:1px solid var(--hairline); padding:9px 16px; color:var(--label); }
+nav.links .nav-contact{ color:var(--brass-light); letter-spacing:0.04em; text-transform:none; font-size:12.5px; }
+nav.links .nav-contact:hover{ color:var(--label); }
 
 section{padding:130px 0;}
 .section-head{max-width:640px; margin:0 auto 80px; text-align:center;}
