@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İslam Bilim Tarihi — MUKANTARA Dijital Sergi</title>
+<meta name="description" content="52 İslam bilim insanının animasyonlu keşifleriyle anlatıldığı, ilgi alanına göre öncü eşleştiren interaktif dijital sergi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,480;1,9..144,420&family=Newsreader:ital,wght@0,400;0,500&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#05070c; --night-deep:#020306;
+  --label:#ece5d3; --label-dim:rgba(236,229,211,0.62);
+  --brass:#a9793c; --brass-light:#c79a5c;
+  --gold:#e0b840;
+  --hairline:rgba(236,229,211,0.16);
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0; background:var(--night); color:var(--label);
+  font-family:'Newsreader', serif; -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+body.lang-ar{ font-family:'Noto Naskh Arabic', serif; }
+h1{ font-family:'Fraunces', serif; font-weight:460; color:var(--label); margin:0; }
+body.lang-ar h1{ font-family:'Noto Naskh Arabic', serif; font-weight:600; }
+.tag{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.22em;
+  text-transform:uppercase; color:var(--brass-light);
+}
+body.lang-ar .tag{ font-family:'Noto Naskh Arabic', serif; letter-spacing:0.02em; text-transform:none; font-size:12.5px; }
+a{color:inherit;}
+
+.screen{
+  position:relative; height:100vh; width:100vw;
+  display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(ellipse at 50% 22%, #14100a 0%, var(--night) 55%, var(--night-deep) 100%);
+}
+#nodeField{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:0; opacity:0.6; }
+
+#langSwitch{
+  position:absolute; top:22px; right:26px; z-index:5;
+  display:flex; gap:2px; font-family:'IBM Plex Mono', monospace;
+  font-size:11px; letter-spacing:0.08em;
+}
+#langSwitch button{
+  background:none; border:1px solid var(--hairline); color:var(--label-dim);
+  padding:6px 12px; cursor:pointer; text-transform:uppercase;
+}
+#langSwitch button.active{ color:var(--night-deep); background:var(--brass-light); border-color:var(--brass-light); }
+#langSwitch button:not(.active):hover{ color:var(--label); border-color:var(--brass-light); }
+html[dir="rtl"] #langSwitch{ right:auto; left:26px; }
+
+.card{
+  position:relative; z-index:2; width:100%; max-width:640px; margin:0 24px;
+  padding:clamp(28px,4vw,48px) clamp(28px,5vw,56px);
+  text-align:center;
+}
+.card .tag{ display:block; margin-bottom:18px; }
+.card h1{ font-size:clamp(28px,4.4vw,46px); font-style:italic; font-weight:420; line-height:1.1; }
+body.lang-ar .card h1{ font-style:normal; }
+.card .subtitle{
+  font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.1em;
+  color:var(--label-dim); margin-top:10px; text-transform:uppercase;
+}
+body.lang-ar .card .subtitle{ font-family:'Noto Naskh Arabic', serif; letter-spacing:0; text-transform:none; font-size:13px; }
+
+.answers{ margin-top:clamp(18px,2.6vh,28px); text-align:left; max-width:520px; margin-left:auto; margin-right:auto; }
+html[dir="rtl"] .answers{ text-align:right; }
+.answer-row{ display:flex; gap:16px; padding:clamp(9px,1.4vh,13px) 0; border-top:1px solid var(--hairline); }
+html[dir="rtl"] .answer-row{ flex-direction:row-reverse; }
+.answer-row:last-child{ border-bottom:1px solid var(--hairline); }
+.answer-row .label{
+  flex:none; width:130px; font-family:'IBM Plex Mono', monospace; font-size:10.5px;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--brass-light); padding-top:3px;
+}
+body.lang-ar .answer-row .label{ font-family:'Noto Naskh Arabic', serif; letter-spacing:0; text-transform:none; font-size:13px; width:110px; }
+.answer-row p{ margin:0; font-size:clamp(13.5px,1.8vh,16px); line-height:1.5; color:var(--label-dim); }
+
+.facts{
+  margin:clamp(16px,2.4vh,26px) 0 0; display:flex; justify-content:center; gap:0; flex-wrap:wrap;
+  border-bottom:1px solid var(--hairline);
+}
+.facts div{ padding:12px 18px; border-left:1px solid var(--hairline); flex:1; min-width:88px; }
+html[dir="rtl"] .facts div{ border-left:none; border-right:1px solid var(--hairline); }
+.facts div:first-child{ border-left:none; }
+html[dir="rtl"] .facts div:first-child{ border-right:none; }
+.facts b{ display:block; font-family:'IBM Plex Mono', monospace; font-size:18px; color:var(--gold); font-weight:500; }
+.facts span{ display:block; font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:0.08em; color:var(--label-dim); text-transform:uppercase; margin-top:4px; }
+body.lang-ar .facts span{ font-family:'Noto Naskh Arabic', serif; letter-spacing:0; text-transform:none; font-size:10.5px; }
+
+.launch-btn{
+  display:inline-flex; align-items:center; gap:10px; margin-top:30px;
+  padding:16px 34px; border-radius:2px; text-decoration:none;
+  background:var(--brass); color:var(--night-deep); font-family:'IBM Plex Mono', monospace;
+  font-size:12.5px; letter-spacing:0.14em; text-transform:uppercase; font-weight:500;
+  transition:background .2s ease, transform .2s ease;
+}
+body.lang-ar .launch-btn{ font-family:'Noto Naskh Arabic', serif; letter-spacing:0; text-transform:none; font-size:14px; }
+.launch-btn:hover{ background:var(--brass-light); transform:translateY(-2px); }
+
+.brand{
+  position:absolute; bottom:18px; left:0; right:0; z-index:2; text-align:center;
+  font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:0.12em;
+  color:rgba(236,229,211,0.35); text-transform:uppercase;
+}
+.brand a{ text-decoration:none; color:inherit; }
+.brand a:hover{ color:var(--brass-light); }
+
+@media (max-height:760px), (max-width:480px){
+  .card h1{ font-size:clamp(22px,7vw,32px); }
+  .facts b{ font-size:15px; }
+  .facts div{ padding:8px 10px; }
+  .answer-row .label{ width:100px; }
+  #nodeField svg{ width:320px; height:320px; }
+}
+</style>
+</head>
+<body>
+
+<div class="screen">
+  <div id="nodeField"></div>
+
+  <div id="langSwitch">
+    <button data-lang="tr" class="active">TR</button>
+    <button data-lang="en">EN</button>
+    <button data-lang="ar">AR</button>
+    <button data-lang="ms">MS</button>
+  </div>
+
+  <div class="card">
+    <span class="tag" data-i18n="tag">MUKANTARA · Dijital Sergi</span>
+    <h1 data-i18n="h1">İslam Bilim Tarihi</h1>
+    <div class="subtitle" data-i18n="subtitle">52 Öncü · 8.–18. Yüzyıl</div>
+
+    <div class="answers">
+      <div class="answer-row">
+        <div class="label" data-i18n="label1">Nedir</div>
+        <p data-i18n="body1">52 İslam bilim insanının, her birinin gerçek keşfini gösteren animasyonlu bir figürle anlatıldığı interaktif dijital sergi. İlgi alanlarınızı seçtiğinizde, size en yakın öncüyü buluyor.</p>
+      </div>
+      <div class="answer-row">
+        <div class="label" data-i18n="label2">Neden Önemli</div>
+        <p data-i18n="body2">Astronomiden tıbba, optikten matematiğe 18 farklı alanda, 8. yüzyıldan 18. yüzyıla uzanan bin yıllık bir bilim mirasını tek bir yerde bir araya getiriyor.</p>
+      </div>
+    </div>
+
+    <div class="facts">
+      <div><b>52</b><span data-i18n="fact1">Öncü</span></div>
+      <div><b>18</b><span data-i18n="fact2">Alan</span></div>
+      <div><b data-i18n="fact3v">8.–18. YY</b><span data-i18n="fact3">Dönem</span></div>
+      <div><b>4</b><span data-i18n="fact4">Dil</span></div>
+    </div>
+
+    <a href="sergi.html" class="launch-btn" data-i18n="cta">Sergiyi Aç →</a>
+  </div>
+
+  <div class="brand"><a href="https://www.mukantara.com" target="_blank" rel="noopener">MUKANTARA</a></div>
+</div>
+
+<script>
+// ---------------- Öncü düğüm alanı (idol-eşleştirme imzası) ----------------
+(function(){
+  var host = document.getElementById('nodeField');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ns = 'http://www.w3.org/2000/svg';
+  var size = 380, cx = size/2, cy = size/2, R = size*0.42;
+  var N = 52;
+
+  function el(tag, attrs){ var e = document.createElementNS(ns, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  var svg = el('svg', {width:size, height:size});
+
+  var nodes = [];
+  for (var i=0; i<N; i++){
+    var ang = (i/N) * Math.PI * 2 - Math.PI/2;
+    var x = cx + R*Math.cos(ang), y = cy + R*Math.sin(ang);
+    var dot = el('circle', {cx:x, cy:y, r:2.6, fill:'rgba(224,184,64,0.35)'});
+    svg.appendChild(dot);
+    nodes.push(dot);
+  }
+  var ring = el('circle', {cx:cx, cy:cy, r:R, fill:'none', stroke:'rgba(199,154,92,0.14)', 'stroke-width':1});
+  svg.insertBefore(ring, svg.firstChild);
+
+  var beam = el('line', {x1:cx, y1:cy, x2:cx, y2:cy-R, stroke:'rgba(224,184,64,0.5)', 'stroke-width':1.2});
+  svg.appendChild(beam);
+
+  host.appendChild(svg);
+
+  var current = 0;
+  var t = 0;
+  function frame(ts){
+    if (!frame.last) frame.last = ts;
+    var dt = (ts - frame.last)/1000; frame.last = ts;
+    if (!reduced){
+      t += dt;
+      var idx = Math.floor(t*3) % N;
+      var ang = (idx/N) * Math.PI * 2 - Math.PI/2;
+      beam.setAttribute('x2', cx + R*Math.cos(ang));
+      beam.setAttribute('y2', cy + R*Math.sin(ang));
+      if (idx !== current){
+        nodes[current].setAttribute('r', 2.6);
+        nodes[current].setAttribute('fill', 'rgba(224,184,64,0.35)');
+        current = idx;
+      }
+      nodes[current].setAttribute('r', 5);
+      nodes[current].setAttribute('fill', '#e0b840');
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+// ---------------- i18n ----------------
+var I18N = {
+  tr:{
+    dir:'ltr',
+    tag:'MUKANTARA · Dijital Sergi',
+    h1:'İslam Bilim Tarihi',
+    subtitle:'52 Öncü · 8.–18. Yüzyıl',
+    label1:'Nedir', body1:'52 İslam bilim insanının, her birinin gerçek keşfini gösteren animasyonlu bir figürle anlatıldığı interaktif dijital sergi. İlgi alanlarınızı seçtiğinizde, size en yakın öncüyü buluyor.',
+    label2:'Neden Önemli', body2:'Astronomiden tıbba, optikten matematiğe 18 farklı alanda, 8. yüzyıldan 18. yüzyıla uzanan bin yıllık bir bilim mirasını tek bir yerde bir araya getiriyor.',
+    fact1:'Öncü', fact2:'Alan', fact3:'Dönem', fact3v:'8.–18. YY', fact4:'Dil',
+    cta:'Sergiyi Aç →'
+  },
+  en:{
+    dir:'ltr',
+    tag:'MUKANTARA · Digital Exhibition',
+    h1:'History of Islamic Science',
+    subtitle:'52 Pioneers · 8th–18th Century',
+    label1:'What It Is', body1:'An interactive digital exhibition of 52 pioneers of Islamic science, each brought to life through an animated figure of their actual discovery. Choose your interests and it finds the pioneer closest to you.',
+    label2:'Why It Matters', body2:'From astronomy to medicine, optics to mathematics, it brings together a thousand years of scientific heritage across 18 fields, from the 8th to the 18th century, in one place.',
+    fact1:'Pioneers', fact2:'Fields', fact3:'Era', fact3v:'8th–18th C.', fact4:'Languages',
+    cta:'Open the Exhibition →'
+  },
+  ar:{
+    dir:'rtl',
+    tag:'موكانتارا · معرض رقمي',
+    h1:'تاريخ العلوم الإسلامية',
+    subtitle:'٥٢ رائداً · القرن ٨-١٨',
+    label1:'ما هو', body1:'معرض رقمي تفاعلي يضم ٥٢ رائداً من رواد العلوم الإسلامية، يُعرض كل منهم من خلال رسم متحرك يوضح اكتشافه الحقيقي. اختر مجالات اهتمامك وسيجد لك الرائد الأقرب إليك.',
+    label2:'لماذا هو مهم', body2:'من الفلك إلى الطب، ومن البصريات إلى الرياضيات، يجمع إرثاً علمياً يمتد ألف عام عبر ١٨ مجالاً، من القرن الثامن إلى الثامن عشر، في مكان واحد.',
+    fact1:'رائد', fact2:'مجال', fact3:'الحقبة', fact3v:'ق ٨-١٨', fact4:'لغة',
+    cta:'← افتح المعرض'
+  },
+  ms:{
+    dir:'ltr',
+    tag:'MUKANTARA · Pameran Digital',
+    h1:'Sejarah Sains Islam',
+    subtitle:'52 Perintis · Abad ke-8–18',
+    label1:'Apa Ini', body1:'Pameran digital interaktif 52 perintis sains Islam, setiap satu dihidupkan melalui rajah animasi penemuan sebenar mereka. Pilih minat anda dan ia akan mencari perintis yang paling sesuai dengan anda.',
+    label2:'Kenapa Penting', body2:'Dari astronomi ke perubatan, optik ke matematik, ia menghimpunkan seribu tahun warisan sains merentasi 18 bidang, dari abad ke-8 hingga ke-18, di satu tempat.',
+    fact1:'Perintis', fact2:'Bidang', fact3:'Era', fact3v:'Abad 8–18', fact4:'Bahasa',
+    cta:'Buka Pameran →'
+  }
+};
+
+function setLang(lang){
+  var d = I18N[lang];
+  if (!d) return;
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if (d[key] !== undefined) el.textContent = d[key];
+  });
+  document.documentElement.setAttribute('lang', lang);
+  document.documentElement.setAttribute('dir', d.dir);
+  document.body.classList.toggle('lang-ar', lang === 'ar');
+  document.querySelectorAll('#langSwitch button').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+  });
+}
+
+document.querySelectorAll('#langSwitch button').forEach(function(b){
+  b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
+});
+
+setLang('tr');
+</script>
+</body>
+</html>
