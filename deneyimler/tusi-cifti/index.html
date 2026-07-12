@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tusi Çifti — MUKANTARA Kozmolojik Saat</title>
+<meta name="description" content="Nasīr al-Dīn al-Tūsī'nin 1247'de geliştirdiği matematiksel mekanizmanın (Tusi çifti), MUKANTARA tarafından gerçek zamanlı dijital yorumu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,480;1,9..144,420&family=Newsreader:ital,wght@0,400;0,500&family=IBM+Plex+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#05070c; --night-deep:#020306;
+  --label:#ece5d3; --label-dim:rgba(236,229,211,0.62);
+  --brass:#a9793c; --brass-light:#c79a5c;
+  --cyan:#4fd9e8;
+  --hairline:rgba(236,229,211,0.16);
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0; background:var(--night); color:var(--label);
+  font-family:'Newsreader', serif; -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+body.lang-ar{ font-family:'Noto Naskh Arabic', serif; }
+h1{ font-family:'Fraunces', serif; font-weight:460; color:var(--label); margin:0; }
+body.lang-ar h1{ font-family:'Noto Naskh Arabic', serif; font-weight:600; }
+.tag{
+  font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.22em;
+  text-transform:uppercase; color:var(--brass-light);
+}
+body.lang-ar .tag{ font-family:'Noto Naskh Arabic', serif; letter-spacing:0.02em; text-transform:none; font-size:12.5px; }
+a{color:inherit;}
+
+.screen{
+  position:relative; height:100vh; width:100vw;
+  display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(ellipse at 50% 22%, #0a1520 0%, var(--night) 55%, var(--night-deep) 100%);
+}
+
+/* ---- Tusi couple diagram (signature animation) ---- */
+#tusiSvg{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:0; opacity:0.55; }
+@media (prefers-reduced-motion: reduce){ #tusiSvg{ opacity:0.35; } }
+
+/* ---- Lang switch ---- */
+#langSwitch{
+  position:absolute; top:22px; right:26px; z-index:5;
+  display:flex; gap:2px; font-family:'IBM Plex Mono', monospace;
+  font-size:11px; letter-spacing:0.08em;
+}
+#langSwitch button{
+  background:none; border:1px solid var(--hairline); color:var(--label-dim);
+  padding:6px 12px; cursor:pointer; text-transform:uppercase;
+}
+#langSwitch button.active{ color:var(--night-deep); background:var(--brass-light); border-color:var(--brass-light); }
+#langSwitch button:not(.active):hover{ color:var(--label); border-color:var(--brass-light); }
+html[dir="rtl"] #langSwitch{ right:auto; left:26px; }
+
+.card{
+  position:relative; z-index:2; width:100%; max-width:640px; margin:0 24px;
+  padding:clamp(28px,4vw,48px) clamp(28px,5vw,56px);
+  text-align:center;
+}
+.card .tag{ display:block; margin-bottom:18px; }
+.card h1{ font-size:clamp(30px,4.6vw,48px); font-style:italic; font-weight:420; line-height:1.1; }
+body.lang-ar .card h1{ font-style:normal; }
+.card .subtitle{
+  font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.1em;
+  color:var(--label-dim); margin-top:10px; text-transform:uppercase;
+}
+body.lang-ar .card .subtitle{ font-family:'Noto Naskh Arabic', serif; letter-spacing:0; text-transform:none; font-size:13px; }
+
+.answers{ margin-top:clamp(20px,3vh,30px); text-align:left; max-width:520px; margin-left:auto; margin-right:auto; }
+html[dir="rtl"] .answers{ text-align:right; }
+.answer-row{ display:flex; gap:16px; padding:clamp(10px,1.6vh,14px) 0; border-top:1px solid var(--hairline); }
+html[dir="rtl"] .answer-row{ flex-direction:row-reverse; }
+.answer-row:last-child{ border-bottom:1px solid var(--hairline); }
+.answer-row .label{
+  flex:none; width:130px; font-family:'IBM Plex Mono', monospace; font-size:10.5px;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--brass-light); padding-top:3px;
+}
+body.lang-ar .answer-row .label{ font-family:'Noto Naskh Arabic', serif; letter-spacing:0; text-transform:none; font-size:13px; width:110px; }
+.answer-row p{ margin:0; font-size:clamp(14px,1.9vh,16.5px); line-height:1.55; color:var(--label-dim); }
+
+.facts{
+  margin:clamp(18px,2.6vh,28px) 0 0; display:flex; justify-content:center; gap:0; flex-wrap:wrap;
+  border-bottom:1px solid var(--hairline);
+}
+.facts div{ padding:14px 22px; border-left:1px solid var(--hairline); flex:1; min-width:100px; }
+html[dir="rtl"] .facts div{ border-left:none; border-right:1px solid var(--hairline); }
+.facts div:first-child{ border-left:none; }
+html[dir="rtl"] .facts div:first-child{ border-right:none; }
+.facts b{ display:block; font-family:'IBM Plex Mono', monospace; font-size:20px; color:var(--cyan); font-weight:500; }
+.facts span{ display:block; font-family:'IBM Plex Mono', monospace; font-size:9.5px; letter-spacing:0.1em; color:var(--label-dim); text-transform:uppercase; margin-top:4px; }
+body.lang-ar .facts span{ font-family:'Noto Naskh Arabic', serif; letter-spacing:0; text-transform:none; font-size:11px; }
+
+.launch-btn{
+  display:inline-flex; align-items:center; gap:10px; margin-top:32px;
+  padding:16px 34px; border-radius:2px; text-decoration:none;
+  background:var(--brass); color:var(--night-deep); font-family:'IBM Plex Mono', monospace;
+  font-size:12.5px; letter-spacing:0.14em; text-transform:uppercase; font-weight:500;
+  transition:background .2s ease, transform .2s ease;
+}
+body.lang-ar .launch-btn{ font-family:'Noto Naskh Arabic', serif; letter-spacing:0; text-transform:none; font-size:14px; }
+.launch-btn:hover{ background:var(--brass-light); transform:translateY(-2px); }
+
+.brand{
+  position:absolute; bottom:20px; left:0; right:0; z-index:2; text-align:center;
+  font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:0.12em;
+  color:rgba(236,229,211,0.35); text-transform:uppercase;
+}
+.brand a{ text-decoration:none; color:inherit; }
+.brand a:hover{ color:var(--brass-light); }
+
+@media (max-height:760px), (max-width:480px){
+  .card h1{ font-size:clamp(24px,7vw,34px); }
+  .facts b{ font-size:16px; }
+  .facts div{ padding:10px 12px; }
+  .answer-row .label{ width:100px; }
+  #tusiSvg svg{ width:340px; height:340px; }
+}
+</style>
+</head>
+<body>
+
+<div class="screen">
+  <div id="tusiSvg"></div>
+
+  <div id="langSwitch">
+    <button data-lang="tr" class="active">TR</button>
+    <button data-lang="en">EN</button>
+    <button data-lang="ar">AR</button>
+    <button data-lang="es">ES</button>
+  </div>
+
+  <div class="card">
+    <span class="tag" data-i18n="tag">MUKANTARA · Dijital Kozmolojik Saat</span>
+    <h1 data-i18n="h1">Tusi Çifti</h1>
+    <div class="subtitle" data-i18n="subtitle">Nasīr al-Dīn al-Tūsī · Merağa Rasathanesi · M.S. 1247</div>
+
+    <div class="answers">
+      <div class="answer-row">
+        <div class="label" data-i18n="label1">Nedir</div>
+        <p data-i18n="body1">Nasīr al-Dīn al-Tūsī'nin 1247'de geliştirdiği matematiksel mekanizmanın (Tusi çifti), gün/saat/dakika/saniyeyi iç içe dönen halkalarla gerçek zamanlı gösteren dijital yorumu.</p>
+      </div>
+      <div class="answer-row">
+        <div class="label" data-i18n="label2">Neden Önemli</div>
+        <p data-i18n="body2">İki dairesel hareketi birleştirerek düz bir çizgi elde eden bu buluş, Kopernik'ten önce gezegen hareketlerini açıklamak için kullanıldı ve modern astronominin temellerinden biri oldu.</p>
+      </div>
+    </div>
+
+    <div class="facts">
+      <div><b>1247</b><span data-i18n="fact1">Yıl</span></div>
+      <div><b>4</b><span data-i18n="fact2">Katman</span></div>
+      <div><b data-i18n="fact3v">Merağa</b><span data-i18n="fact3">Rasathane</span></div>
+      <div><b data-i18n="fact4v">Canlı</b><span data-i18n="fact4">Şu An</span></div>
+    </div>
+
+    <a href="saat.html" class="launch-btn" data-i18n="cta">Saati Aç →</a>
+  </div>
+
+  <div class="brand"><a href="https://www.mukantara.com" target="_blank" rel="noopener">MUKANTARA</a></div>
+</div>
+
+<script>
+// ---------------- Tusi couple diagram ----------------
+(function(){
+  var host = document.getElementById('tusiSvg');
+  var size = Math.min(window.innerWidth, window.innerHeight) * 0.62;
+  size = Math.max(300, Math.min(560, size));
+  var R = size * 0.42;
+  var cx = size/2, cy = size/2;
+
+  var ns = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(ns,'svg');
+  svg.setAttribute('width', size); svg.setAttribute('height', size);
+  svg.setAttribute('viewBox', '0 0 '+size+' '+size);
+
+  function el(tag, attrs){
+    var e = document.createElementNS(ns, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  var outer = el('circle', {cx:cx, cy:cy, r:R, fill:'none', stroke:'rgba(199,154,92,0.28)', 'stroke-width':1});
+  var guide = el('line', {x1:cx-R, y1:cy, x2:cx+R, y2:cy, stroke:'rgba(236,229,211,0.14)', 'stroke-width':1, 'stroke-dasharray':'2 5'});
+  var inner = el('circle', {r:R/2, fill:'none', stroke:'rgba(79,217,232,0.5)', 'stroke-width':1.2});
+  var marker = el('circle', {r:4, fill:'#4fd9e8'});
+  marker.style.filter = 'drop-shadow(0 0 6px rgba(79,217,232,0.9))';
+  var centerDot = el('circle', {cx:cx, cy:cy, r:2.4, fill:'rgba(236,229,211,0.4)'});
+
+  svg.appendChild(outer);
+  svg.appendChild(guide);
+  svg.appendChild(inner);
+  svg.appendChild(centerDot);
+  svg.appendChild(marker);
+  host.appendChild(svg);
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var phi = 0;
+  var speed = reduced ? 0 : 0.35; // radyan/saniye
+
+  function frame(ts){
+    if (!frame.last) frame.last = ts;
+    var dt = (ts - frame.last)/1000;
+    frame.last = ts;
+    phi += speed * dt;
+
+    var icx = cx + (R/2)*Math.cos(phi);
+    var icy = cy + (R/2)*Math.sin(phi);
+    inner.setAttribute('cx', icx);
+    inner.setAttribute('cy', icy);
+
+    var mx = cx + R*Math.cos(phi);
+    var my = cy; // Tusi çiftinin matematiksel sonucu: iz dâim düz bir çizgi üzerinde
+    marker.setAttribute('cx', mx);
+    marker.setAttribute('cy', my);
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+// ---------------- i18n ----------------
+var I18N = {
+  tr:{
+    dir:'ltr',
+    tag:'MUKANTARA · Dijital Kozmolojik Saat',
+    h1:'Tusi Çifti',
+    subtitle:'Nasīr al-Dīn al-Tūsī · Merağa Rasathanesi · M.S. 1247',
+    label1:'Nedir', body1:"Nasīr al-Dīn al-Tūsī'nin 1247'de geliştirdiği matematiksel mekanizmanın (Tusi çifti), gün/saat/dakika/saniyeyi iç içe dönen halkalarla gerçek zamanlı gösteren dijital yorumu.",
+    label2:'Neden Önemli', body2:"İki dairesel hareketi birleştirerek düz bir çizgi elde eden bu buluş, Kopernik'ten önce gezegen hareketlerini açıklamak için kullanıldı ve modern astronominin temellerinden biri oldu.",
+    fact1:'Yıl', fact2:'Katman', fact3:'Rasathane', fact3v:'Merağa', fact4:'Şu An', fact4v:'Canlı',
+    cta:'Saati Aç →'
+  },
+  en:{
+    dir:'ltr',
+    tag:'MUKANTARA · Digital Cosmological Clock',
+    h1:'Tusi Couple',
+    subtitle:'Nasīr al-Dīn al-Tūsī · Maragheh Observatory · 1247 CE',
+    label1:'What It Is', body1:"A real-time digital interpretation of the mathematical mechanism (the Tusi couple) devised by Nasīr al-Dīn al-Tūsī in 1247 — day, hour, minute and second shown as nested rotating rings.",
+    label2:'Why It Matters', body2:"By combining two circular motions into a straight line, this device was used to explain planetary motion before Copernicus and became one of the foundations of modern astronomy.",
+    fact1:'Year', fact2:'Layers', fact3:'Observatory', fact3v:'Maragheh', fact4:'Now', fact4v:'Live',
+    cta:'Open the Clock →'
+  },
+  ar:{
+    dir:'rtl',
+    tag:'موكانتارا · ساعة كونية رقمية',
+    h1:'زوج الطوسي',
+    subtitle:'نصير الدين الطوسي · مرصد مراغة · 1247 م',
+    label1:'ما هو', body1:'تفسير رقمي حي للآلية الرياضية (زوج الطوسي) التي ابتكرها نصير الدين الطوسي عام 1247 — حيث تُعرض الأيام والساعات والدقائق والثواني كحلقات متداخلة دوارة.',
+    label2:'لماذا هو مهم', body2:'يجمع زوج الطوسي بين حركتين دائريتين لرسم خط مستقيم. استُخدم لتفسير حركة الكواكب قبل كوبرنيكوس وأصبح أحد أسس علم الفلك الحديث.',
+    fact1:'السنة', fact2:'الطبقات', fact3:'المرصد', fact3v:'مراغة', fact4:'الآن', fact4v:'مباشر',
+    cta:'← افتح الساعة'
+  },
+  es:{
+    dir:'ltr',
+    tag:'MUKANTARA · Reloj Cosmológico Digital',
+    h1:'El Par de Tusi',
+    subtitle:'Nasir al-Din al-Tusi · Observatorio de Maragheh · 1247 d.C.',
+    label1:'Qué Es', body1:'Una interpretación digital en tiempo real del mecanismo matemático (el par de Tusi) creado por Nasir al-Din al-Tusi en 1247 — día, hora, minuto y segundo representados como anillos concéntricos giratorios.',
+    label2:'Por Qué Importa', body2:'Al combinar dos movimientos circulares en una línea recta, este mecanismo se usó para explicar el movimiento planetario antes de Copérnico y se convirtió en uno de los fundamentos de la astronomía moderna.',
+    fact1:'Año', fact2:'Capas', fact3:'Observatorio', fact3v:'Maragheh', fact4:'Ahora', fact4v:'En Vivo',
+    cta:'Abrir el Reloj →'
+  }
+};
+
+function setLang(lang){
+  var d = I18N[lang];
+  if (!d) return;
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if (d[key] !== undefined) el.textContent = d[key];
+  });
+  document.documentElement.setAttribute('lang', lang);
+  document.documentElement.setAttribute('dir', d.dir);
+  document.body.classList.toggle('lang-ar', lang === 'ar');
+  document.querySelectorAll('#langSwitch button').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+  });
+  try{ localStorage.setItem('mukantara-lang', lang); }catch(e){}
+}
+
+document.querySelectorAll('#langSwitch button').forEach(function(b){
+  b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
+});
+
+setLang('tr');
+</script>
+</body>
+</html>
