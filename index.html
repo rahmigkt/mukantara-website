@@ -97,7 +97,7 @@
     <a href="eserler/migfer-kalkan.html" class="cta">Fatih Sultan Mehmet Han Temsili Miğfer ve Kalkanı →</a>
   </div>
 </div><div class="showcase">
-  <div class="sc-image"><div class="sc-live" id="prevUlugbey"></div></div>
+  <div class="sc-image"><a href="deneyimler/ulugbey-zij/index.html" class="sc-live-link"><div class="sc-live" id="prevUlugbey"></div><span class="hint">İncele →</span></a></div>
   <div class="sc-plate">
     <span class="tag">Envanter No 03 · Dijital Deneyim</span>
     <h3>Uluğ Bey Zīj-i Sulṭānī Dijital Gök Küresi</h3>
@@ -136,7 +136,7 @@
     <a href="eserler/rubu-tahtasi.html" class="cta">Rubu Tahtası (Usturlap Kadranı) →</a>
   </div>
 </div><div class="showcase">
-  <div class="sc-image"><div class="sc-live" id="prevTusi"></div></div>
+  <div class="sc-image"><a href="deneyimler/tusi-cifti/index.html" class="sc-live-link"><div class="sc-live" id="prevTusi"></div><span class="hint">İncele →</span></a></div>
   <div class="sc-plate">
     <span class="tag">Envanter No 06 · Dijital Deneyim</span>
     <h3>Tusi Çifti Kozmolojik Saati</h3>
@@ -245,19 +245,82 @@
     requestAnimationFrame(frame);
   }
 
-  // --- Uluğ Bey mini yıldız alanı ---
+  // --- Uluğ Bey mini yıldız haritası + radar taraması ---
   var ulugHost = document.getElementById('prevUlugbey');
   if (ulugHost){
     addBadge(ulugHost);
-    var ring = document.createElement('div');
-    ring.style.cssText = 'position:absolute; top:50%; left:50%; width:70%; aspect-ratio:1/1; transform:translate(-50%,-50%); border:1px solid rgba(199,154,92,0.25); border-radius:50%;' + (reduced?'':' animation:sc-spin 60s linear infinite;');
-    ulugHost.appendChild(ring);
-    var n = 26;
-    for (var i=0;i<n;i++){
+    var ns2='http://www.w3.org/2000/svg';
+    var usize=260, ucx=usize/2, ucy=usize/2, uR=usize*0.42;
+    function uel(tag,attrs){ var e=document.createElementNS(ns2,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); return e; }
+    var usvg=uel('svg',{width:usize,height:usize});
+
+    // Konsantrik yükseklik halkaları (astrolap ızgarası gibi)
+    [0.34,0.62,0.9].forEach(function(f){
+      usvg.appendChild(uel('circle',{cx:ucx,cy:ucy,r:uR*f,fill:'none',stroke:'rgba(199,154,92,0.16)','stroke-width':1}));
+    });
+    // Radyal çizgiler (azimut)
+    var spokesGroup = uel('g',{});
+    for (var a=0; a<360; a+=30){
+      var rad=a*Math.PI/180;
+      spokesGroup.appendChild(uel('line',{
+        x1:ucx, y1:ucy, x2:ucx+uR*Math.cos(rad), y2:ucy+uR*Math.sin(rad),
+        stroke:'rgba(199,154,92,0.10)', 'stroke-width':1
+      }));
+    }
+    usvg.appendChild(spokesGroup);
+
+    // Sabit yıldızlar (katalog noktaları), rastgele ama sabit konumlu
+    var starDefs = [];
+    var seed = 7;
+    function rnd(){ seed = (seed*9301+49297)%233280; return seed/233280; }
+    for (var i=0;i<11;i++){
+      var rr = uR*(0.22+rnd()*0.75);
+      var aa = rnd()*Math.PI*2;
+      starDefs.push({x:ucx+rr*Math.cos(aa), y:ucy+rr*Math.sin(aa), r:1.3+rnd()*1.6});
+    }
+    var starEls = starDefs.map(function(s){
+      var c = uel('circle',{cx:s.x, cy:s.y, r:s.r, fill:'#f6ead0', opacity:0.55});
+      usvg.appendChild(c);
+      return c;
+    });
+
+    // Döner radar tarama çizgisi (bir yıldızın üzerinden geçince parlıyor)
+    var sweep = uel('line',{id:'ulugSweep', x1:ucx, y1:ucy, x2:ucx+uR, y2:ucy, stroke:'rgba(79,217,232,0.6)', 'stroke-width':1.2});
+    var sweepGlow = uel('circle',{cx:ucx+uR, cy:ucy, r:2, fill:'#4fd9e8'});
+    usvg.appendChild(sweep);
+    usvg.appendChild(sweepGlow);
+
+    ulugHost.appendChild(usvg);
+
+    var uphi = -Math.PI/2;
+    function uframe(ts){
+      if(!uframe.last) uframe.last = ts;
+      var dt = (ts-uframe.last)/1000; uframe.last = ts;
+      if(!reduced) uphi += 0.5*dt;
+
+      var sx = ucx+uR*Math.cos(uphi), sy = ucy+uR*Math.sin(uphi);
+      sweep.setAttribute('x2', sx); sweep.setAttribute('y2', sy);
+      sweepGlow.setAttribute('cx', sx); sweepGlow.setAttribute('cy', sy);
+
+      starDefs.forEach(function(s, idx){
+        var ang = Math.atan2(s.y-ucy, s.x-ucx);
+        var diff = Math.abs(((ang - uphi + Math.PI*3) % (Math.PI*2)) - Math.PI);
+        var near = diff > (Math.PI - 0.35);
+        starEls[idx].setAttribute('opacity', near ? 1 : 0.5);
+        starEls[idx].setAttribute('r', near ? s.r*1.8 : s.r);
+      });
+
+      requestAnimationFrame(uframe);
+    }
+    requestAnimationFrame(uframe);
+
+    // Arka plan yıldız tozu (doku)
+    var n = 22;
+    for (var j=0;j<n;j++){
       var s=document.createElement('div');
-      var size=(Math.random()*1.6+0.6).toFixed(2);
-      s.style.cssText='position:absolute; border-radius:50%; background:#f6ead0; width:'+size+'px; height:'+size+'px; left:'+(Math.random()*100)+'%; top:'+(Math.random()*100)+'%;' +
-        (reduced? 'opacity:0.5;' : 'animation:sc-twinkle '+(3+Math.random()*4).toFixed(2)+'s ease-in-out infinite; animation-delay:'+(Math.random()*4).toFixed(2)+'s;');
+      var size=(Math.random()*1.3+0.5).toFixed(2);
+      s.style.cssText='position:absolute; border-radius:50%; background:#f6ead0; width:'+size+'px; height:'+size+'px; left:'+(Math.random()*100)+'%; top:'+(Math.random()*100)+'%; opacity:0.3;' +
+        (reduced? '' : 'animation:sc-twinkle '+(3+Math.random()*4).toFixed(2)+'s ease-in-out infinite; animation-delay:'+(Math.random()*4).toFixed(2)+'s;');
       ulugHost.appendChild(s);
     }
   }
