@@ -169,6 +169,19 @@
 </div>
     <a href="deneyimler/halazun/index.html" class="cta">Halazûn — Evrensel Güneş Saati →</a>
   </div>
+</div><div class="showcase">
+  <div class="sc-image"><a href="deneyimler/islam-bilim-tarihi/index.html" class="sc-live-link"><div class="sc-live" id="prevIslamBilim"></div><span class="hint">İncele →</span></a></div>
+  <div class="sc-plate">
+    <span class="tag">Envanter No 09 · Dijital Eserler Kütüphanesi</span>
+    <h3>İslam Bilim Tarihi — Dijital Sergi</h3>
+    <p>50 İslam bilim insanının, her birinin gerçek keşfini gösteren animasyonlu bir figürle anlatıldığı interaktif dijital sergi. İlgi alanlarınızı seçtiğinizde size en yakın öncüyü buluyor.</p>
+    <div class="sc-facts"><div>Öncü<b>50</b></div>
+<div>Alan<b>18</b></div>
+<div>Dönem<b>8.–18. Yüzyıl</b></div>
+<div>Format<b>Dijital Enstalasyon</b></div>
+</div>
+    <a href="deneyimler/islam-bilim-tarihi/index.html" class="cta">İslam Bilim Tarihi — Dijital Sergi →</a>
+  </div>
 </div>
   <div class="wrap" style="text-align:center; padding-top:70px;">
     <a href="eserler/index.html" class="btn btn-line" style="border:1px solid var(--hairline); color:var(--label);">Tüm Eserler →</a>
@@ -362,6 +375,49 @@
       requestAnimationFrame(hframe);
     }
     requestAnimationFrame(hframe);
+  }
+
+  // --- İslam Bilim Tarihi mini önizleme: 50 öncü düğümü + tarayan ışın ---
+  var islamHost = document.getElementById('prevIslamBilim');
+  if (islamHost){
+    addBadge(islamHost);
+    var ns4='http://www.w3.org/2000/svg';
+    var isize=260, icx=isize/2, icy=isize/2, iR=isize*0.4;
+    function iel(tag,attrs){ var e=document.createElementNS(ns4,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); return e; }
+    var isvg=iel('svg',{width:isize,height:isize});
+    isvg.appendChild(iel('circle',{cx:icx,cy:icy,r:iR,fill:'none',stroke:'rgba(199,154,92,0.14)','stroke-width':1}));
+    var iN=50, iNodes=[];
+    for (var k=0;k<iN;k++){
+      var iang=(k/iN)*Math.PI*2 - Math.PI/2;
+      var ix=icx+iR*Math.cos(iang), iy=icy+iR*Math.sin(iang);
+      var idot=iel('circle',{cx:ix,cy:iy,r:1.8,fill:'rgba(224,184,64,0.35)'});
+      isvg.appendChild(idot);
+      iNodes.push(idot);
+    }
+    var ibeam=iel('line',{x1:icx,y1:icy,x2:icx,y2:icy-iR,stroke:'rgba(224,184,64,0.5)','stroke-width':1.1});
+    isvg.appendChild(ibeam);
+    islamHost.appendChild(isvg);
+    var icur=0, it=0;
+    function iframe(ts){
+      if(!iframe.last) iframe.last=ts;
+      var dt=(ts-iframe.last)/1000; iframe.last=ts;
+      if(!reduced){
+        it+=dt;
+        var iidx=Math.floor(it*3)%iN;
+        var iang2=(iidx/iN)*Math.PI*2 - Math.PI/2;
+        ibeam.setAttribute('x2', icx+iR*Math.cos(iang2));
+        ibeam.setAttribute('y2', icy+iR*Math.sin(iang2));
+        if (iidx!==icur){
+          iNodes[icur].setAttribute('r',1.8);
+          iNodes[icur].setAttribute('fill','rgba(224,184,64,0.35)');
+          icur=iidx;
+        }
+        iNodes[icur].setAttribute('r',3.6);
+        iNodes[icur].setAttribute('fill','#e0b840');
+      }
+      requestAnimationFrame(iframe);
+    }
+    requestAnimationFrame(iframe);
   }
 
   if (!reduced){
