@@ -156,6 +156,20 @@
     <a href="eserler/minyatur-set.html" class="cta">Osmanlı Dönemi Minyatür Kalkan, Miğfer ve At Alınlığı Seti →</a>
   </div>
 </div>
+<div class="showcase">
+  <div class="sc-image"><a href="deneyimler/halazun/index.html" class="sc-live-link"><div class="sc-live" id="prevHalazun"></div><span class="hint">İncele →</span></a></div>
+  <div class="sc-plate">
+    <span class="tag">Envanter No 08 · Dijital Eserler Kütüphanesi</span>
+    <h3>Halazûn — Evrensel Güneş Saati</h3>
+    <p>Sultan II. Mehmed'in (Fatih) sarayında kullanılan, gnomon gölgesi ve sarmal eğrilerle dünyanın herhangi bir enleminde saati gösterebilen evrensel güneş saatinin gerçek zamanlı dijital enstalasyonu.</p>
+    <div class="sc-facts"><div>Dönem<b>15. Yüzyıl</b></div>
+<div>Saray<b>Fatih Sultan Mehmed</b></div>
+<div>Mekanizma<b>Gnomon &amp; Sarmal Eğriler</b></div>
+<div>Format<b>Dijital Enstalasyon</b></div>
+</div>
+    <a href="deneyimler/halazun/index.html" class="cta">Halazûn — Evrensel Güneş Saati →</a>
+  </div>
+</div>
   <div class="wrap" style="text-align:center; padding-top:70px;">
     <a href="eserler/index.html" class="btn btn-line" style="border:1px solid var(--hairline); color:var(--label);">Tüm Eserler →</a>
   </div>
@@ -317,6 +331,37 @@
         (reduced? '' : 'animation:sc-twinkle '+(3+Math.random()*4).toFixed(2)+'s ease-in-out infinite; animation-delay:'+(Math.random()*4).toFixed(2)+'s;');
       ulugHost.appendChild(s);
     }
+  }
+
+  // --- Halazûn mini önizleme: dönen gnomon gölgesi ---
+  var halazunHost = document.getElementById('prevHalazun');
+  if (halazunHost){
+    addBadge(halazunHost);
+    var ns3='http://www.w3.org/2000/svg';
+    var hsize=260, hcx=hsize/2, hcy=hsize/2;
+    function hel(tag,attrs){ var e=document.createElementNS(ns3,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); return e; }
+    var hsvg=hel('svg',{width:hsize,height:hsize});
+    hsvg.appendChild(hel('circle',{cx:hcx,cy:hcy,r:hsize*0.4,fill:'none',stroke:'rgba(143,180,209,0.16)','stroke-width':1}));
+    hsvg.appendChild(hel('circle',{cx:hcx,cy:hcy,r:hsize*0.27,fill:'none',stroke:'rgba(143,180,209,0.14)','stroke-width':1}));
+    hsvg.appendChild(hel('line',{x1:hcx,y1:hcy,x2:hcx,y2:hcy-70,stroke:'#eef1f5','stroke-width':2}));
+    hsvg.appendChild(hel('circle',{cx:hcx,cy:hcy,r:3.2,fill:'#eef1f5'}));
+    var hshadow=hel('line',{x1:hcx,y1:hcy,x2:hcx,y2:hcy,stroke:'#5b8bb0','stroke-width':1.8,'stroke-dasharray':'3 3'});
+    var htip=hel('circle',{r:3,fill:'#8fb4d1'});
+    hsvg.appendChild(hshadow); hsvg.appendChild(htip);
+    halazunHost.appendChild(hsvg);
+    var hangle=-80;
+    function hframe(ts){
+      if(!hframe.last) hframe.last=ts;
+      var dt=(ts-hframe.last)/1000; hframe.last=ts;
+      if(!reduced) hangle += dt*10;
+      var rad=hangle*Math.PI/180;
+      var len=60+26*Math.sin(ts/2400);
+      var hx=hcx+len*Math.cos(rad), hy=hcy+len*Math.sin(rad);
+      hshadow.setAttribute('x2',hx); hshadow.setAttribute('y2',hy);
+      htip.setAttribute('cx',hx); htip.setAttribute('cy',hy);
+      requestAnimationFrame(hframe);
+    }
+    requestAnimationFrame(hframe);
   }
 
   if (!reduced){
