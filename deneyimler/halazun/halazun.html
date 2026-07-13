@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sultan II. Mehmet — Evrensel Güneş Saati</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Courier+Prime:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; overflow:hidden; background:#06070d; color:#c8cdd8; cursor:auto; font-family:'Cormorant Garamond',Georgia,serif; -webkit-font-smoothing:antialiased; }
+
+#stage { position:fixed; inset:0; display:grid; grid-template-columns:55% 45%; }
+
+/* LEFT — canvas */
+#cw { position:relative; overflow:hidden; }
+#cw::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background: linear-gradient(to right, transparent 65%, rgba(6,7,13,0.85) 100%);
+}
+#cv { position:absolute; inset:0; width:100%; height:100%; display:block; }
+
+#divider {
+  position:absolute; top:10%; bottom:10%; right:0; width:1px;
+  background:linear-gradient(to bottom, transparent, rgba(232,201,122,0.18) 30%, rgba(232,201,122,0.18) 70%, transparent);
+}
+
+/* RIGHT */
+#rw {
+  position:relative; display:flex; flex-direction:column;
+  height:100%; padding:40px 50px 36px 48px; overflow:hidden;
+}
+#rw::before {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background-image:radial-gradient(circle, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+
+/* TOP META */
+#tm {
+  flex-shrink:0; display:flex; align-items:flex-start;
+  justify-content:space-between; position:relative; z-index:2;
+  padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.05);
+  margin-bottom:0;
+}
+.mb { display:flex; flex-direction:column; gap:4px; }
+.ml { font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:0.45em; text-transform:uppercase; color:rgba(200,205,216,0.28); line-height:1.9; }
+.ml strong { display:block; color:rgba(200,205,216,0.52); font-weight:400; }
+.ml em { font-style:italic; color:rgba(200,205,216,0.35); }
+
+/* Lang buttons */
+#lb { display:flex; gap:4px; margin-top:6px; }
+.ln { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; padding:4px 10px; border-radius:4px; cursor:pointer; border:1px solid rgba(232,201,122,0.15); background:rgba(232,201,122,0.04); color:rgba(200,205,216,0.3); transition:all 0.2s; }
+.ln:hover { color:rgba(200,205,216,0.6); border-color:rgba(232,201,122,0.3); }
+.ln.active { background:rgba(232,201,122,0.12); border-color:rgba(232,201,122,0.5); color:#e8c97a; }
+
+/* Progress */
+.pt { display:flex; align-items:center; gap:5px; margin-top:6px; }
+.pp { height:1px; width:20px; background:rgba(200,205,216,0.12); transition:background 0.7s,width 0.7s; }
+.pp.done { background:rgba(200,205,216,0.5); }
+.pp.active { background:#e8c97a; width:32px; }
+
+/* MIDDLE: scenes + controls stacked */
+#mid { flex:1 1 0; display:flex; flex-direction:column; min-height:0; overflow:hidden; }
+
+/* SCENE */
+#sa { flex:1 1 0; position:relative; overflow:hidden; min-height:0; }
+.sc {
+  position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center;
+  padding:20px 0 12px; opacity:0; transform:translateY(16px);
+  transition:opacity 1.3s cubic-bezier(0.22,1,0.36,1), transform 1.3s cubic-bezier(0.22,1,0.36,1);
+  pointer-events:none; overflow:hidden;
+}
+.sc.in  { opacity:1; transform:translateY(0); }
+.sc.out { opacity:0; transform:translateY(-16px); transition:opacity 0.8s ease, transform 0.8s ease; }
+.sc.rtl { direction:rtl; text-align:right; }
+.sc.rtl .sf { border-left:none; border-right:2px solid rgba(232,201,122,0.28); border-radius:5px 0 0 5px; }
+.se { font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:0.55em; text-transform:uppercase; color:#e8c97a; opacity:0.75; margin-bottom:14px; flex-shrink:0; }
+.st { font-size:44px; font-weight:300; line-height:1.08; letter-spacing:0.01em; color:#f0f2f5; margin-bottom:18px; flex-shrink:0; }
+.st em { font-style:italic; color:#e8c97a; }
+.sb { font-size:17px; font-weight:300; line-height:1.82; color:rgba(200,205,216,0.68); flex-shrink:0; }
+.sb em { font-style:italic; color:rgba(220,225,235,0.9); }
+.sb strong { font-weight:600; color:rgba(232,201,122,0.88); font-style:normal; }
+.sf { margin-top:16px; padding:12px 16px; border-left:2px solid rgba(232,201,122,0.28); background:rgba(232,201,122,0.035); border-radius:0 5px 5px 0; flex-shrink:0; }
+.sf p { font-family:'Courier Prime',monospace; font-size:12px; letter-spacing:0.07em; color:rgba(232,201,122,0.72); line-height:1.85; }
+
+/* CONTROLS PANEL */
+#cp {
+  flex-shrink:0; position:relative; z-index:3;
+  background:rgba(6,7,13,0.7);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:10px;
+  padding:14px 16px;
+  margin-top:12px;
+  backdrop-filter:blur(12px);
+}
+
+/* Time display */
+#tres {
+  font-family:'Courier Prime',monospace; font-size:13px; letter-spacing:0.12em;
+  color:#e8c97a; text-align:center; margin-bottom:14px;
+  background:rgba(232,201,122,0.06); border:1px solid rgba(232,201,122,0.15);
+  border-radius:6px; padding:6px 10px;
+}
+
+/* Control rows */
+.cr { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.cr:last-child { margin-bottom:0; }
+.cl { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:rgba(200,205,216,0.35); white-space:nowrap; min-width:52px; }
+.cv2 { font-family:'Courier Prime',monospace; font-size:10px; color:#e8c97a; min-width:38px; text-align:right; }
+
+/* Sliders */
+input[type=range] {
+  -webkit-appearance:none; appearance:none;
+  flex:1; height:2px; background:rgba(100,100,140,0.3); border-radius:2px; outline:none; cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:12px; height:12px; border-radius:50%;
+  background:#e8c97a; cursor:pointer;
+  box-shadow:0 0 6px rgba(232,201,122,0.6);
+}
+input[type=range]::-moz-range-thumb {
+  width:12px; height:12px; border-radius:50%; background:#e8c97a;
+  cursor:pointer; border:none; box-shadow:0 0 6px rgba(232,201,122,0.6);
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; }
+input[type=number] { -moz-appearance:textfield; }
+
+/* Number inputs inline */
+.ni {
+  font-family:'Courier Prime',monospace; font-size:10px; color:#e8c97a;
+  background:transparent; border:none; outline:none; text-align:right; width:52px;
+}
+
+/* Data grid */
+#dg {
+  display:grid; grid-template-columns:1fr 1fr; gap:3px 12px;
+  margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05);
+}
+.dv { display:flex; justify-content:space-between; align-items:center; }
+.dk { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.1em; color:rgba(200,205,216,0.3); }
+.dval { font-family:'Courier Prime',monospace; font-size:9px; color:rgba(232,201,122,0.72); }
+
+/* Toggle pills (replaces checkboxes) */
+.tgrow { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05); }
+.tg {
+  font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase;
+  padding:5px 10px; border-radius:20px; cursor:pointer; white-space:nowrap; transition:all 0.2s;
+  border:1px solid rgba(200,205,216,0.14); background:rgba(200,205,216,0.03); color:rgba(200,205,216,0.4);
+}
+.tg:hover { border-color:rgba(232,201,122,0.35); color:rgba(200,205,216,0.7); }
+.tg.active { background:rgba(232,201,122,0.16); border-color:rgba(232,201,122,0.6); color:#e8c97a; }
+
+/* Asr explanatory note */
+#asrNote { font-family:'Courier Prime',monospace; font-size:8.5px; letter-spacing:0.04em; color:rgba(200,205,216,0.32); line-height:1.6; margin-top:8px; }
+
+/* Buttons */
+.btn {
+  font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.25em; text-transform:uppercase;
+  padding:5px 12px; border-radius:5px; cursor:pointer; transition:all 0.2s;
+  border:1px solid rgba(232,201,122,0.25); background:rgba(232,201,122,0.06); color:rgba(232,201,122,0.7);
+}
+.btn:hover { background:rgba(232,201,122,0.14); color:#e8c97a; }
+.btn.play { border-color:rgba(74,222,128,0.3); background:rgba(74,222,128,0.07); color:rgba(74,222,128,0.8); }
+.btn.play:hover { background:rgba(74,222,128,0.15); color:#4ade80; }
+.btn.stop { border-color:rgba(248,113,113,0.3); background:rgba(248,113,113,0.07); color:rgba(248,113,113,0.8); }
+.btn.stop:hover { background:rgba(248,113,113,0.15); color:#f87171; }
+
+/* BOTTOM */
+#br { flex-shrink:0; display:flex; align-items:flex-end; justify-content:space-between; position:relative; z-index:2; padding-top:16px; border-top:1px solid rgba(255,255,255,0.05); margin-top:12px; }
+#ac { font-style:italic; font-size:13px; letter-spacing:0.08em; color:rgba(200,205,216,0.28); line-height:1.9; }
+#ac strong { font-style:normal; font-weight:400; font-size:14px; color:rgba(200,205,216,0.48); display:block; }
+#tw { text-align:right; }
+.tl { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.4em; color:rgba(200,205,216,0.2); text-transform:uppercase; display:block; margin-bottom:6px; }
+#tb { width:90px; height:1px; background:rgba(200,205,216,0.08); position:relative; overflow:hidden; margin-left:auto; }
+#tf { position:absolute; left:0; top:0; height:100%; background:rgba(232,201,122,0.55); width:0%; transition:width 0.25s linear; }
+
+/* ══════ RESPONSIVE / MOBILE ══════ */
+@media (max-width:860px){
+  html, body { cursor:auto; }
+  #stage { grid-template-columns:1fr; grid-template-rows:42vh 58vh; }
+  #cw { min-height:0; }
+  #cw::after { background:linear-gradient(to bottom, transparent 78%, rgba(6,7,13,0.9) 100%); }
+  #divider { display:none; }
+  #rw { padding:18px 18px 16px; }
+  #tm { padding-bottom:12px; flex-wrap:wrap; gap:10px; }
+  .ml { font-size:8px; letter-spacing:0.3em; line-height:1.6; }
+  .st { font-size:26px; margin-bottom:10px; }
+  .sb { font-size:14px; line-height:1.6; }
+  .sf { padding:9px 12px; margin-top:10px; }
+  .sf p { font-size:10px; }
+  #cp { padding:10px 12px; margin-top:8px; }
+  #tres { font-size:11px; padding:5px 8px; margin-bottom:10px; }
+  .cl { min-width:44px; font-size:8px; }
+  #dg { grid-template-columns:1fr 1fr; gap:2px 8px; }
+  .dk, .dval { font-size:8px; }
+  .tgrow { gap:5px; }
+  .tg { font-size:8px; padding:4px 8px; }
+  #asrNote { font-size:7.5px; }
+  #br { padding-top:10px; margin-top:8px; }
+  #ac { font-size:11px; }
+  #ac strong { font-size:12px; }
+}
+@media (max-height:640px) and (min-width:861px){
+  #rw { padding:20px 30px 18px; }
+  .st { font-size:30px; margin-bottom:10px; }
+  .sb { font-size:14px; line-height:1.55; }
+  #cp { padding:10px 14px; }
+}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- LEFT: canvas -->
+  <div id="cw">
+    <canvas id="cv"></canvas>
+    <div id="divider"></div>
+  </div>
+
+  <!-- RIGHT -->
+  <div id="rw">
+    <div id="tm">
+      <div class="mb">
+        <div class="ml">Sultan II. Mehmet · Fatih<strong>1432 — 1481</strong></div>
+        <div class="ml"><em>Halazûn · Evrensel Güneş Saati</em><strong id="bkl">İstanbul, 15. Yüzyıl</strong></div>
+        <div id="lb">
+          <button class="ln active" data-l="tr">TR</button>
+          <button class="ln" data-l="en">EN</button>
+          <button class="ln" data-l="ar">AR</button>
+        </div>
+      </div>
+      <div class="mb" style="align-items:flex-end;">
+        <div class="ml" id="pll" style="text-align:right;">İlerleme</div>
+        <div class="pt" id="pt"></div>
+        <div class="ml" id="tll" style="text-align:right;margin-top:6px;">Sonraki bölüm</div>
+        <div id="tb" style="margin-top:6px;"><div id="tf"></div></div>
+      </div>
+    </div>
+
+    <div id="mid">
+      <div id="sa"></div>
+
+      <!-- Controls -->
+      <div id="cp">
+        <div id="tres">Hesaplanıyor…</div>
+
+        <!-- Lat / Lon -->
+        <div class="cr">
+          <span class="cl">Enlem φ</span>
+          <input type="range" id="slLat" min="-90" max="90" value="41.01" step="0.01">
+          <input type="number" id="nLat" class="ni" value="41.01" step="0.01">
+        </div>
+        <div class="cr">
+          <span class="cl">Boylam λ</span>
+          <input type="range" id="slLon" min="-180" max="180" value="28.97" step="0.01">
+          <input type="number" id="nLon" class="ni" value="28.97" step="0.01">
+        </div>
+        <!-- Date -->
+        <div class="cr">
+          <span class="cl">Tarih</span>
+          <input type="range" id="slDate" min="1" max="365" value="1" step="1">
+          <span class="cv2" id="dateVal">—</span>
+        </div>
+        <!-- Speed + play -->
+        <div class="cr">
+          <span class="cl">Hız</span>
+          <input type="range" id="slSpd" min="0.1" max="3" value="1" step="0.1">
+          <span class="cv2" id="spdVal">1.0×</span>
+          <button class="btn play" id="btnPlay">▶ BAŞLAT</button>
+          <button class="btn" id="btnNow">📍 Şimdi</button>
+        </div>
+
+        <!-- Data grid -->
+        <div id="dg">
+          <div class="dv"><span class="dk">Tarih</span><span class="dval" id="dDate">—</span></div>
+          <div class="dv"><span class="dk">Saat</span><span class="dval" id="dTime">—</span></div>
+          <div class="dv"><span class="dk">Dekl δ</span><span class="dval" id="dDec">—</span></div>
+          <div class="dv"><span class="dk">Meridyen H</span><span class="dval" id="dH">—</span></div>
+          <div class="dv"><span class="dk">Öğle Glg Z</span><span class="dval" id="dZ">—</span></div>
+          <div class="dv"><span class="dk">G. Yüks h</span><span class="dval" id="dh">—</span></div>
+          <div class="dv"><span class="dk">G. Azimut A</span><span class="dval" id="dA">—</span></div>
+          <div class="dv"><span class="dk">Gölge L</span><span class="dval" id="dL">—</span></div>
+        </div>
+
+        <!-- Toggles -->
+        <div class="tgrow" id="tgrow">
+          <button class="tg active" data-k="hours">Saatler</button>
+          <button class="tg active" data-k="moon">Ay</button>
+          <button class="tg" data-k="prayer">Vakit</button>
+          <button class="tg" data-k="duha">Kuşluk</button>
+          <button class="tg" data-k="dhuhr">Öğle</button>
+          <button class="tg" data-k="asr1">Std. İkindi</button>
+          <button class="tg" data-k="asr2">Hanefi</button>
+          <button class="tg" data-k="aids">Kılavuz</button>
+        </div>
+        <div id="asrNote">Std. İkindi: gölge = öğle gölgesi + 1×gnomon &nbsp;·&nbsp; Hanefi: gölge = öğle gölgesi + 2×gnomon</div>
+      </div>
+    </div>
+
+    <div id="br">
+      <div id="ac"><strong>Hüseyin Rahmi Göktaş</strong><span id="cs">Dijital Enstalasyon, 2025</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   TRANSLATIONS
+══════════════════════════════════════════════ */
+const TR = {
+  tr:{
+    bkl:'İstanbul, 15. Yüzyıl', pll:'İlerleme', tll:'Sonraki bölüm', cs:'Dijital Enstalasyon, 2025',
+    tres:'Hesaplanıyor…', btnPlay:'▶ BAŞLAT', btnStop:'■ DURDUR', btnNow:'📍 Şimdi',
+    lat:'Enlem φ', lon:'Boylam λ', tarih:'Tarih', hiz:'Hız',
+    asrNote:'Std. İkindi: gölge = öğle gölgesi + 1×gnomon  ·  Hanefi: gölge = öğle gölgesi + 2×gnomon',
+    sc:[
+      { d:16, ey:'Giriş', ti:'Gölgeden\n<em>zaman</em> okumak',
+        bo:'Bir çubuk, güneş ışığı ve birkaç geometrik eğri. 15. yüzyılda Sultan Fatih\u2019in sarayında kullanılan bu alet, dünyanın herhangi bir yerinde saati söyleyebiliyordu.<br><br><em>Halazûn</em> — Arapça\u2019da salyangoz. Saatin üzerindeki sarmal eğrilerden aldığı isim.' },
+      { d:18, ey:'Temel Mekanizma', ti:'Gnomonun\ngölgesi',
+        bo:'Merkezdeki çubuk <strong>gnomon</strong>. Güneş gökyüzünde hareket ettikçe gnomon\u2019ın gölgesi uzunluğunu ve yönünü değiştirir.<br><br>Gölgenin uzunluğu güneşin <em>yüksekliğine</em>, yönü güneşin <em>azimutuna</em> bağlıdır. İki bilgi birleşince saat çıkar.',
+        fo:['L = h / tan(α)', 'L = gölge uzunluğu, h = gnomon boyu, α = güneş yüksekliği'] },
+      { d:18, ey:'Saat Eğrileri', ti:'Her eğri\nbir saat',
+        bo:'Saatin yüzeyindeki kıvrık çizgiler geometrik eğrilerdir. Gölge ucu bu çizgilerden birinin üzerine düştüğünde ilgili saati gösterir.<br><br>Eğriler <strong>her enlem için farklı</strong> olurdu — evrensel versiyonu tüm enlemi kapsıyordu. Bu Fatih\u2019in saatinin büyüklüğüydü.' },
+      { d:18, ey:'İkindi Hesabı', ti:'Namaz\ngeometrisi',
+        bo:'İslam fıkhında namaz vakitleri gölge boyuna bağlıdır.<br><br><strong>Standart ikindi:</strong> gölge = öğle gölgesi + 1× gnomon<br><strong>Hanefi ikindi:</strong> gölge = öğle gölgesi + 2× gnomon<br><br><em>Saatin üzerindeki sarı kesik çizgi bu formülü görsel olarak temsil eder.</em>',
+        fo:['Asr (Standart) : L = Z + gnomon', 'Asr (Hanefi)   : L = Z + 2 × gnomon'] },
+      { d:18, ey:'Evrensellik', ti:'Her yer\niçin tek\nalet',
+        bo:'Normal güneş saatleri yalnızca yapıldıkları enlem için çalışır. Halazûn ise farklı: enlem değişkeni saatin içindedir.<br><br>Kullanıcı bulunduğu enlemi ayarladığında <strong>eğriler yeniden hesaplanır.</strong> Tek bir alet, tüm dünya için.',  },
+      { d:20, ey:'Fatih\'in Mirası', ti:'15. yüzyılda\nküresel\ndüşünce',
+        bo:'Sultan II. Mehmet İstanbul\u2019u fethetti — ama aynı zamanda Doğu ve Batı bilimini <strong>kendi sarayında birleştirdi.</strong><br><br>Ptolemaios\u2019tan İbn el-Şatır\u2019a, Uluğ Bey\u2019den İtalyan kartograflarına kadar pek çok kaynağı harmanladı. Halazûn bu sentezin sembolüdür.',
+        fo:['1453 · İstanbul\'un Fethi', '1481 · Fatih\'in Ölümü · Bilimsel miras devam etti'] },
+    ]
+  },
+  en:{
+    bkl:'Istanbul, 15th Century', pll:'Progress', tll:'Next section', cs:'Digital Installation, 2025',
+    tres:'Calculating…', btnPlay:'▶ START', btnStop:'■ STOP', btnNow:'📍 Now',
+    lat:'Latitude φ', lon:'Longitude λ', tarih:'Date', hiz:'Speed',
+    asrNote:'Standard Asr: shadow = noon shadow + 1×gnomon  ·  Hanafi Asr: shadow = noon shadow + 2×gnomon',
+    sc:[
+      { d:16, ey:'Introduction', ti:'Reading <em>time</em>\nfrom shadow',
+        bo:'A rod, sunlight, and a few geometric curves. This instrument used in the court of Sultan Fatih in the 15th century could tell the time anywhere in the world.<br><br><em>Halazûn</em> — Arabic for snail. Named after the spiral curves on its face.' },
+      { d:18, ey:'Core Mechanism', ti:'The gnomon\'s\nshadow',
+        bo:'The central rod is the <strong>gnomon</strong>. As the Sun moves across the sky, the gnomon\'s shadow changes both in length and direction.<br><br>Shadow length depends on solar <em>altitude</em>, direction on solar <em>azimuth</em>. Together they give the time.',
+        fo:['L = h / tan(α)', 'L = shadow length, h = gnomon height, α = solar altitude'] },
+      { d:18, ey:'Hour Curves', ti:'Each curve\nis one hour',
+        bo:'The curved lines on the dial are geometric loci. When the shadow tip falls on one of these lines, it indicates the corresponding hour.<br><br>Curves are <strong>different for every latitude</strong> — the universal version covered them all. This was the greatness of Fatih\'s clock.' },
+      { d:18, ey:'Asr Calculation', ti:'Prayer\ngeometry',
+        bo:'In Islamic jurisprudence, prayer times are linked to shadow length.<br><br><strong>Standard Asr:</strong> shadow = noon shadow + 1× gnomon<br><strong>Hanafi Asr:</strong> shadow = noon shadow + 2× gnomon<br><br><em>The dashed amber line on the dial represents this formula visually.</em>',
+        fo:['Asr (Standard) : L = Z + gnomon', 'Asr (Hanafi)   : L = Z + 2 × gnomon'] },
+      { d:18, ey:'Universality', ti:'One instrument\nfor every\nplace on Earth',
+        bo:'Normal sundials only work at the latitude for which they were made. The Halazûn is different: latitude is a variable built into the instrument.<br><br>When the user sets their latitude, <strong>the curves are recalculated.</strong> One tool for the whole world.' },
+      { d:20, ey:'Fatih\'s Legacy', ti:'Global thinking\nin the\n15th century',
+        bo:'Sultan Mehmet II conquered Istanbul — but he also <strong>united Eastern and Western science in his own court.</strong><br><br>From Ptolemy to Ibn al-Shatir, from Ulugh Beg to Italian cartographers, he synthesized many sources. The Halazûn is the symbol of this synthesis.',
+        fo:['1453 · Conquest of Istanbul', '1481 · Death of Fatih · Scientific legacy continued'] },
+    ]
+  },
+  ar:{
+    bkl:'إسطنبول، القرن الخامس عشر', pll:'التقدم', tll:'القسم التالي', cs:'تثبيت رقمي، ٢٠٢٥', rtl:true,
+    tres:'جارٍ الحساب…', btnPlay:'▶ ابدأ', btnStop:'■ إيقاف', btnNow:'📍 الآن',
+    lat:'خط العرض φ', lon:'خط الطول λ', tarih:'التاريخ', hiz:'السرعة',
+    asrNote:'العصر (الجمهور): الظل = ظل الظهر + ١×المزولة  ·  العصر (الحنفي): الظل = ظل الظهر + ٢×المزولة',
+    sc:[
+      { d:16, ey:'مقدمة', ti:'قراءة <em>الوقت</em>\nمن الظل',
+        bo:'عصا، وضوء الشمس، وبعض المنحنيات الهندسية. كانت هذه الأداة المستخدمة في بلاط السلطان الفاتح في القرن الخامس عشر تستطيع معرفة الوقت في أي مكان في العالم.<br><br><em>الحلزون</em> — سُمي بذلك نسبةً إلى المنحنيات الحلزونية على وجهه.' },
+      { d:18, ey:'الآلية الأساسية', ti:'ظل\nالمزولة',
+        bo:'العصا المركزية هي <strong>المزولة</strong>. مع تحرك الشمس في السماء، يتغير ظل المزولة طولًا واتجاهًا.<br><br>طول الظل يعتمد على <em>ارتفاع</em> الشمس، والاتجاه يعتمد على <em>سمتها</em>. ومعًا يعطيان الوقت.',
+        fo:['L = h / tan(α)', 'L = طول الظل، h = طول المزولة، α = ارتفاع الشمس'] },
+      { d:18, ey:'منحنيات الساعات', ti:'كل منحنى\nساعة واحدة',
+        bo:'الخطوط المنحنية على وجه الساعة هي أماكن هندسية. عندما يقع طرف الظل على أحد هذه الخطوط، يُشير إلى الساعة المقابلة.<br><br>المنحنيات <strong>مختلفة لكل خط عرض</strong> — والنسخة العالمية تغطيها جميعًا. هذه كانت عظمة ساعة الفاتح.' },
+      { d:18, ey:'حساب العصر', ti:'هندسة\nأوقات الصلاة',
+        bo:'في الفقه الإسلامي، أوقات الصلاة مرتبطة بطول الظل.<br><br><strong>العصر (الجمهور):</strong> الظل = ظل الظهر + ١× المزولة<br><strong>العصر (الحنفي):</strong> الظل = ظل الظهر + ٢× المزولة<br><br><em>الخط المنقط الذهبي على الوجه يمثل هذه الصيغة بصريًا.</em>',
+        fo:['العصر (الجمهور) : L = Z + مزولة', 'العصر (الحنفي)  : L = Z + ٢ × مزولة'] },
+      { d:18, ey:'الشمولية', ti:'أداة واحدة\nلكل مكان\nفي العالم',
+        bo:'ساعات الشمس العادية تعمل فقط عند خط العرض الذي صُنعت من أجله. الحلزون مختلف: خط العرض متغير مدمج في الأداة.<br><br>عندما يضبط المستخدم خط العرض، <strong>تُعاد حسابة المنحنيات.</strong> أداة واحدة لكل العالم.' },
+      { d:20, ey:'إرث الفاتح', ti:'تفكير عالمي\nفي القرن\nالخامس عشر',
+        bo:'السلطان محمد الثاني فتح إسطنبول — ولكنه أيضًا <strong>جمع العلوم الشرقية والغربية في بلاطه.</strong><br><br>من بطليموس إلى ابن الشاطر، ومن أُلوغ بيك إلى رسامي الخرائط الإيطاليين، جمع مصادر عديدة. الحلزون رمز هذا التوليف.',
+        fo:['١٤٥٣ · فتح إسطنبول', '١٤٨١ · وفاة الفاتح · الإرث العلمي استمر'] },
+    ]
+  }
+};
+
+/* ══════════════════════════════════════════════
+   NARRATIVE
+══════════════════════════════════════════════ */
+let lang='tr', sIdx=0, sEl=0, curCard=null;
+const sa=document.getElementById('sa');
+const tf=document.getElementById('tf');
+const MAX_SC=6;
+const ptEl=document.getElementById('pt');
+for(let i=0;i<MAX_SC;i++){const p=document.createElement('div');p.className='pp';p.id='p'+i;ptEl.appendChild(p);}
+function upPips(idx,tot){for(let i=0;i<MAX_SC;i++){const p=document.getElementById('p'+i);if(!p)return;p.style.display=i<tot?'':'none';p.className='pp'+(i<idx?' done':i===idx?' active':'');}}
+function mkCard(s,rtl){const d=document.createElement('div');d.className='sc'+(rtl?' rtl':'');let h='';if(s.ey)h+=`<div class="se">${s.ey}</div>`;h+=`<div class="st">${s.ti.replace(/\n/g,'<br>')}</div>`;h+=`<div class="sb">${s.bo}</div>`;if(s.fo)h+=`<div class="sf">`+s.fo.map(f=>`<p>${f}</p>`).join('')+`</div>`;d.innerHTML=h;return d;}
+function showSc(idx){const t=TR[lang],sc=t.sc;idx=((idx%sc.length)+sc.length)%sc.length;if(curCard){curCard.classList.remove('in');curCard.classList.add('out');const old=curCard;setTimeout(()=>old.remove(),900);}sIdx=idx;sEl=0;const card=mkCard(sc[idx],t.rtl);sa.appendChild(card);requestAnimationFrame(()=>requestAnimationFrame(()=>card.classList.add('in')));curCard=card;upPips(idx,sc.length);}
+function applyLang(l){lang=l;const t=TR[l];document.getElementById('bkl').textContent=t.bkl;document.getElementById('pll').textContent=t.pll;document.getElementById('tll').textContent=t.tll;document.getElementById('cs').textContent=t.cs;document.getElementById('asrNote').textContent=t.asrNote;document.getElementById('rw').dir=t.rtl?'rtl':'ltr';document.querySelectorAll('.ln').forEach(b=>b.classList.toggle('active',b.dataset.l===l));}
+function swLang(l){applyLang(l);showSc(0);}
+document.querySelectorAll('.ln').forEach(b=>b.addEventListener('click',()=>swLang(b.dataset.l)));
+applyLang('tr');showSc(0);
+let lastN=0;
+function nLoop(now){requestAnimationFrame(nLoop);const dt=Math.min((now-lastN)/1000,0.05);lastN=now;sEl+=dt;const dur=TR[lang].sc[sIdx].d;tf.style.width=(Math.min(sEl/dur,1)*100)+'%';if(sEl>=dur)showSc(sIdx+1);}
+requestAnimationFrame(t=>{lastN=t;requestAnimationFrame(nLoop);});
+
+/* ══════════════════════════════════════════════
+   SUNDIAL CORE (physics intact from original)
+══════════════════════════════════════════════ */
+const cv=document.getElementById('cv');
+const ctx=cv.getContext('2d');
+
+// Constants
+const GNOMON=12, GNOMON_OX=-1, Z_MAX=36, RADIAL=37;
+const DIAL_ARC=354, MAX_RHO=150;
+const PRAYER_ANGLES={fajr:-18,isha:-17,sunrise:-0.833,maghrib:-0.833};
+const d2r=d=>d*Math.PI/180, r2d=r=>r*180/Math.PI, cot=a=>1/Math.tan(a);
+
+// Zodiac belt — 12 burçlar (Arabic name + Turkish gloss), each spans 30°
+const ZODIAC=[
+  {ar:'الحمل',   tr:'Koç'},
+  {ar:'الثور',   tr:'Boğa'},
+  {ar:'الجوزاء', tr:'İkizler'},
+  {ar:'السرطان', tr:'Yengeç'},
+  {ar:'الأسد',   tr:'Aslan'},
+  {ar:'العذراء', tr:'Başak'},
+  {ar:'الميزان', tr:'Terazi'},
+  {ar:'العقرب',  tr:'Akrep'},
+  {ar:'القوس',   tr:'Yay'},
+  {ar:'الجدي',   tr:'Oğlak'},
+  {ar:'الدلو',   tr:'Kova'},
+  {ar:'الحوت',   tr:'Balık'}
+];
+
+
+// Approximate ecliptic longitude of the Sun (0°=Aries start) — used to mark the current burç
+function sunEclipticLon(date){
+  const toJ=d=>d/86400000-d.getTimezoneOffset()/1440+2440587.5;
+  const days=toJ(date)-2451545.0;
+  const Ls=d2r(280.460+0.9856474*days), Ms=d2r(357.528+0.9856003*days);
+  let ecl=Ls+d2r(1.915*Math.sin(Ms)+0.020*Math.sin(2*Ms));
+  ecl=((ecl%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
+  return r2d(ecl);
+}
+
+let curDate=new Date(), isAnim=false, animId=null, lastTs=0;
+let prayerMk={}, moonDt={};
+
+// DOM refs
+const slLat=document.getElementById('slLat'), nLat=document.getElementById('nLat');
+const slLon=document.getElementById('slLon'), nLon=document.getElementById('nLon');
+const slDate=document.getElementById('slDate'), dateVal=document.getElementById('dateVal');
+const slSpd=document.getElementById('slSpd'), spdVal=document.getElementById('spdVal');
+const btnPlay=document.getElementById('btnPlay'), btnNow=document.getElementById('btnNow');
+const tres=document.getElementById('tres');
+// Toggle state (replaces checkboxes) — driven by pill buttons in #tgrow
+const TG={hours:true,moon:true,prayer:false,duha:false,dhuhr:false,asr1:false,asr2:false,aids:false};
+document.querySelectorAll('.tg').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const k=b.dataset.k;TG[k]=!TG[k];b.classList.toggle('active',TG[k]);update();
+  });
+});
+const dDate=document.getElementById('dDate'), dTime=document.getElementById('dTime');
+const dDec=document.getElementById('dDec'), dH=document.getElementById('dH');
+const dZ=document.getElementById('dZ'), dh=document.getElementById('dh');
+const dA=document.getElementById('dA'), dL=document.getElementById('dL');
+
+// Math helpers
+function getDOY(d){const s=new Date(d.getFullYear(),0,0);return Math.floor((d-s+(s.getTimezoneOffset()-d.getTimezoneOffset())*6e4)/(864e5));}
+function dateFromDOY(day,year){const d=new Date(year,0);return new Date(d.setDate(day));}
+function sunDecl(doy){return -23.45*Math.cos(d2r(360/365*(doy+10)));}
+function haForAlt(alt,lat,dec){const t=(Math.sin(d2r(alt))-Math.sin(d2r(lat))*Math.sin(d2r(dec)))/(Math.cos(d2r(lat))*Math.cos(d2r(dec)));if(Math.abs(t)>1)return null;return r2d(Math.acos(t));}
+function haForAsr(lat,dec,f=2){const t=f+Math.tan(d2r(Math.abs(lat-dec)));if(t<=0)return null;return haForAlt(r2d(Math.atan(1/t)),lat,dec);}
+function meridAlt(lat,dec){return 90-lat+dec;}
+function noonShad(malt){if(malt<=0)return Infinity;return GNOMON*cot(d2r(malt));}
+function hourAngle(date){return(date.getHours()+date.getMinutes()/60+date.getSeconds()/3600-12)*15;}
+function sunAlt(lat,dec,ha){if(ha===null)return null;return r2d(Math.asin(Math.sin(d2r(lat))*Math.sin(d2r(dec))+Math.cos(d2r(lat))*Math.cos(d2r(dec))*Math.cos(d2r(ha))));}
+function sunAz(lat,dec,ha,alt){if(alt===null||ha===null||alt<=-90)return null;const ca=(Math.sin(d2r(dec))-Math.sin(d2r(lat))*Math.sin(d2r(alt)))/(Math.cos(d2r(lat))*Math.cos(d2r(alt)));let az=r2d(Math.acos(Math.max(-1,Math.min(1,ca))));if(ha>0)az=360-az;return az;}
+function shadLen(alt){if(alt===null||alt<=0)return Infinity;return GNOMON*cot(d2r(alt));}
+function theoShad(hr,Z){if(hr===6)return Z;if(hr<=0||hr>=12)return Infinity;const i=hr>6?12-hr:hr;const s=Math.sin(d2r(15*i));if(s<=0)return null;const t=Math.sqrt(1+Math.pow(Z/GNOMON,2));const r=s/t;if(Math.abs(r)>1)return null;const a=Math.asin(r);if(a===0)return null;return GNOMON*cot(a);}
+
+function getMoon(date,lat,lon){
+  const toJ=d=>d/86400000-d.getTimezoneOffset()/1440+2440587.5;
+  const days=toJ(date)-2451545.0;
+  const e=d2r(23.4397);
+  const L=d2r(218.316+13.176396*days), M=d2r(134.963+13.064993*days), F=d2r(93.272+13.229350*days);
+  const l=L+d2r(6.289*Math.sin(M)), b=d2r(5.128*Math.sin(F));
+  const Ls=d2r(280.460+0.9856474*days), Ms=d2r(357.528+0.9856003*days);
+  const ecl=Ls+d2r(1.915*Math.sin(Ms)+0.020*Math.sin(2*Ms));
+  const ra=Math.atan2(Math.sin(l)*Math.cos(e)-Math.tan(b)*Math.sin(e),Math.cos(l));
+  const dec=Math.asin(Math.sin(b)*Math.cos(e)+Math.cos(b)*Math.sin(e)*Math.sin(l));
+  const st=d2r(280.16+360.9856235*days)-d2r(lon), ha=st-ra;
+  const sa=Math.asin(Math.sin(dec)*Math.sin(d2r(lat))+Math.cos(dec)*Math.cos(d2r(lat))*Math.cos(ha));
+  const ca=(Math.sin(dec)-Math.sin(sa)*Math.sin(d2r(lat)))/(Math.cos(sa)*Math.cos(d2r(lat)));
+  let az=Math.acos(Math.max(-1,Math.min(1,ca)));
+  if(Math.sin(ha)>0)az=2*Math.PI-az;
+  return{altitude:r2d(sa),azimuth:r2d(az),phase:0.5*(1-Math.cos(l-ecl))};
+}
+
+// Canvas resize (DPR-aware for crisp rendering on retina/mobile screens)
+let LW=0, LH=0;
+function resize(){
+  const dpr=Math.max(1,window.devicePixelRatio||1);
+  LW=cv.offsetWidth; LH=cv.offsetHeight;
+  cv.width=Math.round(LW*dpr); cv.height=Math.round(LH*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  update();
+}
+window.addEventListener('resize',resize);
+
+// Curve helpers
+function curvePoints(hr,scale,sAngle,apz){
+  const pts=[];if(hr<1||hr>6)return pts;
+  for(let Z=0;Z<=Z_MAX;Z+=0.5){const r=theoShad(hr,Z);if(r===null||!isFinite(r))continue;const a=sAngle+Z*apz;pts.push({x:Math.cos(a)*r*scale,y:Math.sin(a)*r*scale});}
+  return pts;
+}
+function drawHourCurve(hr,scale,sAngle,apz,color,lw=1.5){
+  const pts=curvePoints(hr,scale,sAngle,apz);if(pts.length<2)return;
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);for(let k=1;k<pts.length;k++)ctx.lineTo(pts[k].x,pts[k].y);
+  ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.stroke();
+}
+function drawHighlight(o,i,scale,sAngle,apz,color){
+  const po=curvePoints(o,scale,sAngle,apz),pi=curvePoints(i,scale,sAngle,apz);
+  if(po.length<2||pi.length<2)return;
+  ctx.beginPath();ctx.moveTo(po[0].x,po[0].y);for(let k=1;k<po.length;k++)ctx.lineTo(po[k].x,po[k].y);
+  ctx.lineTo(pi[pi.length-1].x,pi[pi.length-1].y);for(let k=pi.length-2;k>=0;k--)ctx.lineTo(pi[k].x,pi[k].y);
+  ctx.closePath();ctx.fillStyle=color;ctx.fill();
+}
+
+function stampHourNum(x,y,txt,fsBig,dim){
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.font=`500 ${fsBig}px "Cormorant Garamond",serif`;
+  ctx.fillStyle=dim?'rgba(40,26,4,0.55)':'rgba(40,26,4,0.8)';
+  ctx.fillText(txt,x,y);
+}
+// Outbound numerals (curve's far end, Z=max) — 1..5 only (hour 6 / solar noon left unlabeled)
+function drawHourLabel(hr,scale,sAngle,apz,state){
+  if(hr===6)return;
+  const pts=curvePoints(hr,scale,sAngle,apz);
+  if(pts.length<2)return;
+  const last=pts[pts.length-1];
+  const dialR=scale*MAX_RHO;
+  const fsBig=Math.max(9,dialR*0.036);
+  const ang=Math.atan2(last.y,last.x);
+  let r=Math.hypot(last.x,last.y);
+  const minGap=fsBig*1.2;
+  // All curve endpoints share the same angle (only radius differs) — when two hours'
+  // radii land close together (e.g. late afternoon curves near solar noon), enforce a
+  // minimum radial gap so the numerals never overlap.
+  if(state&&state.prevR!==undefined&&(state.prevR-r)<minGap)r=state.prevR-minGap;
+  if(state)state.prevR=r;
+  const x=Math.cos(ang)*r, y=Math.sin(ang)*r;
+  stampHourNum(x,y,String(hr),fsBig,false);
+}
+// Return-path numerals (curve's near end, Z=0) — the afternoon hours 8,9,10,11
+// (mirror of 4,3,2,1). Hour 6 has no mirror (it IS solar noon); 5's mirror (7) is
+// skipped per request, since it sits right against the noon curve.
+function drawReturnLabel(hr,scale,sAngle,apz,state){
+  if(hr===5||hr===6)return;
+  const pts=curvePoints(hr,scale,sAngle,apz);
+  if(pts.length<2)return;
+  const first=pts[0];
+  const dialR=scale*MAX_RHO;
+  const fsSmall=Math.max(8,dialR*0.03);
+  const ang=Math.atan2(first.y,first.x);
+  let r=Math.hypot(first.x,first.y);
+  const minGap=fsSmall*1.2;
+  if(state&&state.prevR!==undefined&&(state.prevR-r)<minGap)r=state.prevR-minGap;
+  if(state)state.prevR=r;
+  const x=Math.cos(ang)*r, y=Math.sin(ang)*r;
+  stampHourNum(x,y,String(12-hr),fsSmall,true);
+}
+function drawAsrCurve(factor,scale,sAngle,apz,color,dashed){
+  ctx.beginPath();if(dashed)ctx.setLineDash([4,4]);
+  for(let Z=0;Z<=Z_MAX;Z+=0.5){const r=Z+factor*GNOMON,a=sAngle+Z*apz;if(Z===0)ctx.moveTo(Math.cos(a)*r*scale,Math.sin(a)*r*scale);else ctx.lineTo(Math.cos(a)*r*scale,Math.sin(a)*r*scale);}
+  ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.stroke();if(dashed)ctx.setLineDash([]);
+}
+
+// Zodiac belt (burç kuşağı) — a slim identifying band around the dial.
+// (The outer graduated degree ring was removed per request — dial now gets max space.)
+function drawZodiacBelt(dialR,date){
+  const zIn=dialR*1.08, zOut=dialR*1.20;   // slim zodiac name ring (sits just outside the rim)
+  const sunLon=sunEclipticLon(date);
+  const curSign=Math.floor(sunLon/30)%12;
+
+  // --- base ring (parchment-gold, matching dial palette) ---
+  ctx.save();
+  ctx.beginPath();ctx.arc(0,0,zOut,0,Math.PI*2);ctx.arc(0,0,zIn,0,Math.PI*2,true);
+  const zg=ctx.createRadialGradient(0,0,zIn,0,0,zOut);
+  zg.addColorStop(0,'#7a5814');zg.addColorStop(1,'#4a3208');
+  ctx.fillStyle=zg;ctx.fill('evenodd');
+  ctx.restore();
+
+  // --- 12 zodiac compartments ---
+  for(let i=0;i<12;i++){
+    const a0=d2r(i*30-90), a1=d2r((i+1)*30-90);
+    const isCur=i===curSign;
+
+    // highlight the current burç
+    if(isCur){
+      ctx.beginPath();ctx.arc(0,0,zOut,a0,a1);ctx.arc(0,0,zIn,a1,a0,true);ctx.closePath();
+      ctx.fillStyle='rgba(255,225,140,0.28)';ctx.fill();
+    }
+
+    // divider line
+    ctx.beginPath();ctx.moveTo(Math.cos(a0)*zIn,Math.sin(a0)*zIn);ctx.lineTo(Math.cos(a0)*zOut,Math.sin(a0)*zOut);
+    ctx.strokeStyle='rgba(20,14,4,0.7)';ctx.lineWidth=1;ctx.stroke();
+
+    // Arabic burç name only, set upright, following the ring (compact — no sub-label)
+    const mid=(a0+a1)/2, rMid=(zIn+zOut)/2;
+    ctx.save();
+    ctx.translate(Math.cos(mid)*rMid,Math.sin(mid)*rMid);
+    ctx.rotate(mid+Math.PI/2);
+    ctx.fillStyle=isCur?'#fff3cf':'rgba(250,235,190,0.82)';
+    ctx.font=`600 ${Math.max(9,dialR*0.034)}px "Noto Naskh Arabic",serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(ZODIAC[i].ar,0,0);
+    ctx.restore();
+  }
+  // inner + outer boundary strokes of the zodiac ring
+  ctx.beginPath();ctx.arc(0,0,zIn,0,Math.PI*2);ctx.strokeStyle='rgba(255,225,150,0.5)';ctx.lineWidth=1.2;ctx.stroke();
+  ctx.beginPath();ctx.arc(0,0,zOut,0,Math.PI*2);ctx.strokeStyle='rgba(255,225,150,0.5)';ctx.lineWidth=1.2;ctx.stroke();
+}
+
+// Main draw
+function drawScene(alt,az,dispHour){
+  ctx.clearRect(0,0,LW,LH);
+  const W=LW,H=LH;
+  const cx=W/2,cy=H/2;
+  const dialR=Math.min(cx,cy)*0.76;
+  const scale=dialR/MAX_RHO;
+  const apz=d2r(DIAL_ARC/Z_MAX), sAngle=d2r(3);
+
+  ctx.save();ctx.translate(cx,cy);
+
+  // Background — warm parchment with light direction
+  const lAngle=az!==null?d2r(az-90):d2r(-90);
+  const lx=Math.cos(lAngle)*dialR*0.35,ly=Math.sin(lAngle)*dialR*0.35;
+
+  // Deep space around dial
+  const outerGrd=ctx.createRadialGradient(0,0,dialR*0.95,0,0,dialR*1.22);
+  outerGrd.addColorStop(0,'rgba(30,20,5,0.6)');outerGrd.addColorStop(1,'rgba(6,7,13,0)');
+  ctx.fillStyle=outerGrd;ctx.beginPath();ctx.arc(0,0,dialR*1.62,0,Math.PI*2);ctx.fill();
+
+  // Zodiac belt surrounding the dial
+  drawZodiacBelt(dialR,curDate);
+
+  // Dial face
+  const dialGrd=ctx.createRadialGradient(lx,ly,0,0,0,dialR*1.1);
+  dialGrd.addColorStop(0,'#c8a040');dialGrd.addColorStop(0.5,'#a07828');dialGrd.addColorStop(1,'#3a2800');
+  ctx.beginPath();ctx.arc(0,0,dialR*1.05,0,Math.PI*2);ctx.fillStyle=dialGrd;ctx.fill();
+
+  // Specular sheen
+  const shGrd=ctx.createRadialGradient(lx,ly,0,lx,ly,dialR*0.65);
+  shGrd.addColorStop(0,'rgba(255,255,240,0.55)');shGrd.addColorStop(0.12,'rgba(255,230,160,0.25)');shGrd.addColorStop(0.7,'rgba(200,160,50,0)');
+  ctx.fillStyle=shGrd;ctx.beginPath();ctx.arc(0,0,dialR*1.05,0,Math.PI*2);ctx.fill();
+
+  // Rim
+  ctx.beginPath();ctx.arc(0,0,dialR*1.05,0,Math.PI*2);
+  ctx.strokeStyle='rgba(180,130,20,0.6)';ctx.lineWidth=3;ctx.stroke();
+  ctx.beginPath();ctx.arc(0,0,dialR*1.07,0,Math.PI*2);
+  ctx.strokeStyle='rgba(100,70,5,0.4)';ctx.lineWidth=1.5;ctx.stroke();
+
+  // Hour highlight
+  if(dispHour!==null){
+    let h1=Math.floor(dispHour),h2=Math.ceil(dispHour);
+    if(h1===h2&&h2<12)h2+=1;
+    let s1=h1>=6?12-h1:h1,s2=h2>6?12-h2:h2;
+    let oc=Math.min(s1,s2),ic=Math.max(s1,s2);
+    if(dispHour>6&&dispHour<7){oc=5;ic=6;}
+    if(oc===0)oc=1;
+    if(oc>=1&&ic<=6&&oc<ic)drawHighlight(oc,ic,scale,sAngle,apz,'rgba(255,230,140,0.22)');
+  }
+
+  // Prayer markers
+  if(TG.prayer)drawPrayers(dialR);
+
+  // Radial lines (division grid only — no index numbers, keeps the rim clean under the zodiac band)
+  for(let i=0;i<RADIAL;i++){
+    const a=sAngle+i*apz;
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(a)*dialR*1.02,Math.sin(a)*dialR*1.02);
+    ctx.strokeStyle='rgba(0,0,0,0.35)';ctx.lineWidth=0.6;ctx.stroke();
+  }
+
+  // Hour curves
+  for(let i=1;i<=5;i++){
+    const col=i===3&&TG.duha?'rgba(100,220,200,0.9)':'rgba(0,0,0,0.45)';
+    const lw=i===3&&TG.duha?2.5:1.5;
+    drawHourCurve(i,scale,sAngle,apz,col,lw);
+  }
+  const d6c=TG.dhuhr?'rgba(100,220,200,0.9)':'rgba(0,0,0,0.45)';
+  const d6w=TG.dhuhr?2.5:1.5;
+  drawHourCurve(6,scale,sAngle,apz,d6c,d6w);
+
+  // Hour numerals — outbound (1..5) and return path (8,9,10,11), each decluttered independently
+  if(TG.hours){
+    const hlState={}, rlState={};
+    for(let i=1;i<=6;i++)drawHourLabel(i,scale,sAngle,apz,hlState);
+    for(let i=1;i<=4;i++)drawReturnLabel(i,scale,sAngle,apz,rlState);
+  }
+
+  // Asr curves — Standart İkindi: L = Z + 1×gnomon · Hanefi İkindi: L = Z + 2×gnomon
+  // (kept visually distinct — amber vs rose — so the two thresholds are never mistaken
+  // for a single blended curve)
+  if(TG.asr1)drawAsrCurve(1,scale,sAngle,apz,'rgba(251,191,36,0.85)',false);
+  if(TG.asr2)drawAsrCurve(2,scale,sAngle,apz,'rgba(244,114,182,0.85)',false);
+  if(!TG.asr1&&!TG.asr2){
+    drawAsrCurve(1,scale,sAngle,apz,'rgba(251,191,36,0.3)',true);
+    drawAsrCurve(2,scale,sAngle,apz,'rgba(244,114,182,0.3)',true);
+  }
+
+  // Sun
+  if(az!==null)drawSun(dialR,az,alt);
+  // Moon
+  if(TG.moon&&moonDt.altitude&&alt<0)drawMoon(dialR,moonDt.azimuth,moonDt.altitude,moonDt.phase);
+
+  ctx.restore();
+  return{cx,cy,scale,dialR};
+}
+
+function drawPrayers(r){
+  const labels={fajr:'İmsak',sunrise:'Güneş',dhuhr:'Öğle',asr:'İkindi',maghrib:'Akşam',isha:'Yatsı'};
+  const colors={fajr:'#a7c7e7',sunrise:'#ffb347',dhuhr:'#81e6d9',asr:'#ff8c69',maghrib:'#e57373',isha:'#648dae'};
+  Object.keys(prayerMk).forEach(k=>{
+    const m=prayerMk[k];if(m.A===null)return;
+    const sa=m.A+180,ar=d2r(sa-90),day=m.h>0,col=colors[k]||'#fff';
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(ar)*r,Math.sin(ar)*r);
+    ctx.strokeStyle=day?col+'BF':col+'55';ctx.lineWidth=1.5;ctx.setLineDash([4,5]);ctx.stroke();ctx.setLineDash([]);
+    ctx.save();ctx.translate(Math.cos(ar)*(r*0.92),Math.sin(ar)*(r*0.92));ctx.rotate(ar+Math.PI/2);
+    ctx.fillStyle=day?col:'rgba(160,174,192,0.6)';ctx.font='9px "Courier Prime",monospace';ctx.textAlign='center';
+    ctx.fillText(labels[k],0,0);ctx.restore();
+  });
+}
+
+function drawSun(r,az,alt){
+  const a=d2r(az-90),sx=Math.cos(a)*r,sy=Math.sin(a)*r;
+  const sr=alt>0?14:9,op=alt>-18?(18+alt)/18*0.6+0.4:0.4;
+  const g=ctx.createRadialGradient(sx,sy,sr*0.4,sx,sy,sr*3.5);
+  g.addColorStop(0,`rgba(255,255,200,${op})`);g.addColorStop(0.4,`rgba(251,191,36,${op*0.8})`);g.addColorStop(1,'rgba(251,191,36,0)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(sx,sy,sr*3.5,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(sx,sy,sr,0,Math.PI*2);ctx.fillStyle=`rgba(255,240,180,${op})`;ctx.fill();
+  // Rays
+  for(let i=0;i<8;i++){const ra=(i/8)*Math.PI*2;ctx.beginPath();ctx.moveTo(sx+Math.cos(ra)*(sr+3),sy+Math.sin(ra)*(sr+3));ctx.lineTo(sx+Math.cos(ra)*(sr+10),sy+Math.sin(ra)*(sr+10));ctx.strokeStyle=`rgba(255,200,50,${op*0.6})`;ctx.lineWidth=1.5;ctx.stroke();}
+}
+
+function drawMoon(r,az,alt,phase){
+  if(alt<=0)return;
+  const a=d2r(az-90),mx=Math.cos(a)*r,my=Math.sin(a)*r,mr=10;
+  ctx.save();ctx.translate(mx,my);
+  const lg=ctx.createRadialGradient(0,0,0,0,0,mr*1.5);lg.addColorStop(0,'#fff');lg.addColorStop(1,'#aaa');
+  ctx.fillStyle=lg;ctx.beginPath();ctx.arc(0,0,mr,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();const pa=Math.acos(2*phase-1),tx=mr*Math.cos(pa);
+  ctx.fillStyle='rgba(0,0,10,0.82)';
+  if(phase<0.5){ctx.arc(0,0,mr,-Math.PI/2,Math.PI/2,true);ctx.ellipse(0,0,Math.abs(tx),mr,0,Math.PI/2,-Math.PI/2,true);}
+  else{ctx.arc(0,0,mr,-Math.PI/2,Math.PI/2,false);ctx.ellipse(0,0,Math.abs(tx),mr,0,-Math.PI/2,Math.PI/2,false);}
+  ctx.fill();ctx.restore();
+}
+
+function drawShadow(L,cx,cy,scale,az,dialR){
+  ctx.save();ctx.translate(cx,cy);
+  const gbx=GNOMON_OX*scale,gby=0;
+  if(az!==null){
+    const saz=az+180,sar=d2r(saz-90);
+    const stx=L*Math.cos(sar),sty=L*Math.sin(sar);
+    ctx.save();ctx.shadowColor='rgba(0,0,0,0.4)';ctx.shadowBlur=12;ctx.shadowOffsetX=4;ctx.shadowOffsetY=4;
+    if(isFinite(L)){
+      ctx.beginPath();ctx.moveTo(gbx,gby);ctx.lineTo(stx,sty);
+      ctx.strokeStyle='rgba(20,20,35,0.65)';ctx.lineWidth=4;ctx.lineCap='round';ctx.stroke();
+      ctx.beginPath();ctx.arc(stx,sty,5,0,Math.PI*2);ctx.fillStyle='rgba(255,245,200,0.9)';ctx.fill();
+    }
+    ctx.restore();
+    if(TG.aids&&isFinite(L)){
+      ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(sar)*dialR*1.25,Math.sin(sar)*dialR*1.25);
+      ctx.strokeStyle='rgba(255,238,160,0.45)';ctx.lineWidth=1;ctx.setLineDash([5,6]);ctx.stroke();
+      ctx.beginPath();ctx.arc(0,0,L,0,Math.PI*2);
+      ctx.strokeStyle='rgba(255,238,160,0.35)';ctx.stroke();ctx.setLineDash([]);
+    }
+  }
+  // Gnomon
+  const gw=6*(scale/2);
+  ctx.beginPath();ctx.arc(gbx,gby,gw/1.5,0,Math.PI*2);ctx.fillStyle='#0d1220';ctx.fill();
+  ctx.strokeStyle='rgba(80,90,120,0.6)';ctx.lineWidth=1;ctx.stroke();
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(gbx-gw,gby);ctx.lineTo(gbx+gw,gby);ctx.closePath();
+  const gg=ctx.createLinearGradient(gbx-gw,gby,gbx+gw,gby);
+  gg.addColorStop(0,'#8a6010');gg.addColorStop(0.5,'#ffe090');gg.addColorStop(1,'#8a6010');
+  ctx.fillStyle=gg;ctx.fill();
+  ctx.restore();
+}
+
+function update(){
+  const lat=parseFloat(nLat.value), lon=parseFloat(nLon.value);
+  const doy=getDOY(curDate), dec=sunDecl(doy);
+  const malt=meridAlt(lat,dec), Z=noonShad(malt);
+  const ha=hourAngle(curDate), alt=sunAlt(lat,dec,ha), az=sunAz(lat,dec,ha,alt);
+  const L=shadLen(alt);
+  moonDt=getMoon(curDate,lat,lon);
+
+  // Prayer markers
+  const haFajr=haForAlt(PRAYER_ANGLES.fajr,lat,dec);
+  const haSr=haForAlt(PRAYER_ANGLES.sunrise,lat,dec);
+  const haAsr=haForAsr(lat,dec,2);
+  const haIsha=haForAlt(PRAYER_ANGLES.isha,lat,dec);
+  prayerMk={
+    fajr:{h:sunAlt(lat,dec,haFajr?-haFajr:null),A:sunAz(lat,dec,haFajr?-haFajr:null,sunAlt(lat,dec,haFajr?-haFajr:null))},
+    sunrise:{h:sunAlt(lat,dec,haSr?-haSr:null),A:sunAz(lat,dec,haSr?-haSr:null,sunAlt(lat,dec,haSr?-haSr:null))},
+    dhuhr:{h:sunAlt(lat,dec,0),A:sunAz(lat,dec,0,sunAlt(lat,dec,0))},
+    asr:{h:sunAlt(lat,dec,haAsr),A:sunAz(lat,dec,haAsr,sunAlt(lat,dec,haAsr))},
+    maghrib:{h:sunAlt(lat,dec,haSr?haSr:null),A:sunAz(lat,dec,haSr?haSr:null,sunAlt(lat,dec,haSr?haSr:null))},
+    isha:{h:sunAlt(lat,dec,haIsha),A:sunAz(lat,dec,haIsha,sunAlt(lat,dec,haIsha))},
+  };
+
+  // Display hour
+  let dispHour=null;
+  if(alt>0&&isFinite(Z)&&isFinite(L)){
+    for(let i=1;i<=6;i++){
+      const ri=theoShad(i,Z), ro=theoShad(i-1,Z);
+      if(ri===null||ro===null)continue;
+      if(L<ro&&L>=ri){const fr=(ro-ri)>0.001?(ro-L)/(ro-ri):0;dispHour=ha>0?12-(i-1+fr):(i-1+fr);break;}
+    }
+    if(dispHour===null&&L<theoShad(6,Z))dispHour=6;
+  }
+
+  // Data display
+  dDate.textContent=curDate.toLocaleDateString('tr-TR',{day:'numeric',month:'short'});
+  dTime.textContent=curDate.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+  dDec.textContent=dec.toFixed(2)+'°';
+  dH.textContent=malt.toFixed(2)+'°';
+  dZ.textContent=isFinite(Z)?Z.toFixed(2):'∞';
+  dh.textContent=alt!==null?alt.toFixed(2)+'°':'—';
+  dA.textContent=az!==null?az.toFixed(2)+'°':'—';
+  dL.textContent=isFinite(L)?L.toFixed(2):'∞';
+
+  // Time result
+  if(dispHour!==null&&alt>0){
+    const side=ha<0?'G.Doğumundan Sonra':'G.Batımından Önce';
+    tres.textContent=`${side} · ${dispHour.toFixed(2)} Saat`;
+  } else {
+    tres.textContent=alt!==null&&alt>0?'Hesaplanıyor…':'Güneş Ufkun Altında';
+  }
+
+  const{cx,cy,scale,dialR}=drawScene(alt,az,dispHour);
+  if(alt>0&&isFinite(Z))drawShadow(L*scale,cx,cy,scale,az,dialR);
+}
+
+// Animation
+function animLoop(ts){
+  if(!lastTs)lastTs=ts;
+  const dt=ts-lastTs;lastTs=ts;
+  curDate.setTime(curDate.getTime()+dt*parseFloat(slSpd.value)*3600);
+  update();
+  if(isAnim)animId=requestAnimationFrame(animLoop);
+}
+function toggleAnim(){
+  isAnim=!isAnim;
+  if(isAnim){
+    lastTs=performance.now();animId=requestAnimationFrame(animLoop);
+    btnPlay.textContent='■ DURDUR';btnPlay.classList.remove('play');btnPlay.classList.add('stop');
+  } else {
+    cancelAnimationFrame(animId);
+    btnPlay.textContent='▶ BAŞLAT';btnPlay.classList.remove('stop');btnPlay.classList.add('play');
+    update();
+  }
+}
+
+// Event listeners
+slLat.addEventListener('input',()=>{nLat.value=slLat.value;update();});
+nLat.addEventListener('change',()=>{slLat.value=nLat.value;update();});
+slLon.addEventListener('input',()=>{nLon.value=slLon.value;update();});
+nLon.addEventListener('change',()=>{slLon.value=nLon.value;update();});
+slDate.addEventListener('input',()=>{
+  if(isAnim)toggleAnim();
+  const d=dateFromDOY(parseInt(slDate.value),curDate.getFullYear());
+  d.setHours(curDate.getHours(),curDate.getMinutes());curDate=d;
+  dateVal.textContent=curDate.toLocaleDateString('tr-TR',{month:'short',day:'numeric'});update();
+});
+slSpd.addEventListener('input',()=>{spdVal.textContent=parseFloat(slSpd.value).toFixed(1)+'×';});
+btnPlay.addEventListener('click',toggleAnim);
+btnNow.addEventListener('click',()=>{
+  if(isAnim)toggleAnim();
+  curDate=new Date();
+  const doy=getDOY(curDate);slDate.value=doy;
+  dateVal.textContent=curDate.toLocaleDateString('tr-TR',{month:'short',day:'numeric'});
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(p=>{nLat.value=slLat.value=p.coords.latitude.toFixed(4);nLon.value=slLon.value=p.coords.longitude.toFixed(4);update();},()=>update());
+  } else update();
+});
+// (toggle pill buttons wired above via .tg click handler)
+
+// Init
+resize();
+btnNow.click();
+</script>
+</body>
+</html>
