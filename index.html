@@ -1,431 +1,279 @@
 <!DOCTYPE html>
-<html lang="tr" dir="ltr">
+<html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MUKANTARA — MUKANTARA</title>
+<title>MUKANTARA — Tarihi Bilimsel Aletlerin Yeniden Üretimi</title>
+<meta name="description" content="MUKANTARA — usturlap, gök küresi ve tarihi bilimsel aletlerin müze standardında, el işçiliğiyle yeniden üretimi.">
+<link rel="icon" href="assets/logo/mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Noto+Naskh+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/brand.css">
+<style>
+  .hero{position:relative; min-height:100vh; display:flex; align-items:flex-end; overflow:hidden; padding-top:100px;}
+  .hero-bg{position:absolute; inset:0; z-index:0; background:var(--bg-panel);}
+  .hero-bg img{width:100%; height:100%; object-fit:cover; object-position:center 30%; display:block;}
+  .hero-scrim{position:absolute; inset:0; z-index:1; background:linear-gradient(to top, rgba(13,17,23,0.94) 10%, rgba(13,17,23,0.5) 45%, rgba(13,17,23,0.1) 70%);}
+  .hero-content{position:relative; z-index:2; width:100%; padding-bottom:80px; max-width:640px; margin:0 32px;}
+  .hero-content h1{font-family:'Sora', sans-serif; font-weight:700; font-size:clamp(26px, 3.4vw, 38px); line-height:1.25; margin:18px 0 16px; color:#fff;}
+  .hero-content p{font-size:16px; color:rgba(255,255,255,0.72); margin:0 0 26px;}
+  .hero-ctas{display:flex; gap:16px; flex-wrap:wrap;}
+
+  .featured-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:2px; background:var(--hairline);}
+  .feat-tile{position:relative; aspect-ratio:4/3; overflow:hidden; background:var(--bg-panel); text-decoration:none; display:block;}
+  .feat-tile img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s;}
+  .feat-tile:hover img{transform:scale(1.04);}
+  .feat-tile .feat-icon{width:100%; height:100%; display:flex; align-items:center; justify-content:center;}
+  .feat-tile .feat-icon svg{width:26%; height:26%; stroke:var(--brass); fill:none; stroke-width:1.2;}
+  .feat-tile .feat-label{position:absolute; left:0; right:0; bottom:0; padding:20px 22px; background:linear-gradient(to top, rgba(13,17,23,0.9), transparent); font-family:'Sora', sans-serif; font-size:16px; font-weight:600; color:#fff;}
+  @media (max-width:860px){ .featured-grid{grid-template-columns:1fr;} }
+
+  .manifesto{background:var(--bg-panel); border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline);}
+  .manifesto-inner{max-width:740px; margin:0 auto; text-align:center;}
+  .manifesto p{font-size:18px; line-height:1.85; color:var(--ink-dim); margin:0 0 26px;}
+  .manifesto .quote{font-family:'Sora', sans-serif; font-size:24px; color:var(--ink); font-weight:600; margin:0 0 30px; line-height:1.5;}
+  .diamond{width:10px; height:10px; background:var(--patina); border-radius:2px; transform:rotate(45deg); margin:0 auto 30px;}
+
+  .collection-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;}
+  .col-card{background:var(--bg-panel); text-align:left; display:flex; flex-direction:column; transition:transform .2s, box-shadow .2s; text-decoration:none; color:var(--ink); overflow:hidden;}
+  .col-card:hover{transform:translateY(-3px);}
+  .col-card .img-wrap{aspect-ratio:4/3; overflow:hidden; background:var(--bg-panel-2);}
+  .col-card .img-wrap img{width:100%; height:100%; object-fit:cover; display:block;}
+  .col-icon{width:100%; height:100%; display:flex; align-items:center; justify-content:center;}
+  .col-icon svg{width:40%; height:40%; stroke:var(--brass); fill:none; stroke-width:1.3;}
+  .col-body{padding:22px 22px 26px; display:flex; flex-direction:column; gap:8px; flex:1;}
+  .col-card h3{font-family:'Sora', sans-serif; font-size:19px; font-weight:600; margin:0;}
+  .col-card .tag{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--brass-light); margin-top:auto; padding-top:10px;}
+  @media (max-width:860px){ .collection-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:520px){ .collection-grid{grid-template-columns:1fr;} }
+
+  .workshop-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:2px; background:var(--hairline);}
+  .workshop-tile{position:relative; aspect-ratio:4/5; overflow:hidden; background:var(--bg-panel); cursor:pointer;}
+  .workshop-tile img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s;}
+  .workshop-tile:hover img{transform:scale(1.05);}
+  .workshop-tile .cap{position:absolute; left:0; right:0; bottom:0; padding:14px 16px; background:linear-gradient(to top, rgba(13,17,23,0.85), transparent); font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-dim); opacity:0; transition:opacity .2s;}
+  .workshop-tile:hover .cap{opacity:1;}
+  @media (max-width:860px){ .workshop-grid{grid-template-columns:1fr 1fr;} }
+
+  .video-section{background:var(--bg-panel); border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline);}
+  .video-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:16px;}
+  .video-card{border-radius:4px; overflow:hidden; background:var(--bg-panel-2); border:1px solid var(--hairline);}
+  .video-card video{width:100%; aspect-ratio:9/16; object-fit:cover; display:block; background:#000;}
+  .video-card .v-title{padding:12px 14px; font-family:'Sora', sans-serif; font-size:13px; font-weight:500; color:var(--ink);}
+  @media (max-width:860px){ .video-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:520px){ .video-grid{grid-template-columns:1fr;} }
+
+  .contact{background:var(--bg-panel); border-top:1px solid var(--hairline);}
+  .contact-inner{display:grid; grid-template-columns:1.1fr 0.9fr; gap:60px; align-items:start;}
+  .contact h2{font-family:'Sora', sans-serif; font-size:clamp(28px,4vw,40px); font-weight:600; margin:16px 0 20px;}
+  .contact p.lead{font-size:17px; color:var(--ink-dim); max-width:440px;}
+  .contact-card{background:var(--bg); border:1px solid var(--hairline); padding:40px;}
+  .contact-card .row{display:flex; flex-direction:column; gap:6px; margin-bottom:24px;}
+  .contact-card label{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--label);}
+  .contact-card a.big-link{font-family:'Sora', sans-serif; font-size:20px; font-weight:600; color:var(--ink); text-decoration:none; border-bottom:1px solid var(--hairline-strong); padding-bottom:4px; display:inline-block; transition:color .2s, border-color .2s;}
+  .contact-card a.big-link:hover{color:var(--brass-light); border-color:var(--brass-light);}
+  @media (max-width:860px){ .contact-inner{grid-template-columns:1fr;} }
+
+  .lightbox{position:fixed; inset:0; z-index:200; background:rgba(6,8,11,0.96); display:none; align-items:center; justify-content:center; padding:40px;}
+  .lightbox.active{display:flex;}
+  .lightbox img{max-width:90vw; max-height:82vh; object-fit:contain;}
+  .lightbox-close{position:absolute; top:24px; right:32px; font-family:'JetBrains Mono', monospace; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-dim); background:none; border:1px solid var(--hairline-strong); padding:10px 18px; cursor:pointer;}
+</style>
 </head>
 <body>
-<header class="site solid">
-  <div class="wrap navbar">
-    <a href="index.html" class="wordmark">Mukantara</a>
-    <nav class="links">
-      <a href="eserler/index.html">Tüm Eserler</a>
-      <a href="index.html#galeriler">Galeriler</a>
-      <a href="teklif.html">Teklif Al</a>
-      <a class="nav-contact" href="tel:+905539789212">+90 553 978 92 12</a>
-      <a class="trlink" href="https://www.mukantara.com.tr" target="_blank" rel="noopener">Dijital &amp; Eğitim →</a>
-    </nav>
+
+<header>
+  <div class="navbar">
+    <a href="index.html" class="wordmark"><img src="assets/logo/mark.png" alt="Mukantara" onerror="this.style.display='none'"> MUKANTARA</a>
+    <div class="navlinks">
+      <a href="#koleksiyon">Koleksiyon</a>
+      <a href="#manifesto">Manifesto</a>
+      <a href="#iletisim" class="cta-link">Teklif Al</a>
+    </div>
   </div>
 </header>
 
 <section class="hero">
-  <div class="hero-bg"><img src="assets/img/07-ulug-bey-usturlabi.jpg" alt=""></div>
-  <div class="wrap hero-inner">
-    <div class="hero-plate">
-      <span class="tag">Eser No. FUAT-UB-02 · H.830 / M.1428</span>
-      <h1>"Şimdiye kadar Uluğ Bey çevresinden hayatta kalan tek taşınabilir astronomik alet."</h1>
-      <p>Semerkand Rasathanesi'nin kurucusu Uluğ Bey adına hazırlanan bu usturlap, atölyemizde tarihî doğruluğuna sadık kalınarak yeniden üretiliyor.</p>
-      <a href="#sergi" class="cta">↓</a>
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-scrim"></div>
+  <div class="hero-content">
+    <span class="eyebrow" id="heroTag">Eser No.</span>
+    <h1 id="heroTitle"></h1>
+    <p id="heroBody"></p>
+    <div class="hero-ctas">
+      <a href="#koleksiyon" class="btn btn-solid">Koleksiyonu Gör →</a>
+      <a href="#manifesto" class="btn btn-line" style="border-color:rgba(255,255,255,0.4); color:#fff;">Manifesto</a>
     </div>
   </div>
 </section>
 
-<section id="galeriler">
+<section class="featured-banner" style="padding:0;">
+  <div class="featured-grid" id="featuredGrid"></div>
+</section>
+
+<section class="manifesto" id="manifesto">
+  <div class="wrap manifesto-inner">
+    <div class="diamond"></div>
+    <span class="eyebrow" id="curatorTag">Küratör Notu</span>
+    <p class="quote" id="curatorQuote" style="margin-top:24px;"></p>
+    <p id="curatorBody"></p>
+  </div>
+</section>
+
+<section id="koleksiyon">
   <div class="wrap">
     <div class="section-head">
-      <span class="tag">Galeriler</span>
-      <h2>Kategorilere göre keşfedin</h2>
+      <span class="eyebrow">Koleksiyon</span>
+      <h2>Bilimin ve sanatın buluştuğu eserler</h2>
     </div>
-  </div>
-  <div class="doors">
-    <a class="door" href="eserler/index.html">
-  <img src="assets/img/02-migfer-kalkan.jpg" alt="Anıtsal Eserler">
-  <div class="door-label"><span class="tag">Galeriler 1</span><h3>Anıtsal Eserler</h3></div>
-</a><a class="door" href="eserler/index.html">
-  <img src="assets/img/03-minyatur-set.jpg" alt="İhtisas Hediyelikleri">
-  <div class="door-label"><span class="tag">Galeriler 2</span><h3>İhtisas Hediyelikleri</h3></div>
-</a><a class="door" href="eserler/index.html">
-  <img src="assets/img/06-gunes-saati.jpg" alt="Müze Standartlarında Eserler">
-  <div class="door-label"><span class="tag">Galeriler 3</span><h3>Müze Standartlarında Eserler</h3></div>
-</a>
+    <div class="collection-grid" id="categoryGrid">
+      <div class="col-card"><div class="img-wrap skeleton"></div><div class="col-body"><div class="skeleton" style="height:20px;width:60%"></div></div></div>
+      <div class="col-card"><div class="img-wrap skeleton"></div><div class="col-body"><div class="skeleton" style="height:20px;width:60%"></div></div></div>
+      <div class="col-card"><div class="img-wrap skeleton"></div><div class="col-body"><div class="skeleton" style="height:20px;width:60%"></div></div></div>
+    </div>
   </div>
 </section>
 
-<section id="sergi" style="padding-top:0;">
-  <div class="wrap" style="margin-bottom:80px;">
-    <div class="section-head">
-      <span class="tag">Tüm Eserler</span>
-      <h2>Öne Çıkanlar</h2>
-      <p><a href="eserler/index.html" style="color:var(--brass-light); text-decoration:underline;">Tüm Eserler</a></p>
-    </div>
-  </div>
-  <div class="showcase">
-  <div class="sc-image"><img src="assets/img/06-gunes-saati.jpg" alt="Fatih Sultan Mehmet Güneş Saati"></div>
-  <div class="sc-plate">
-    <span class="tag">Envanter No 01 · Müze Standartlarında Eserler</span>
-    <h3>Fatih Sultan Mehmet Güneş Saati</h3>
-    <p>1477&#039;de İstanbul&#039;da yapılan bu evrensel güneş saati, Osmanlı Sultanı II. Mehmet adına tasarlanmış ve günümüze ulaşmış bilinen tek özgün bilimsel alettir.</p>
-    <div class="sc-facts"><div>Tarih<b>H. 881 / M. 1477</b></div>
-<div>Yapım Yeri<b>İstanbul</b></div>
-<div>Asıl Yapımcı<b>Ahmed er-Rumi</b></div>
-<div>Malzeme<b>Gümüş Kakmalı Pirinç</b></div>
-</div>
-    <a href="eserler/gunes-saati.html" class="cta">Fatih Sultan Mehmet Güneş Saati →</a>
-  </div>
-</div><div class="showcase">
-  <div class="sc-image"><img src="assets/img/02-migfer-kalkan.jpg" alt="Fatih Sultan Mehmet Han Temsili Miğfer ve Kalkanı"></div>
-  <div class="sc-plate">
-    <span class="tag">Envanter No 02 · Anıtsal Eserler</span>
-    <h3>Fatih Sultan Mehmet Han Temsili Miğfer ve Kalkanı</h3>
-    <p>Fatih Sultan Mehmed Han&#039;ın temsili tören miğferi ve kalkanı, İstanbul&#039;un fethiyle özdeşleşen cihanşümul gücün bir yansıması olarak, pirinç üzerine tamamen el işçiliğiyle üretilmiştir.</p>
-    <div class="sc-facts"><div>Tarih<b>15. Yüzyıl (Osmanlı Dönemi Temsili)</b></div>
-<div>Menşei<b>İstanbul</b></div>
-<div>Yapımcı<b>MUKANTARA Sanat Atölyesi</b></div>
-<div>Malzeme<b>Pirinç (El İşçiliği)</b></div>
-</div>
-    <a href="eserler/migfer-kalkan.html" class="cta">Fatih Sultan Mehmet Han Temsili Miğfer ve Kalkanı →</a>
-  </div>
-</div><div class="showcase">
-  <div class="sc-image"><a href="deneyimler/ulugbey-zij/index.html" class="sc-live-link"><div class="sc-live" id="prevUlugbey"></div><span class="hint">İncele →</span></a></div>
-  <div class="sc-plate">
-    <span class="tag">Envanter No 03 · Dijital Eserler Kütüphanesi</span>
-    <h3>Uluğ Bey Zīj-i Sulṭānī Dijital Gök Küresi</h3>
-    <p>Uluğ Bey'in 1437'de Semerkant Rasathanesi'nde kaydettiği 1018 yıldızlık Zīj-i Sulṭānī kataloğunun, gerçek zamanlı döndürülüp incelenebilen interaktif dijital gök küresi.</p>
-    <div class="sc-facts"><div>Tarih<b>M.S. 1437</b></div>
-<div>Rasathane<b>Semerkant</b></div>
-<div>Kaynak<b>Zīj-i Sulṭānī Kataloğu</b></div>
-<div>Format<b>Dijital Enstalasyon</b></div>
-</div>
-    <a href="deneyimler/ulugbey-zij/index.html" class="cta">Uluğ Bey Zīj-i Sulṭānī →</a>
-  </div>
-</div><div class="showcase">
-  <div class="sc-image"><img src="assets/img/12-endulus-gokkuresi.jpg" alt="Endülüs Sahli Gökküresi"></div>
-  <div class="sc-plate">
-    <span class="tag">Envanter No 04 · Müze Standartlarında Eserler</span>
-    <h3>Endülüs Sahli Gökküresi</h3>
-    <p>Avrupa&#039;da yapılan ve günümüze ulaşan en eski İslamî gök küresi kabul edilen bu eser, 1085&#039;te Valensiya&#039;da usturlap ustası Sahli ve oğlu Muhammed tarafından üretilmiştir.</p>
-    <div class="sc-facts"><div>Tarih<b>H. 478 / M. 1085</b></div>
-<div>Yapım Yeri<b>Valensiya, İspanya</b></div>
-<div>Tasarımcı<b>İbrahim ibn Said al-Sahli ve oğlu Muhammed</b></div>
-<div>Malzeme<b>Pirinç</b></div>
-</div>
-    <a href="eserler/endulus-gokkuresi.html" class="cta">Endülüs Sahli Gökküresi →</a>
-  </div>
-</div><div class="showcase">
-  <div class="sc-image"><img src="assets/img/15-rubu-tahtasi.jpg" alt="Rubu Tahtası (Usturlap Kadranı)"></div>
-  <div class="sc-plate">
-    <span class="tag">Envanter No 05 · Müze Standartlarında Eserler</span>
-    <h3>Rubu Tahtası (Usturlap Kadranı)</h3>
-    <p>Ünlü astronom ve muvakkit Muhammed el-Mizzi tarafından Şam&#039;da üretilen bu rubu tahtası, usturlabın sadeleştirilmiş ve taşınabilir formudur.</p>
-    <div class="sc-facts"><div>Tarih<b>H. 740 / M. 1330–1334</b></div>
-<div>Yapım Yeri<b>Şam, Suriye</b></div>
-<div>Tasarımcı<b>Muhammed ibn Ahmed el-Mizzi</b></div>
-<div>Malzeme<b>Pirinç</b></div>
-</div>
-    <a href="eserler/rubu-tahtasi.html" class="cta">Rubu Tahtası (Usturlap Kadranı) →</a>
-  </div>
-</div><div class="showcase">
-  <div class="sc-image"><a href="deneyimler/tusi-cifti/index.html" class="sc-live-link"><div class="sc-live" id="prevTusi"></div><span class="hint">İncele →</span></a></div>
-  <div class="sc-plate">
-    <span class="tag">Envanter No 06 · Dijital Eserler Kütüphanesi</span>
-    <h3>Tusi Çifti Kozmolojik Saati</h3>
-    <p>Nasīr al-Dīn al-Tūsī'nin 1247'de geliştirdiği matematiksel mekanizmanın (Tusi çifti), gün/saat/dakika/saniyeyi iç içe dönen halkalarla gösteren gerçek zamanlı dijital enstalasyonu.</p>
-    <div class="sc-facts"><div>Tarih<b>M.S. 1247</b></div>
-<div>Rasathane<b>Merağa</b></div>
-<div>Kaynak<b>Tusi Çifti Mekanizması</b></div>
-<div>Format<b>Dijital Enstalasyon</b></div>
-</div>
-    <a href="deneyimler/tusi-cifti/index.html" class="cta">Tusi Çifti Kozmolojik Saati →</a>
-  </div>
-</div><div class="showcase">
-  <div class="sc-image"><img src="assets/img/03-minyatur-set.jpg" alt="Osmanlı Dönemi Minyatür Kalkan, Miğfer ve At Alınlığı Seti"></div>
-  <div class="sc-plate">
-    <span class="tag">Envanter No 07 · İhtisas Hediyelikleri</span>
-    <h3>Osmanlı Dönemi Minyatür Kalkan, Miğfer ve At Alınlığı Seti</h3>
-    <p>Bu özel minyatür set, Osmanlı ordusunun törenlerde sergilediği zarafeti ve Türk metalürji sanatının inceliğini sergi vitrinlerine taşıyan bir tasarımdır.</p>
-    <div class="sc-facts"><div>Tarih<b>15-16. Yüzyıl (Osmanlı Dönemi Temsili)</b></div>
-<div>Menşei<b>İstanbul</b></div>
-<div>Yapımcı<b>MUKANTARA Sanat Atölyesi</b></div>
-<div>Malzeme<b>Pirinç, Özel İşçilik ve Yarı Değerli Taşlar</b></div>
-</div>
-    <a href="eserler/minyatur-set.html" class="cta">Osmanlı Dönemi Minyatür Kalkan, Miğfer ve At Alınlığı Seti →</a>
-  </div>
-</div>
-<div class="showcase">
-  <div class="sc-image"><a href="deneyimler/halazun/index.html" class="sc-live-link"><div class="sc-live" id="prevHalazun"></div><span class="hint">İncele →</span></a></div>
-  <div class="sc-plate">
-    <span class="tag">Envanter No 08 · Dijital Eserler Kütüphanesi</span>
-    <h3>Halazûn — Evrensel Güneş Saati</h3>
-    <p>Sultan II. Mehmed'in (Fatih) sarayında kullanılan, gnomon gölgesi ve sarmal eğrilerle dünyanın herhangi bir enleminde saati gösterebilen evrensel güneş saatinin gerçek zamanlı dijital enstalasyonu.</p>
-    <div class="sc-facts"><div>Dönem<b>15. Yüzyıl</b></div>
-<div>Saray<b>Fatih Sultan Mehmed</b></div>
-<div>Mekanizma<b>Gnomon &amp; Sarmal Eğriler</b></div>
-<div>Format<b>Dijital Enstalasyon</b></div>
-</div>
-    <a href="deneyimler/halazun/index.html" class="cta">Halazûn — Evrensel Güneş Saati →</a>
-  </div>
-</div><div class="showcase">
-  <div class="sc-image"><a href="deneyimler/islam-bilim-tarihi/index.html" class="sc-live-link"><div class="sc-live" id="prevIslamBilim"></div><span class="hint">İncele →</span></a></div>
-  <div class="sc-plate">
-    <span class="tag">Envanter No 09 · Dijital Eserler Kütüphanesi</span>
-    <h3>İslam Bilim Tarihi — Dijital Sergi</h3>
-    <p>50 İslam bilim insanının, her birinin gerçek keşfini gösteren animasyonlu bir figürle anlatıldığı interaktif dijital sergi. İlgi alanlarınızı seçtiğinizde size en yakın öncüyü buluyor.</p>
-    <div class="sc-facts"><div>Öncü<b>50</b></div>
-<div>Alan<b>18</b></div>
-<div>Dönem<b>8.–18. Yüzyıl</b></div>
-<div>Format<b>Dijital Enstalasyon</b></div>
-</div>
-    <a href="deneyimler/islam-bilim-tarihi/index.html" class="cta">İslam Bilim Tarihi — Dijital Sergi →</a>
-  </div>
-</div>
-  <div class="wrap" style="text-align:center; padding-top:70px;">
-    <a href="eserler/index.html" class="btn btn-line" style="border:1px solid var(--hairline); color:var(--label);">Tüm Eserler →</a>
-  </div>
-</section>
-
-<section class="offer" id="teklif">
-  <div class="wrap offer-inner">
-    <div>
-      <span class="tag">Fiyatlandırma & Teklif</span>
-      <h2>Her eser, kişiye özel bir projedir</h2>
-      <p>Eserlerimiz kişiye özel el işçiliğiyle hazırlandığından, sabit bir fiyat listesi yerine ürün niteliği, malzeme tercihi ve adet bazlı özel projelendirme yapılmaktadır.</p>
-    </div>
-    <div>
-      <a href="teklif.html" class="btn btn-dark" style="background:var(--brass); color:var(--ink);">Teklif Al →</a>
-    </div>
-  </div>
-</section><footer>
+<section id="atolye">
   <div class="wrap">
-    <div class="foot-grid">
-      <div>
-        <p class="foot-word">Mukantara</p>
-        <p style="margin-top:10px; max-width:320px;">Türk-İslam tarihi bilim, teknik ve sanat eserlerinin özgün el işçiliğiyle yeniden üretimi.</p>
-        <a class="sister-link" href="https://www.mukantara.com.tr" target="_blank" rel="noopener">mukantara.com.tr — Dijital &amp; Eğitim İçerikleri →</a>
-      </div>
-      <div>
-        <h4>Galeriler</h4>
-        <p><a href="eserler/index.html">Tüm Eserler</a></p>
-        <p><a href="index.html#galeriler">Kategoriler</a></p>
-      </div>
-      <div>
-        <h4>İletişim</h4>
-        <p>Mercanağa Mah. Nasuhiye Sok. No:19/36<br>Fatih, İstanbul</p>
-        <p>+90 553 978 92 12</p>
-      </div>
+    <div class="section-head">
+      <span class="eyebrow">Atölye</span>
+      <h2>Atölyeden</h2>
     </div>
-    <div class="bottom-bar">
-      <span>© 2026 MUKANTARA Bilim Kültür Sanat A.Ş.</span>
-      <span>www.mukantara.com · www.mukantara.com.tr</span>
+    <div class="workshop-grid" id="workshopGrid"></div>
+  </div>
+</section>
+
+<section class="video-section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Video</span>
+      <h2>Üretim sürecinden kareler</h2>
     </div>
+    <div class="video-grid" id="videoGrid"></div>
+  </div>
+</section>
+
+<section class="contact" id="iletisim">
+  <div class="wrap contact-inner">
+    <div>
+      <span class="eyebrow">İletişim</span>
+      <h2>Her eser, tarihe sadık bir yeniden üretimdir</h2>
+      <p class="lead">Eserlerimiz müze standardında, tamamen el işçiliğiyle üretilir. Detaylı bilgi ve teklif için bize ulaşın.</p>
+    </div>
+    <div class="contact-card" id="contactCard"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span class="foot-word">MUKANTARA</span>
+    <span class="foot-meta">Tarihi Bilimsel Aletlerin Yeniden Üretimi</span>
+    <span class="foot-meta">© 2026 Mukantara</span>
   </div>
 </footer>
-<script src="assets/js/site.js"></script>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">Kapat ✕</button>
+  <img id="lightboxImg" src="" alt="Görsel">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/shared.js"></script>
 <script>
-// ---- Ana sayfa deneyim kartları: canlı mini önizlemeler ----
-(function(){
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+async function loadSiteContent(){
+  const { data } = await sb.from('mukantara_site_content').select('key,value');
+  const map = {};
+  (data||[]).forEach(r => map[r.key] = r.value);
 
-  function addBadge(host){
-    var b = document.createElement('div');
-    b.className = 'live-badge';
-    b.innerHTML = '<i></i><span>Canlı Önizleme</span>';
-    host.appendChild(b);
+  if (map.hero_tag) document.getElementById('heroTag').textContent = map.hero_tag;
+  if (map.hero_title) document.getElementById('heroTitle').textContent = map.hero_title;
+  if (map.hero_body) document.getElementById('heroBody').textContent = map.hero_body;
+  if (map.curator_tag) document.getElementById('curatorTag').textContent = map.curator_tag;
+  if (map.curator_quote) document.getElementById('curatorQuote').textContent = map.curator_quote;
+  if (map.curator_body) document.getElementById('curatorBody').textContent = map.curator_body;
+
+  const heroImg = publicImageUrl(map.hero_image) || 'https://mukantara.com/assets/img/07-ulug-bey-usturlabi.jpg';
+  document.getElementById('heroBg').innerHTML = '<img src="'+heroImg+'" alt="Mukantara">';
+
+  const phoneDigits = (map.contact_phone||'').replace(/\D/g,'');
+  const card = document.getElementById('contactCard');
+  card.innerHTML =
+    (map.contact_phone ? '<div class="row"><label>Telefon</label><a class="big-link" href="tel:+'+phoneDigits+'">'+escapeHtml(map.contact_phone)+'</a></div>' : '') +
+    (map.contact_email ? '<div class="row"><label>E-posta</label><a class="big-link" href="mailto:'+escapeHtml(map.contact_email)+'">'+escapeHtml(map.contact_email)+'</a></div>' : '') +
+    (phoneDigits ? '<div class="row" style="margin-bottom:0;"><label>WhatsApp</label><a class="big-link" href="https://wa.me/'+phoneDigits+'" target="_blank" rel="noopener">Mesaj Gönder →</a></div>' : '');
+}
+
+async function loadCategories(){
+  const { data } = await sb.from('mukantara_categories').select('*').order('sort_order');
+  const grid = document.getElementById('categoryGrid');
+  if (!data || data.length === 0) { grid.innerHTML = ''; return; }
+  grid.innerHTML = data.map(cat => {
+    const img = publicImageUrl(cat.sample_image_url);
+    const media = img
+      ? '<div class="img-wrap"><img src="'+img+'" alt="'+escapeHtml(cat.name)+'" loading="lazy"></div>'
+      : '<div class="img-wrap"><div class="col-icon">'+categoryIcon(cat.slug)+'</div></div>';
+    return '<a class="col-card" href="kategori.html?slug='+encodeURIComponent(cat.slug)+'">'+
+      media + '<div class="col-body"><h3>'+escapeHtml(cat.name)+'</h3>'+
+      (cat.description ? '<p style="font-size:14px;color:var(--ink-dim);margin:0;">'+escapeHtml(cat.description)+'</p>' : '')+
+      '<span class="tag">Eserleri Gör →</span></div></a>';
+  }).join('');
+}
+
+async function loadFeatured(){
+  const grid = document.getElementById('featuredGrid');
+  const { data } = await sb.from('mukantara_products')
+    .select('*, mukantara_categories(slug)').eq('is_featured', true).order('sort_order').limit(3);
+  let items = data || [];
+  if (items.length < 3) {
+    const { data: fb } = await sb.from('mukantara_products').select('*, mukantara_categories(slug)').order('sort_order').limit(3);
+    items = fb || [];
   }
+  if (items.length === 0) { grid.style.display = 'none'; return; }
+  grid.innerHTML = items.map(p => {
+    const img = publicImageUrl(p.image_url);
+    const catSlug = p.mukantara_categories ? p.mukantara_categories.slug : 'default';
+    const media = img ? '<img src="'+img+'" alt="'+escapeHtml(p.title)+'" loading="lazy">' : '<div class="feat-icon">'+categoryIcon(catSlug)+'</div>';
+    return '<a class="feat-tile" href="urun.html?slug='+encodeURIComponent(p.slug)+'">'+media+'<div class="feat-label">'+escapeHtml(p.title)+'</div></a>';
+  }).join('');
+}
 
-  // --- Tusi çifti mini animasyonu ---
-  var tusiHost = document.getElementById('prevTusi');
-  if (tusiHost){
-    addBadge(tusiHost);
-    var ns='http://www.w3.org/2000/svg';
-    var size=260, R=size*0.36, cx=size/2, cy=size/2;
-    var svg=document.createElementNS(ns,'svg');
-    svg.setAttribute('width',size); svg.setAttribute('height',size);
-    function el(tag,attrs){ var e=document.createElementNS(ns,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); return e; }
-    var outer=el('circle',{cx:cx,cy:cy,r:R,fill:'none',stroke:'rgba(199,154,92,0.3)','stroke-width':1});
-    var guide=el('line',{x1:cx-R,y1:cy,x2:cx+R,y2:cy,stroke:'rgba(236,229,211,0.14)','stroke-width':1,'stroke-dasharray':'2 5'});
-    var inner=el('circle',{r:R/2,fill:'none',stroke:'rgba(79,217,232,0.55)','stroke-width':1.2});
-    var marker=el('circle',{r:3.6,fill:'#4fd9e8'});
-    svg.appendChild(outer); svg.appendChild(guide); svg.appendChild(inner); svg.appendChild(marker);
-    tusiHost.appendChild(svg);
-    var phi=0;
-    function frame(ts){
-      if(!frame.last) frame.last=ts;
-      var dt=(ts-frame.last)/1000; frame.last=ts;
-      if(!reduced) phi += 0.4*dt;
-      inner.setAttribute('cx', cx+(R/2)*Math.cos(phi));
-      inner.setAttribute('cy', cy+(R/2)*Math.sin(phi));
-      marker.setAttribute('cx', cx+R*Math.cos(phi));
-      marker.setAttribute('cy', cy);
-      requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
-  }
+async function loadWorkshopPhotos(){
+  const grid = document.getElementById('workshopGrid');
+  const section = document.getElementById('atolye');
+  const { data } = await sb.from('mukantara_workshop_photos').select('*').order('sort_order');
+  if (!data || data.length === 0) { section.style.display = 'none'; return; }
+  grid.innerHTML = data.map((p,i) => {
+    const img = publicImageUrl(p.image_url);
+    return '<div class="workshop-tile" onclick="openLightbox('+JSON.stringify(data.map(d=>publicImageUrl(d.image_url)))+','+i+')"><img src="'+img+'" alt="" loading="lazy">'+
+      (p.caption ? '<div class="cap">'+escapeHtml(p.caption)+'</div>' : '')+'</div>';
+  }).join('');
+}
 
-  // --- Uluğ Bey mini yıldız haritası + radar taraması ---
-  var ulugHost = document.getElementById('prevUlugbey');
-  if (ulugHost){
-    addBadge(ulugHost);
-    var ns2='http://www.w3.org/2000/svg';
-    var usize=260, ucx=usize/2, ucy=usize/2, uR=usize*0.42;
-    function uel(tag,attrs){ var e=document.createElementNS(ns2,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); return e; }
-    var usvg=uel('svg',{width:usize,height:usize});
+async function loadVideos(){
+  const grid = document.getElementById('videoGrid');
+  const section = document.querySelector('.video-section');
+  const { data } = await sb.from('mukantara_videos').select('*').order('sort_order');
+  if (!data || data.length === 0) { section.style.display = 'none'; return; }
+  grid.innerHTML = data.map(v => {
+    const vurl = publicVideoUrl(v.video_url);
+    const thumb = publicImageUrl(v.thumbnail_url);
+    const mime = videoMimeType(v.video_url);
+    return '<div class="video-card"><video controls preload="metadata"'+(thumb?' poster="'+thumb+'"':'')+'><source src="'+vurl+'"'+(mime?' type="'+mime+'"':'')+'>Tarayıcınız desteklemiyor.</video>'+
+      (v.title ? '<div class="v-title">'+escapeHtml(v.title)+'</div>' : '')+'</div>';
+  }).join('');
+}
 
-    // Konsantrik yükseklik halkaları (astrolap ızgarası gibi)
-    [0.34,0.62,0.9].forEach(function(f){
-      usvg.appendChild(uel('circle',{cx:ucx,cy:ucy,r:uR*f,fill:'none',stroke:'rgba(199,154,92,0.16)','stroke-width':1}));
-    });
-    // Radyal çizgiler (azimut)
-    var spokesGroup = uel('g',{});
-    for (var a=0; a<360; a+=30){
-      var rad=a*Math.PI/180;
-      spokesGroup.appendChild(uel('line',{
-        x1:ucx, y1:ucy, x2:ucx+uR*Math.cos(rad), y2:ucy+uR*Math.sin(rad),
-        stroke:'rgba(199,154,92,0.10)', 'stroke-width':1
-      }));
-    }
-    usvg.appendChild(spokesGroup);
+let lbImages=[], lbIndex=0;
+function openLightbox(images, i){ lbImages=images.filter(Boolean); lbIndex=i||0; document.getElementById('lightboxImg').src=lbImages[lbIndex]; document.getElementById('lightbox').classList.add('active'); }
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('active'); }
 
-    // Sabit yıldızlar (katalog noktaları), rastgele ama sabit konumlu
-    var starDefs = [];
-    var seed = 7;
-    function rnd(){ seed = (seed*9301+49297)%233280; return seed/233280; }
-    for (var i=0;i<11;i++){
-      var rr = uR*(0.22+rnd()*0.75);
-      var aa = rnd()*Math.PI*2;
-      starDefs.push({x:ucx+rr*Math.cos(aa), y:ucy+rr*Math.sin(aa), r:1.3+rnd()*1.6});
-    }
-    var starEls = starDefs.map(function(s){
-      var c = uel('circle',{cx:s.x, cy:s.y, r:s.r, fill:'#f6ead0', opacity:0.55});
-      usvg.appendChild(c);
-      return c;
-    });
-
-    // Döner radar tarama çizgisi (bir yıldızın üzerinden geçince parlıyor)
-    var sweep = uel('line',{id:'ulugSweep', x1:ucx, y1:ucy, x2:ucx+uR, y2:ucy, stroke:'rgba(79,217,232,0.6)', 'stroke-width':1.2});
-    var sweepGlow = uel('circle',{cx:ucx+uR, cy:ucy, r:2, fill:'#4fd9e8'});
-    usvg.appendChild(sweep);
-    usvg.appendChild(sweepGlow);
-
-    ulugHost.appendChild(usvg);
-
-    var uphi = -Math.PI/2;
-    function uframe(ts){
-      if(!uframe.last) uframe.last = ts;
-      var dt = (ts-uframe.last)/1000; uframe.last = ts;
-      if(!reduced) uphi += 0.5*dt;
-
-      var sx = ucx+uR*Math.cos(uphi), sy = ucy+uR*Math.sin(uphi);
-      sweep.setAttribute('x2', sx); sweep.setAttribute('y2', sy);
-      sweepGlow.setAttribute('cx', sx); sweepGlow.setAttribute('cy', sy);
-
-      starDefs.forEach(function(s, idx){
-        var ang = Math.atan2(s.y-ucy, s.x-ucx);
-        var diff = Math.abs(((ang - uphi + Math.PI*3) % (Math.PI*2)) - Math.PI);
-        var near = diff > (Math.PI - 0.35);
-        starEls[idx].setAttribute('opacity', near ? 1 : 0.5);
-        starEls[idx].setAttribute('r', near ? s.r*1.8 : s.r);
-      });
-
-      requestAnimationFrame(uframe);
-    }
-    requestAnimationFrame(uframe);
-
-    // Arka plan yıldız tozu (doku)
-    var n = 22;
-    for (var j=0;j<n;j++){
-      var s=document.createElement('div');
-      var size=(Math.random()*1.3+0.5).toFixed(2);
-      s.style.cssText='position:absolute; border-radius:50%; background:#f6ead0; width:'+size+'px; height:'+size+'px; left:'+(Math.random()*100)+'%; top:'+(Math.random()*100)+'%; opacity:0.3;' +
-        (reduced? '' : 'animation:sc-twinkle '+(3+Math.random()*4).toFixed(2)+'s ease-in-out infinite; animation-delay:'+(Math.random()*4).toFixed(2)+'s;');
-      ulugHost.appendChild(s);
-    }
-  }
-
-  // --- Halazûn mini önizleme: dönen gnomon gölgesi ---
-  var halazunHost = document.getElementById('prevHalazun');
-  if (halazunHost){
-    addBadge(halazunHost);
-    var ns3='http://www.w3.org/2000/svg';
-    var hsize=260, hcx=hsize/2, hcy=hsize/2;
-    function hel(tag,attrs){ var e=document.createElementNS(ns3,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); return e; }
-    var hsvg=hel('svg',{width:hsize,height:hsize});
-    hsvg.appendChild(hel('circle',{cx:hcx,cy:hcy,r:hsize*0.4,fill:'none',stroke:'rgba(143,180,209,0.16)','stroke-width':1}));
-    hsvg.appendChild(hel('circle',{cx:hcx,cy:hcy,r:hsize*0.27,fill:'none',stroke:'rgba(143,180,209,0.14)','stroke-width':1}));
-    hsvg.appendChild(hel('line',{x1:hcx,y1:hcy,x2:hcx,y2:hcy-70,stroke:'#eef1f5','stroke-width':2}));
-    hsvg.appendChild(hel('circle',{cx:hcx,cy:hcy,r:3.2,fill:'#eef1f5'}));
-    var hshadow=hel('line',{x1:hcx,y1:hcy,x2:hcx,y2:hcy,stroke:'#5b8bb0','stroke-width':1.8,'stroke-dasharray':'3 3'});
-    var htip=hel('circle',{r:3,fill:'#8fb4d1'});
-    hsvg.appendChild(hshadow); hsvg.appendChild(htip);
-    halazunHost.appendChild(hsvg);
-    var hangle=-80;
-    function hframe(ts){
-      if(!hframe.last) hframe.last=ts;
-      var dt=(ts-hframe.last)/1000; hframe.last=ts;
-      if(!reduced) hangle += dt*10;
-      var rad=hangle*Math.PI/180;
-      var len=60+26*Math.sin(ts/2400);
-      var hx=hcx+len*Math.cos(rad), hy=hcy+len*Math.sin(rad);
-      hshadow.setAttribute('x2',hx); hshadow.setAttribute('y2',hy);
-      htip.setAttribute('cx',hx); htip.setAttribute('cy',hy);
-      requestAnimationFrame(hframe);
-    }
-    requestAnimationFrame(hframe);
-  }
-
-  // --- İslam Bilim Tarihi mini önizleme: 50 öncü düğümü + tarayan ışın ---
-  var islamHost = document.getElementById('prevIslamBilim');
-  if (islamHost){
-    addBadge(islamHost);
-    var ns4='http://www.w3.org/2000/svg';
-    var isize=260, icx=isize/2, icy=isize/2, iR=isize*0.4;
-    function iel(tag,attrs){ var e=document.createElementNS(ns4,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); return e; }
-    var isvg=iel('svg',{width:isize,height:isize});
-    isvg.appendChild(iel('circle',{cx:icx,cy:icy,r:iR,fill:'none',stroke:'rgba(199,154,92,0.14)','stroke-width':1}));
-    var iN=50, iNodes=[];
-    for (var k=0;k<iN;k++){
-      var iang=(k/iN)*Math.PI*2 - Math.PI/2;
-      var ix=icx+iR*Math.cos(iang), iy=icy+iR*Math.sin(iang);
-      var idot=iel('circle',{cx:ix,cy:iy,r:1.8,fill:'rgba(224,184,64,0.35)'});
-      isvg.appendChild(idot);
-      iNodes.push(idot);
-    }
-    var ibeam=iel('line',{x1:icx,y1:icy,x2:icx,y2:icy-iR,stroke:'rgba(224,184,64,0.5)','stroke-width':1.1});
-    isvg.appendChild(ibeam);
-    islamHost.appendChild(isvg);
-    var icur=0, it=0;
-    function iframe(ts){
-      if(!iframe.last) iframe.last=ts;
-      var dt=(ts-iframe.last)/1000; iframe.last=ts;
-      if(!reduced){
-        it+=dt;
-        var iidx=Math.floor(it*3)%iN;
-        var iang2=(iidx/iN)*Math.PI*2 - Math.PI/2;
-        ibeam.setAttribute('x2', icx+iR*Math.cos(iang2));
-        ibeam.setAttribute('y2', icy+iR*Math.sin(iang2));
-        if (iidx!==icur){
-          iNodes[icur].setAttribute('r',1.8);
-          iNodes[icur].setAttribute('fill','rgba(224,184,64,0.35)');
-          icur=iidx;
-        }
-        iNodes[icur].setAttribute('r',3.6);
-        iNodes[icur].setAttribute('fill','#e0b840');
-      }
-      requestAnimationFrame(iframe);
-    }
-    requestAnimationFrame(iframe);
-  }
-
-  if (!reduced){
-    var styleTag = document.createElement('style');
-    styleTag.textContent = '@keyframes sc-spin{from{transform:translate(-50%,-50%) rotate(0deg);}to{transform:translate(-50%,-50%) rotate(360deg);}} @keyframes sc-twinkle{0%,100%{opacity:.15;}50%{opacity:.85;}}';
-    document.head.appendChild(styleTag);
-  }
-})();
+loadSiteContent();
+loadCategories();
+loadFeatured();
+loadWorkshopPhotos();
+loadVideos();
 </script>
 </body>
 </html>
