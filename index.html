@@ -117,7 +117,7 @@
 
 <section class="hero">
   <div class="hero-glow"></div>
-  <div class="wrap hero-inner">
+  <div class="wrap">
     <div class="hero-content">
       <span class="eyebrow" id="heroTag">Eser No.</span>
       <h1 id="heroTitle"></h1>
@@ -126,20 +126,6 @@
         <a href="#koleksiyon" class="btn btn-solid">Koleksiyonu Gör →</a>
         <a href="#manifesto" class="btn btn-line">Manifesto</a>
       </div>
-    </div>
-    <div class="hero-visual">
-      <svg viewBox="0 0 400 400" id="astroSvg">
-        <circle cx="200" cy="200" r="172" fill="none" stroke="var(--brass)" stroke-width="1" opacity="0.35"/>
-        <g id="degreeMarks" stroke="var(--brass)" stroke-width="1" opacity="0.3"></g>
-        <circle cx="200" cy="200" r="132" fill="none" stroke="var(--brass-light)" stroke-width="1" opacity="0.55"/>
-        <circle cx="200" cy="200" r="92" fill="none" stroke="var(--patina)" stroke-width="1" opacity="0.4"/>
-        <g id="rete" stroke="var(--brass-light)" stroke-width="1.2" fill="none" opacity="0.8">
-          <polygon points="200,60 218,148 306,148 234,202 262,290 200,236 138,290 166,202 94,148 182,148" />
-        </g>
-        <g id="starPoints" fill="var(--patina)"></g>
-        <line id="alidade" x1="60" y1="200" x2="340" y2="200" stroke="var(--ink)" stroke-width="1.4" opacity="0.75"/>
-        <circle cx="200" cy="200" r="4" fill="var(--ink)"/>
-      </svg>
     </div>
   </div>
 </section>
@@ -338,50 +324,6 @@ loadCategories();
 loadFeatured();
 loadWorkshopPhotos();
 loadVideos();
-
-// ---- İmza görsel: usturlap animasyonu ----
-(function(){
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var ns = 'http://www.w3.org/2000/svg';
-  var cx=200, cy=200;
-
-  var degreeMarks = document.getElementById('degreeMarks');
-  for (var i=0;i<72;i++){
-    var ang = (i/72)*Math.PI*2;
-    var len = (i%6===0) ? 14 : 7;
-    var r1 = 172, r2 = 172-len;
-    var line = document.createElementNS(ns,'line');
-    line.setAttribute('x1', cx+r1*Math.cos(ang)); line.setAttribute('y1', cy+r1*Math.sin(ang));
-    line.setAttribute('x2', cx+r2*Math.cos(ang)); line.setAttribute('y2', cy+r2*Math.sin(ang));
-    degreeMarks.appendChild(line);
-  }
-
-  var starPoints = document.getElementById('starPoints');
-  for (var s=0;s<10;s++){
-    var sang = (s/10)*Math.PI*2 + 0.3;
-    var sr = 92;
-    var sx = cx+sr*Math.cos(sang), sy = cy+sr*Math.sin(sang);
-    var c = document.createElementNS(ns,'circle');
-    c.setAttribute('cx', sx); c.setAttribute('cy', sy); c.setAttribute('r', 2.6);
-    starPoints.appendChild(c);
-  }
-
-  if (!reduced){
-    var rete = document.getElementById('rete');
-    var alidade = document.getElementById('alidade');
-    var a1=0, a2=0;
-    function frame(ts){
-      if(!frame.last) frame.last = ts;
-      var dt = (ts-frame.last)/1000; frame.last = ts;
-      a1 += dt*3.2;
-      a2 += dt*7;
-      rete.setAttribute('transform','rotate('+a1+' 200 200)');
-      alidade.setAttribute('transform','rotate('+a2+' 200 200)');
-      requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
-  }
-})();
 </script>
 </body>
 </html>
