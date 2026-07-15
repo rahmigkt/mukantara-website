@@ -234,7 +234,7 @@ async function loadContent(){
   const order = Object.keys(CONTENT_LABELS);
   order.forEach(key => {
     const row = (data||[]).find(r => r.key === key);
-    const isLong = key.startsWith('manifesto');
+    const isLong = ['hero_body','curator_quote','curator_body'].includes(key);
     const isGalleryMode = key === 'gallery_mode';
     const currentVal = row ? row.value : '';
     const field = document.createElement('div');
