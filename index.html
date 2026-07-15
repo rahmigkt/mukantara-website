@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUKANTARA — Tarihi Bilimsel Aletlerin Yeniden Üretimi</title>
+<meta name="description" content="MUKANTARA — usturlap, gök küresi ve tarihi bilimsel aletlerin müze standardında, el işçiliğiyle yeniden üretimi.">
+<link rel="icon" href="assets/logo/mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/brand.css?v=2">
+<style>
+  .hero{position:relative; min-height:100vh; display:flex; align-items:flex-end; overflow:hidden; padding-top:100px;}
+  .hero-bg{position:absolute; inset:0; z-index:0; background:var(--bg-panel);}
+  .hero-bg img{width:100%; height:100%; object-fit:cover; object-position:center 30%; display:block;}
+  .hero-scrim{position:absolute; inset:0; z-index:1; background:linear-gradient(to top, rgba(13,17,23,0.94) 10%, rgba(13,17,23,0.5) 45%, rgba(13,17,23,0.1) 70%);}
+  .hero-content{position:relative; z-index:2; width:100%; padding-bottom:80px; max-width:640px; margin:0 32px;}
+  .hero-content h1{font-family:'Sora', sans-serif; font-weight:700; font-size:clamp(26px, 3.4vw, 38px); line-height:1.25; margin:18px 0 16px; color:#fff;}
+  .hero-content p{font-size:16px; color:rgba(255,255,255,0.72); margin:0 0 26px;}
+  .hero-ctas{display:flex; gap:16px; flex-wrap:wrap;}
+
+  .featured-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:2px; background:var(--hairline);}
+  .feat-tile{position:relative; aspect-ratio:4/3; overflow:hidden; background:var(--bg-panel); text-decoration:none; display:block;}
+  .feat-tile img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s;}
+  .feat-tile:hover img{transform:scale(1.04);}
+  .feat-tile .feat-icon{width:100%; height:100%; display:flex; align-items:center; justify-content:center;}
+  .feat-tile .feat-icon svg{width:26%; height:26%; stroke:var(--brass); fill:none; stroke-width:1.2;}
+  .feat-tile .feat-label{position:absolute; left:0; right:0; bottom:0; padding:20px 22px; background:linear-gradient(to top, rgba(13,17,23,0.9), transparent); font-family:'Sora', sans-serif; font-size:16px; font-weight:600; color:#fff;}
+  @media (max-width:860px){ .featured-grid{grid-template-columns:1fr;} }
+
+  .manifesto{background:var(--bg-panel); border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline);}
+  .manifesto-inner{max-width:740px; margin:0 auto; text-align:center;}
+  .manifesto p{font-size:18px; line-height:1.85; color:var(--ink-dim); margin:0 0 26px;}
+  .manifesto .quote{font-family:'Sora', sans-serif; font-size:24px; color:var(--ink); font-weight:600; margin:0 0 30px; line-height:1.5;}
+  .diamond{width:10px; height:10px; background:var(--patina); border-radius:2px; transform:rotate(45deg); margin:0 auto 30px;}
+
+  .collection-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;}
+  .col-card{background:var(--bg-panel); text-align:left; display:flex; flex-direction:column; transition:transform .2s, box-shadow .2s; text-decoration:none; color:var(--ink); overflow:hidden;}
+  .col-card:hover{transform:translateY(-3px);}
+  .col-card .img-wrap{aspect-ratio:4/3; overflow:hidden; background:var(--bg-panel-2);}
+  .col-card .img-wrap img{width:100%; height:100%; object-fit:cover; display:block;}
+  .col-icon{width:100%; height:100%; display:flex; align-items:center; justify-content:center;}
+  .col-icon svg{width:40%; height:40%; stroke:var(--brass); fill:none; stroke-width:1.3;}
+  .col-body{padding:22px 22px 26px; display:flex; flex-direction:column; gap:8px; flex:1;}
+  .col-card h3{font-family:'Sora', sans-serif; font-size:19px; font-weight:600; margin:0;}
+  .col-card .tag{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--brass-light); margin-top:auto; padding-top:10px;}
+  @media (max-width:860px){ .collection-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:520px){ .collection-grid{grid-template-columns:1fr;} }
+
+  .experience-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:2px; background:var(--hairline);}
+  .exp-tile{position:relative; aspect-ratio:4/3; overflow:hidden; text-decoration:none; display:flex; flex-direction:column; justify-content:flex-end; padding:22px;}
+  .exp-tile img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; transition:transform .5s; filter:brightness(0.62);}
+  .exp-tile:hover img{transform:scale(1.05); filter:brightness(0.75);}
+  .exp-tile .exp-scrim{position:absolute; inset:0; z-index:1; background:linear-gradient(to top, rgba(13,17,23,0.9) 15%, rgba(13,17,23,0.15) 65%);}
+  .exp-tile .exp-tag, .exp-tile h4, .exp-tile .live-dot{position:relative; z-index:2;}
+  .exp-tile .exp-tag{font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--brass-light); margin-bottom:8px;}
+  .exp-tile h4{font-family:'Sora', sans-serif; font-size:16px; font-weight:600; color:var(--ink); margin:0;}
+  .exp-tile .live-dot{position:absolute; top:18px; left:22px; display:flex; align-items:center; gap:6px; font-family:'JetBrains Mono', monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(238,241,245,0.5);}
+  .exp-tile .live-dot i{width:5px; height:5px; border-radius:50%; background:#7ed4e0; box-shadow:0 0 6px #7ed4e0;}
+  @media (max-width:860px){ .experience-grid{grid-template-columns:1fr 1fr;} }
+
+  .workshop-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:2px; background:var(--hairline);}
+  .workshop-tile{position:relative; aspect-ratio:4/5; overflow:hidden; background:var(--bg-panel); cursor:pointer;}
+  .workshop-tile img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s;}
+  .workshop-tile:hover img{transform:scale(1.05);}
+  .workshop-tile .cap{position:absolute; left:0; right:0; bottom:0; padding:14px 16px; background:linear-gradient(to top, rgba(13,17,23,0.85), transparent); font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-dim); opacity:0; transition:opacity .2s;}
+  .workshop-tile:hover .cap{opacity:1;}
+  .workshop-tile{position:relative; aspect-ratio:4/5; overflow:hidden; background:var(--bg-panel); cursor:pointer;}
+  .workshop-tile img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s;}
+  .workshop-tile:hover img{transform:scale(1.05);}
+  .workshop-tile .cap{position:absolute; left:0; right:0; bottom:0; padding:14px 16px; background:linear-gradient(to top, rgba(13,17,23,0.85), transparent); font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-dim); opacity:0; transition:opacity .2s;}
+  .workshop-tile:hover .cap{opacity:1;}
+  @media (max-width:860px){ .workshop-grid{grid-template-columns:1fr 1fr;} }
+
+  .video-section{background:var(--bg-panel); border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline);}
+  .video-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:16px;}
+  .video-card{border-radius:4px; overflow:hidden; background:var(--bg-panel-2); border:1px solid var(--hairline);}
+  .video-card video{width:100%; aspect-ratio:9/16; object-fit:cover; display:block; background:#000;}
+  .video-card .v-title{padding:12px 14px; font-family:'Sora', sans-serif; font-size:13px; font-weight:500; color:var(--ink);}
+  @media (max-width:860px){ .video-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:520px){ .video-grid{grid-template-columns:1fr;} }
+
+  .contact{background:var(--bg-panel); border-top:1px solid var(--hairline);}
+  .contact-inner{display:grid; grid-template-columns:1.1fr 0.9fr; gap:60px; align-items:start;}
+  .contact h2{font-family:'Sora', sans-serif; font-size:clamp(28px,4vw,40px); font-weight:600; margin:16px 0 20px;}
+  .contact p.lead{font-size:17px; color:var(--ink-dim); max-width:440px;}
+  .contact-card{background:var(--bg); border:1px solid var(--hairline); padding:40px;}
+  .contact-card .row{display:flex; flex-direction:column; gap:6px; margin-bottom:24px;}
+  .contact-card label{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--label);}
+  .contact-card a.big-link{font-family:'Sora', sans-serif; font-size:20px; font-weight:600; color:var(--ink); text-decoration:none; border-bottom:1px solid var(--hairline-strong); padding-bottom:4px; display:inline-block; transition:color .2s, border-color .2s;}
+  .contact-card a.big-link:hover{color:var(--brass-light); border-color:var(--brass-light);}
+  @media (max-width:860px){ .contact-inner{grid-template-columns:1fr;} }
+
+  .lightbox{position:fixed; inset:0; z-index:200; background:rgba(6,8,11,0.96); display:none; align-items:center; justify-content:center; padding:40px;}
+  .lightbox.active{display:flex;}
+  .lightbox img{max-width:90vw; max-height:82vh; object-fit:contain;}
+  .lightbox-close{position:absolute; top:24px; right:32px; font-family:'JetBrains Mono', monospace; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-dim); background:none; border:1px solid var(--hairline-strong); padding:10px 18px; cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="navbar">
+    <a href="index.html" class="wordmark"><img src="assets/logo/mark.png" alt="Mukantara" onerror="this.style.display='none'"> MUKANTARA</a>
+    <div class="navlinks">
+      <a href="#koleksiyon">Koleksiyon</a>
+      <a href="#deneyimler">Dijital Deneyimler</a>
+      <a href="#manifesto">Manifesto</a>
+      <a href="#iletisim" class="cta-link">Teklif Al</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-scrim"></div>
+  <div class="hero-content">
+    <span class="eyebrow" id="heroTag">Eser No.</span>
+    <h1 id="heroTitle"></h1>
+    <p id="heroBody"></p>
+    <div class="hero-ctas">
+      <a href="#koleksiyon" class="btn btn-solid">Koleksiyonu Gör →</a>
+      <a href="#manifesto" class="btn btn-line" style="border-color:rgba(255,255,255,0.4); color:#fff;">Manifesto</a>
+    </div>
+  </div>
+</section>
+
+<section class="featured-banner" style="padding:0;">
+  <div class="featured-grid" id="featuredGrid"></div>
+</section>
+
+<section class="manifesto" id="manifesto">
+  <div class="wrap manifesto-inner">
+    <div class="diamond"></div>
+    <span class="eyebrow" id="curatorTag">Küratör Notu</span>
+    <p class="quote" id="curatorQuote" style="margin-top:24px;"></p>
+    <p id="curatorBody"></p>
+  </div>
+</section>
+
+<section id="koleksiyon">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Koleksiyon</span>
+      <h2>Bilimin ve sanatın buluştuğu eserler</h2>
+    </div>
+    <div class="collection-grid" id="categoryGrid">
+      <div class="col-card"><div class="img-wrap skeleton"></div><div class="col-body"><div class="skeleton" style="height:20px;width:60%"></div></div></div>
+      <div class="col-card"><div class="img-wrap skeleton"></div><div class="col-body"><div class="skeleton" style="height:20px;width:60%"></div></div></div>
+      <div class="col-card"><div class="img-wrap skeleton"></div><div class="col-body"><div class="skeleton" style="height:20px;width:60%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="deneyimler">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Dijital Kütüphane</span>
+      <h2>Eserleri canlı deneyimleyin</h2>
+    </div>
+    <div class="experience-grid">
+      <a class="exp-tile" href="deneyimler/ulugbey-zij/index.html">
+        <img src="https://mukantara.com/assets/img/12-endulus-gokkuresi.jpg" alt="">
+        <div class="exp-scrim"></div>
+        <span class="live-dot"><i></i> Canlı</span>
+        <span class="exp-tag">Envanter No 03</span>
+        <h4>Zīj-i Sulṭānī Gök Küresi</h4>
+      </a>
+      <a class="exp-tile" href="deneyimler/tusi-cifti/index.html">
+        <img src="https://mukantara.com/assets/img/07-ulug-bey-usturlabi.jpg" alt="">
+        <div class="exp-scrim"></div>
+        <span class="live-dot"><i></i> Canlı</span>
+        <span class="exp-tag">Envanter No 06</span>
+        <h4>Tusi Çifti Kozmolojik Saati</h4>
+      </a>
+      <a class="exp-tile" href="deneyimler/halazun/index.html">
+        <img src="https://mukantara.com/assets/img/06-gunes-saati.jpg" alt="">
+        <div class="exp-scrim"></div>
+        <span class="live-dot"><i></i> Canlı</span>
+        <span class="exp-tag">Envanter No 08</span>
+        <h4>Halazûn — Evrensel Güneş Saati</h4>
+      </a>
+      <a class="exp-tile" href="deneyimler/islam-bilim-tarihi/index.html">
+        <img src="https://mukantara.com/assets/img/08-evrensel-usturlap.jpg" alt="">
+        <div class="exp-scrim"></div>
+        <span class="live-dot"><i></i> Sergi</span>
+        <span class="exp-tag">Dijital Sergi</span>
+        <h4>İslam Bilim Tarihi</h4>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="atolye">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Atölye</span>
+      <h2>Atölyeden</h2>
+    </div>
+    <div class="workshop-grid" id="workshopGrid"></div>
+  </div>
+</section>
+
+<section class="video-section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Video</span>
+      <h2>Üretim sürecinden kareler</h2>
+    </div>
+    <div class="video-grid" id="videoGrid"></div>
+  </div>
+</section>
+
+<section class="contact" id="iletisim">
+  <div class="wrap contact-inner">
+    <div>
+      <span class="eyebrow">İletişim</span>
+      <h2>Her eser, tarihe sadık bir yeniden üretimdir</h2>
+      <p class="lead">Eserlerimiz müze standardında, tamamen el işçiliğiyle üretilir. Detaylı bilgi ve teklif için bize ulaşın.</p>
+    </div>
+    <div class="contact-card" id="contactCard"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span class="foot-word">MUKANTARA</span>
+    <span class="foot-meta">Tarihi Bilimsel Aletlerin Yeniden Üretimi</span>
+    <span class="foot-meta">© 2026 Mukantara</span>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">Kapat ✕</button>
+  <img id="lightboxImg" src="" alt="Görsel">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/shared.js?v=2"></script>
+<script>
+async function loadSiteContent(){
+  const { data } = await sb.from('mukantara_site_content').select('key,value');
+  const map = {};
+  (data||[]).forEach(r => map[r.key] = r.value);
+
+  if (map.hero_tag) document.getElementById('heroTag').textContent = map.hero_tag;
+  if (map.hero_title) document.getElementById('heroTitle').textContent = map.hero_title;
+  if (map.hero_body) document.getElementById('heroBody').textContent = map.hero_body;
+  if (map.curator_tag) document.getElementById('curatorTag').textContent = map.curator_tag;
+  if (map.curator_quote) document.getElementById('curatorQuote').textContent = map.curator_quote;
+  if (map.curator_body) document.getElementById('curatorBody').textContent = map.curator_body;
+
+  const heroImg = publicImageUrl(map.hero_image) || 'https://mukantara.com/assets/img/07-ulug-bey-usturlabi.jpg';
+  document.getElementById('heroBg').innerHTML = '<img src="'+heroImg+'" alt="Mukantara">';
+
+  const phoneDigits = (map.contact_phone||'').replace(/\D/g,'');
+  const card = document.getElementById('contactCard');
+  card.innerHTML =
+    (map.contact_phone ? '<div class="row"><label>Telefon</label><a class="big-link" href="tel:+'+phoneDigits+'">'+escapeHtml(map.contact_phone)+'</a></div>' : '') +
+    (map.contact_email ? '<div class="row"><label>E-posta</label><a class="big-link" href="mailto:'+escapeHtml(map.contact_email)+'">'+escapeHtml(map.contact_email)+'</a></div>' : '') +
+    (phoneDigits ? '<div class="row" style="margin-bottom:0;"><label>WhatsApp</label><a class="big-link" href="https://wa.me/'+phoneDigits+'" target="_blank" rel="noopener">Mesaj Gönder →</a></div>' : '');
+}
+
+async function loadCategories(){
+  const { data } = await sb.from('mukantara_categories').select('*').order('sort_order');
+  const grid = document.getElementById('categoryGrid');
+  if (!data || data.length === 0) { grid.innerHTML = ''; return; }
+  grid.innerHTML = data.map(cat => {
+    const img = publicImageUrl(cat.sample_image_url);
+    const media = img
+      ? '<div class="img-wrap"><img src="'+img+'" alt="'+escapeHtml(cat.name)+'" loading="lazy"></div>'
+      : '<div class="img-wrap"><div class="col-icon">'+categoryIcon(cat.slug)+'</div></div>';
+    return '<a class="col-card" href="kategori.html?slug='+encodeURIComponent(cat.slug)+'">'+
+      media + '<div class="col-body"><h3>'+escapeHtml(cat.name)+'</h3>'+
+      (cat.description ? '<p style="font-size:14px;color:var(--ink-dim);margin:0;">'+escapeHtml(cat.description)+'</p>' : '')+
+      '<span class="tag">Eserleri Gör →</span></div></a>';
+  }).join('');
+}
+
+async function loadFeatured(){
+  const grid = document.getElementById('featuredGrid');
+  const { data } = await sb.from('mukantara_products')
+    .select('*, mukantara_categories(slug)').eq('is_featured', true).order('sort_order').limit(3);
+  let items = data || [];
+  if (items.length < 3) {
+    const { data: fb } = await sb.from('mukantara_products').select('*, mukantara_categories(slug)').order('sort_order').limit(3);
+    items = fb || [];
+  }
+  if (items.length === 0) { grid.style.display = 'none'; return; }
+  grid.innerHTML = items.map(p => {
+    const img = publicImageUrl(p.image_url);
+    const catSlug = p.mukantara_categories ? p.mukantara_categories.slug : 'default';
+    const media = img ? '<img src="'+img+'" alt="'+escapeHtml(p.title)+'" loading="lazy">' : '<div class="feat-icon">'+categoryIcon(catSlug)+'</div>';
+    return '<a class="feat-tile" href="urun.html?slug='+encodeURIComponent(p.slug)+'">'+media+'<div class="feat-label">'+escapeHtml(p.title)+'</div></a>';
+  }).join('');
+}
+
+async function loadWorkshopPhotos(){
+  const grid = document.getElementById('workshopGrid');
+  const section = document.getElementById('atolye');
+  const { data } = await sb.from('mukantara_workshop_photos').select('*').order('sort_order');
+  if (!data || data.length === 0) { section.style.display = 'none'; return; }
+  grid.innerHTML = data.map((p,i) => {
+    const img = publicImageUrl(p.image_url);
+    return '<div class="workshop-tile" onclick="openLightbox('+JSON.stringify(data.map(d=>publicImageUrl(d.image_url)))+','+i+')"><img src="'+img+'" alt="" loading="lazy">'+
+      (p.caption ? '<div class="cap">'+escapeHtml(p.caption)+'</div>' : '')+'</div>';
+  }).join('');
+}
+
+async function loadVideos(){
+  const grid = document.getElementById('videoGrid');
+  const section = document.querySelector('.video-section');
+  const { data } = await sb.from('mukantara_videos').select('*').order('sort_order');
+  if (!data || data.length === 0) { section.style.display = 'none'; return; }
+  grid.innerHTML = data.map(v => {
+    const vurl = publicVideoUrl(v.video_url);
+    const thumb = publicImageUrl(v.thumbnail_url);
+    const mime = videoMimeType(v.video_url);
+    return '<div class="video-card"><video controls preload="metadata"'+(thumb?' poster="'+thumb+'"':'')+'><source src="'+vurl+'"'+(mime?' type="'+mime+'"':'')+'>Tarayıcınız desteklemiyor.</video>'+
+      (v.title ? '<div class="v-title">'+escapeHtml(v.title)+'</div>' : '')+'</div>';
+  }).join('');
+}
+
+let lbImages=[], lbIndex=0;
+function openLightbox(images, i){ lbImages=images.filter(Boolean); lbIndex=i||0; document.getElementById('lightboxImg').src=lbImages[lbIndex]; document.getElementById('lightbox').classList.add('active'); }
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('active'); }
+
+loadSiteContent();
+loadCategories();
+loadFeatured();
+loadWorkshopPhotos();
+loadVideos();
+</script>
+</body>
+</html>
