@@ -48,7 +48,21 @@
   @media (max-width:860px){ .collection-grid{grid-template-columns:1fr 1fr;} }
   @media (max-width:520px){ .collection-grid{grid-template-columns:1fr;} }
 
+  .experience-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:2px; background:var(--hairline);}
+  .exp-tile{position:relative; aspect-ratio:4/3; overflow:hidden; background:var(--bg-panel); text-decoration:none; display:flex; flex-direction:column; justify-content:flex-end; padding:22px;}
+  .exp-tile:hover{background:var(--bg-panel-2);}
+  .exp-tile .exp-tag{font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--brass-light); margin-bottom:8px;}
+  .exp-tile h4{font-family:'Sora', sans-serif; font-size:16px; font-weight:600; color:var(--ink); margin:0;}
+  .exp-tile .live-dot{position:absolute; top:18px; left:22px; display:flex; align-items:center; gap:6px; font-family:'JetBrains Mono', monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(238,241,245,0.5);}
+  .exp-tile .live-dot i{width:5px; height:5px; border-radius:50%; background:#7ed4e0; box-shadow:0 0 6px #7ed4e0;}
+  @media (max-width:860px){ .experience-grid{grid-template-columns:1fr 1fr;} }
+
   .workshop-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:2px; background:var(--hairline);}
+  .workshop-tile{position:relative; aspect-ratio:4/5; overflow:hidden; background:var(--bg-panel); cursor:pointer;}
+  .workshop-tile img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s;}
+  .workshop-tile:hover img{transform:scale(1.05);}
+  .workshop-tile .cap{position:absolute; left:0; right:0; bottom:0; padding:14px 16px; background:linear-gradient(to top, rgba(13,17,23,0.85), transparent); font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-dim); opacity:0; transition:opacity .2s;}
+  .workshop-tile:hover .cap{opacity:1;}
   .workshop-tile{position:relative; aspect-ratio:4/5; overflow:hidden; background:var(--bg-panel); cursor:pointer;}
   .workshop-tile img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s;}
   .workshop-tile:hover img{transform:scale(1.05);}
@@ -88,6 +102,7 @@
     <a href="index.html" class="wordmark"><img src="assets/logo/mark.png" alt="Mukantara" onerror="this.style.display='none'"> MUKANTARA</a>
     <div class="navlinks">
       <a href="#koleksiyon">Koleksiyon</a>
+      <a href="#deneyimler">Dijital Deneyimler</a>
       <a href="#manifesto">Manifesto</a>
       <a href="#iletisim" class="cta-link">Teklif Al</a>
     </div>
@@ -131,6 +146,37 @@
       <div class="col-card"><div class="img-wrap skeleton"></div><div class="col-body"><div class="skeleton" style="height:20px;width:60%"></div></div></div>
       <div class="col-card"><div class="img-wrap skeleton"></div><div class="col-body"><div class="skeleton" style="height:20px;width:60%"></div></div></div>
       <div class="col-card"><div class="img-wrap skeleton"></div><div class="col-body"><div class="skeleton" style="height:20px;width:60%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="deneyimler">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Dijital Kütüphane</span>
+      <h2>Eserleri canlı deneyimleyin</h2>
+    </div>
+    <div class="experience-grid">
+      <a class="exp-tile" href="deneyimler/ulugbey-zij/index.html">
+        <span class="live-dot"><i></i> Canlı</span>
+        <span class="exp-tag">Envanter No 03</span>
+        <h4>Zīj-i Sulṭānī Gök Küresi</h4>
+      </a>
+      <a class="exp-tile" href="deneyimler/tusi-cifti/index.html">
+        <span class="live-dot"><i></i> Canlı</span>
+        <span class="exp-tag">Envanter No 06</span>
+        <h4>Tusi Çifti Kozmolojik Saati</h4>
+      </a>
+      <a class="exp-tile" href="deneyimler/halazun/index.html">
+        <span class="live-dot"><i></i> Canlı</span>
+        <span class="exp-tag">Envanter No 08</span>
+        <h4>Halazûn — Evrensel Güneş Saati</h4>
+      </a>
+      <a class="exp-tile" href="deneyimler/islam-bilim-tarihi/index.html">
+        <span class="live-dot"><i></i> Sergi</span>
+        <span class="exp-tag">Dijital Sergi</span>
+        <h4>İslam Bilim Tarihi</h4>
+      </a>
     </div>
   </div>
 </section>
