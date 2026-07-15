@@ -26,9 +26,8 @@
   .photo-dots span{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.35); transition:background .2s, transform .2s;}
   .photo-dots span.active{background:#fff; transform:scale(1.3);}
 
-  .photo-nav{position:absolute; top:40%; z-index:4; width:44px; height:44px; border-radius:50%; border:1px solid rgba(255,255,255,0.3); background:rgba(13,17,23,0.35); color:#fff; font-size:16px; display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0; transition:opacity .2s;}
-  .slide:hover .photo-nav{opacity:0.8;}
-  .photo-nav:hover{opacity:1 !important; background:rgba(13,17,23,0.6);}
+  .photo-nav{position:absolute; top:40%; z-index:4; width:44px; height:44px; border-radius:50%; border:1px solid rgba(255,255,255,0.35); background:rgba(13,17,23,0.45); color:#fff; font-size:16px; display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0.75; transition:opacity .2s, background .2s;}
+  .photo-nav:hover, .photo-nav:active{opacity:1; background:rgba(13,17,23,0.65);}
   .photo-nav-prev{left:16px;} .photo-nav-next{right:16px;}
   .photo-nav.hidden{display:none;}
 
@@ -57,7 +56,7 @@
   .reel-progress{position:fixed; top:0; left:0; right:0; z-index:21; height:2px; background:rgba(255,255,255,0.12);}
   .reel-progress-bar{height:100%; background:var(--brass-light); transition:width .3s ease;}
   .reel-counter{position:fixed; top:20px; right:24px; z-index:21; font-family:'JetBrains Mono', monospace; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.06em;}
-  @media (max-width:760px){ .reel-counter{display:none;} .photo-nav{display:none;} }
+  @media (max-width:760px){ .reel-counter{display:none;} .photo-nav{width:38px; height:38px; font-size:14px;} }
   .scroll-hint{position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:5; font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.5); display:flex; flex-direction:column; align-items:center; gap:4px; animation:bounce 1.8s ease-in-out infinite; pointer-events:none;}
   @keyframes bounce{0%,100%{transform:translate(-50%,0);}50%{transform:translate(-50%,6px);}}
   .empty-state{height:100%; display:flex; align-items:center; justify-content:center; color:var(--ink-dim); font-family:'JetBrains Mono', monospace; font-size:13px;}
