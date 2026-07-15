@@ -49,7 +49,8 @@
   @media (max-width:520px){ .collection-grid{grid-template-columns:1fr;} }
 
   .experience-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:2px; background:var(--hairline);}
-  .exp-tile{position:relative; aspect-ratio:4/3; overflow:hidden; text-decoration:none; display:flex; flex-direction:column; justify-content:flex-end; padding:22px;}
+  .exp-tile{position:relative; aspect-ratio:4/3; overflow:hidden; background:var(--bg-panel); border:1px solid var(--hairline); text-decoration:none; display:flex; flex-direction:column; justify-content:flex-end; padding:22px; transition:background .2s;}
+  .exp-tile:hover{background:var(--bg-panel-2);}
   .exp-tile img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; transition:transform .5s; filter:brightness(0.62);}
   .exp-tile:hover img{transform:scale(1.05); filter:brightness(0.75);}
   .exp-tile .exp-scrim{position:absolute; inset:0; z-index:1; background:linear-gradient(to top, rgba(13,17,23,0.9) 15%, rgba(13,17,23,0.15) 65%);}
@@ -161,29 +162,21 @@
     </div>
     <div class="experience-grid">
       <a class="exp-tile" href="deneyimler/ulugbey-zij/index.html">
-        <img src="https://mukantara.com/assets/img/12-endulus-gokkuresi.jpg" alt="">
-        <div class="exp-scrim"></div>
         <span class="live-dot"><i></i> Canlı</span>
         <span class="exp-tag">Envanter No 03</span>
         <h4>Zīj-i Sulṭānī Gök Küresi</h4>
       </a>
       <a class="exp-tile" href="deneyimler/tusi-cifti/index.html">
-        <img src="https://mukantara.com/assets/img/07-ulug-bey-usturlabi.jpg" alt="">
-        <div class="exp-scrim"></div>
         <span class="live-dot"><i></i> Canlı</span>
         <span class="exp-tag">Envanter No 06</span>
         <h4>Tusi Çifti Kozmolojik Saati</h4>
       </a>
       <a class="exp-tile" href="deneyimler/halazun/index.html">
-        <img src="https://mukantara.com/assets/img/06-gunes-saati.jpg" alt="">
-        <div class="exp-scrim"></div>
         <span class="live-dot"><i></i> Canlı</span>
         <span class="exp-tag">Envanter No 08</span>
         <h4>Halazûn — Evrensel Güneş Saati</h4>
       </a>
       <a class="exp-tile" href="deneyimler/islam-bilim-tarihi/index.html">
-        <img src="https://mukantara.com/assets/img/08-evrensel-usturlap.jpg" alt="">
-        <div class="exp-scrim"></div>
         <span class="live-dot"><i></i> Sergi</span>
         <span class="exp-tag">Dijital Sergi</span>
         <h4>İslam Bilim Tarihi</h4>
@@ -251,8 +244,10 @@ async function loadSiteContent(){
   if (map.curator_quote) document.getElementById('curatorQuote').textContent = map.curator_quote;
   if (map.curator_body) document.getElementById('curatorBody').textContent = map.curator_body;
 
-  const heroImg = publicImageUrl(map.hero_image) || 'https://mukantara.com/assets/img/07-ulug-bey-usturlabi.jpg';
-  document.getElementById('heroBg').innerHTML = '<img src="'+heroImg+'" alt="Mukantara">';
+  const heroImg = publicImageUrl(map.hero_image);
+  if (heroImg) {
+    document.getElementById('heroBg').innerHTML = '<img src="'+heroImg+'" alt="Mukantara">';
+  }
 
   const phoneDigits = (map.contact_phone||'').replace(/\D/g,'');
   const card = document.getElementById('contactCard');
