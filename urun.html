@@ -13,12 +13,28 @@
   html,body{margin:0; height:100%; overflow:hidden; background:var(--bg);}
   .reel{height:100vh; height:100dvh; overflow-y:scroll; scroll-snap-type:y mandatory; -webkit-overflow-scrolling:touch;}
   .slide{height:100vh; height:100dvh; scroll-snap-align:start; scroll-snap-stop:always; position:relative; display:flex; align-items:flex-end; overflow:hidden;}
-  .slide-bg{position:absolute; inset:0; background:var(--bg-panel);}
-  .slide-bg img{width:100%; height:100%; object-fit:cover; display:block; cursor:zoom-in;}
-  .slide-bg .icon-fallback{width:100%; height:100%; display:flex; align-items:center; justify-content:center;}
-  .slide-bg .icon-fallback svg{width:30%; height:30%; stroke:var(--brass); fill:none; stroke-width:1.2;}
-  .slide-scrim{position:absolute; inset:0; background:linear-gradient(to top, rgba(13,17,23,0.94) 0%, rgba(13,17,23,0.6) 32%, rgba(13,17,23,0.08) 62%, transparent 78%);}
-  .slide-content{position:relative; z-index:2; width:100%; padding:0 32px 44px;}
+
+  /* Fotoğraf alanı: sola/sağa kaydırılan ayrıntı fotoğrafları */
+  .photo-scroll{position:absolute; inset:0; display:flex; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; background:var(--bg-panel); scrollbar-width:none;}
+  .photo-scroll::-webkit-scrollbar{display:none;}
+  .photo-item{position:relative; flex:0 0 100%; scroll-snap-align:start; height:100%;}
+  .photo-item img{width:100%; height:100%; object-fit:cover; display:block;}
+  .photo-item .icon-fallback{width:100%; height:100%; display:flex; align-items:center; justify-content:center;}
+  .photo-item .icon-fallback svg{width:30%; height:30%; stroke:var(--brass); fill:none; stroke-width:1.2;}
+
+  .photo-dots{position:absolute; z-index:3; left:0; right:0; display:flex; justify-content:center; gap:6px; bottom:clamp(150px, 32vh, 230px); pointer-events:none;}
+  .photo-dots span{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.35); transition:background .2s, transform .2s;}
+  .photo-dots span.active{background:#fff; transform:scale(1.3);}
+
+  .photo-nav{position:absolute; top:40%; z-index:4; width:44px; height:44px; border-radius:50%; border:1px solid rgba(255,255,255,0.3); background:rgba(13,17,23,0.35); color:#fff; font-size:16px; display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0; transition:opacity .2s;}
+  .slide:hover .photo-nav{opacity:0.8;}
+  .photo-nav:hover{opacity:1 !important; background:rgba(13,17,23,0.6);}
+  .photo-nav-prev{left:16px;} .photo-nav-next{right:16px;}
+  .photo-nav.hidden{display:none;}
+
+  .slide-scrim{position:absolute; inset:0; z-index:2; pointer-events:none; background:linear-gradient(to top, rgba(13,17,23,0.94) 0%, rgba(13,17,23,0.6) 32%, rgba(13,17,23,0.08) 62%, transparent 78%);}
+  .slide-content{position:relative; z-index:3; width:100%; padding:0 32px 44px; pointer-events:none;}
+  .slide-content > *{pointer-events:auto;}
   .slide-tag{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--brass-light); display:block; margin-bottom:12px;}
   .slide-title{font-family:'Sora', sans-serif; font-weight:700; font-size:clamp(22px,4.4vw,32px); color:#fff; margin:0 0 14px; line-height:1.2; max-width:680px;}
   .slide-desc{font-size:14px; color:rgba(255,255,255,0.68); max-width:580px; line-height:1.6; margin:0 0 18px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
@@ -27,8 +43,7 @@
   .slide-facts div b{display:block; font-family:'IBM Plex Sans', sans-serif; font-size:13px; font-weight:500; color:#fff; margin-top:3px;}
   .slide-actions{display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
   .slide-actions .btn{padding:13px 22px; font-size:12px;}
-  .zoom-hint-btn{display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.75); background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.25); padding:12px 18px; cursor:pointer;}
-  .zoom-hint-btn:hover{background:rgba(255,255,255,0.16); color:#fff;}
+  .swipe-hint{display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.55);}
 
   .reel-header{position:fixed; top:0; left:0; right:0; z-index:20; display:flex; align-items:center; justify-content:space-between; padding:18px 24px; background:linear-gradient(to bottom, rgba(13,17,23,0.75), transparent);}
   .reel-header a{font-family:'Sora', sans-serif; font-weight:700; font-size:16px; color:#fff; text-decoration:none; display:flex; align-items:center; gap:8px;}
@@ -38,19 +53,9 @@
   .reel-progress{position:fixed; top:0; left:0; right:0; z-index:21; height:2px; background:rgba(255,255,255,0.12);}
   .reel-progress-bar{height:100%; background:var(--brass-light); transition:width .3s ease;}
   .reel-counter{position:fixed; top:20px; right:24px; z-index:21; font-family:'JetBrains Mono', monospace; font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:0.06em;}
-  @media (max-width:760px){ .reel-counter{display:none;} }
+  @media (max-width:760px){ .reel-counter{display:none;} .photo-nav{display:none;} }
   .scroll-hint{position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:5; font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.5); display:flex; flex-direction:column; align-items:center; gap:4px; animation:bounce 1.8s ease-in-out infinite; pointer-events:none;}
   @keyframes bounce{0%,100%{transform:translate(-50%,0);}50%{transform:translate(-50%,6px);}}
-
-  .lightbox{position:fixed; inset:0; z-index:200; background:rgba(6,8,11,0.97); display:none; align-items:center; justify-content:center; padding:40px;}
-  .lightbox.active{display:flex;}
-  .lightbox img{max-width:90vw; max-height:82vh; object-fit:contain;}
-  .lightbox-close{position:absolute; top:24px; right:32px; font-family:'JetBrains Mono', monospace; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.7); background:none; border:1px solid rgba(255,255,255,0.3); padding:10px 18px; cursor:pointer;}
-  .lightbox-close:hover{color:#fff; border-color:#fff;}
-  .lightbox-nav{position:absolute; top:50%; transform:translateY(-50%); background:none; border:1px solid rgba(255,255,255,0.3); color:rgba(255,255,255,0.7); width:48px; height:48px; border-radius:50%; cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center;}
-  .lightbox-nav:hover{color:#fff; border-color:#fff;}
-  .lightbox-prev{left:24px;} .lightbox-next{right:24px;}
-  .lightbox-count{position:absolute; bottom:24px; left:50%; transform:translateX(-50%); font-family:'JetBrains Mono', monospace; font-size:12px; color:rgba(255,255,255,0.6);}
   .empty-state{height:100%; display:flex; align-items:center; justify-content:center; color:var(--ink-dim); font-family:'JetBrains Mono', monospace; font-size:13px;}
 </style>
 </head>
@@ -63,13 +68,6 @@
 <span class="reel-counter" id="reelCounter"></span>
 <div class="scroll-hint" id="scrollHint">↓ Kaydır</div>
 <div class="reel" id="reel"><div class="slide"><div class="empty-state">Yükleniyor…</div></div></div>
-<div class="lightbox" id="lightbox">
-  <button class="lightbox-close" onclick="closeLightbox()">Kapat ✕</button>
-  <button class="lightbox-nav lightbox-prev" onclick="lbNav(-1)">←</button>
-  <img id="lightboxImg" src="" alt="Yakından görünüm">
-  <button class="lightbox-nav lightbox-next" onclick="lbNav(1)">→</button>
-  <span class="lightbox-count" id="lightboxCount"></span>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/shared.js?v=2"></script>
 <script>
@@ -88,21 +86,35 @@ async function init(){
   const slides = document.querySelectorAll('.slide');
   if (slides[startIndex]) slides[startIndex].scrollIntoView({ behavior: 'instant' });
   setupScrollTracking();
+  setupPhotoScrolls();
 }
 function renderSlide(p, i){
   const img = publicImageUrl(p.image_url);
   const cat = p.mukantara_categories;
   const allImgs = [img, ...(Array.isArray(p.images) ? p.images.map(publicImageUrl) : [])].filter(Boolean);
-  const media = img
-    ? '<img src="'+img+'" alt="'+escapeHtml(p.title)+'" loading="'+(i<2?'eager':'lazy')+'" onclick=\'openLightbox('+JSON.stringify(allImgs)+', 0)\'>'
-    : '<div class="icon-fallback">'+categoryIcon(cat ? cat.slug : 'default')+'</div>';
+
+  let photosHtml;
+  if (allImgs.length > 0) {
+    photosHtml = allImgs.map(src => '<div class="photo-item"><img src="'+src+'" alt="'+escapeHtml(p.title)+'" loading="lazy"></div>').join('');
+  } else {
+    photosHtml = '<div class="photo-item"><div class="icon-fallback">'+categoryIcon(cat ? cat.slug : 'default')+'</div></div>';
+  }
+  const dots = allImgs.length > 1
+    ? '<div class="photo-dots">'+allImgs.map((_,di)=>'<span class="'+(di===0?'active':'')+'"></span>').join('')+'</div>'
+    : '';
+  const navs = allImgs.length > 1
+    ? '<button class="photo-nav photo-nav-prev hidden" onclick="photoNav(this,-1)">←</button><button class="photo-nav photo-nav-next" onclick="photoNav(this,1)">→</button>'
+    : '';
+
   let facts = '';
   if (p.material) facts += '<div><span>Malzeme</span><b>'+escapeHtml(p.material)+'</b></div>';
   if (Array.isArray(p.custom_fields)) {
     p.custom_fields.slice(0,5).forEach(f => { if (f && f.label) facts += '<div><span>'+escapeHtml(f.label)+'</span><b>'+escapeHtml(f.value||'')+'</b></div>'; });
   }
   return '<div class="slide" data-index="'+i+'">'+
-    '<div class="slide-bg">'+media+'</div><div class="slide-scrim"></div>'+
+    '<div class="photo-scroll">'+photosHtml+'</div>'+
+    navs + dots +
+    '<div class="slide-scrim"></div>'+
     '<div class="slide-content">'+
       (cat ? '<span class="slide-tag">'+escapeHtml(cat.name)+'</span>' : '')+
       '<h2 class="slide-title">'+escapeHtml(p.title)+'</h2>'+
@@ -110,9 +122,27 @@ function renderSlide(p, i){
       (facts ? '<div class="slide-facts">'+facts+'</div>' : '')+
       '<div class="slide-actions">'+
         '<a href="index.html#iletisim" class="btn btn-solid">Teklif İste →</a>'+
-        (allImgs.length > 1 ? '<button class="zoom-hint-btn" onclick=\'openLightbox('+JSON.stringify(allImgs)+', 0)\'>Yakından Gör ⤢</button>' : '')+
+        (allImgs.length > 1 ? '<span class="swipe-hint">← Ayrıntılı fotoğraflar için kaydır</span>' : '')+
       '</div>'+
     '</div></div>';
+}
+function setupPhotoScrolls(){
+  document.querySelectorAll('.photo-scroll').forEach(scroller => {
+    const slide = scroller.closest('.slide');
+    const dots = slide.querySelectorAll('.photo-dots span');
+    const navPrev = slide.querySelector('.photo-nav-prev');
+    const navNext = slide.querySelector('.photo-nav-next');
+    scroller.addEventListener('scroll', () => {
+      const idx = Math.round(scroller.scrollLeft / scroller.clientWidth);
+      dots.forEach((d,i) => d.classList.toggle('active', i===idx));
+      if (navPrev) navPrev.classList.toggle('hidden', idx===0);
+      if (navNext) navNext.classList.toggle('hidden', idx===dots.length-1);
+    }, { passive:true });
+  });
+}
+function photoNav(btn, dir){
+  const scroller = btn.closest('.slide').querySelector('.photo-scroll');
+  scroller.scrollBy({ left: dir*scroller.clientWidth, behavior:'smooth' });
 }
 function setupScrollTracking(){
   const reel = document.getElementById('reel');
@@ -127,12 +157,6 @@ function setupScrollTracking(){
     counter.textContent = (idx+1) + ' / ' + products.length;
   }, { passive: true });
 }
-let lbImages=[], lbIndex=0;
-function openLightbox(images, startIndex){ lbImages=images.filter(Boolean); if(lbImages.length===0) return; lbIndex=startIndex||0; renderLightbox(); document.getElementById('lightbox').classList.add('active'); }
-function closeLightbox(){ document.getElementById('lightbox').classList.remove('active'); }
-function lbNav(dir){ lbIndex=(lbIndex+dir+lbImages.length)%lbImages.length; renderLightbox(); }
-function renderLightbox(){ document.getElementById('lightboxImg').src=lbImages[lbIndex]; document.getElementById('lightboxCount').textContent=(lbIndex+1)+' / '+lbImages.length; document.querySelectorAll('.lightbox-nav').forEach(b=>b.style.display=lbImages.length>1?'flex':'none'); }
-document.addEventListener('keydown',(e)=>{ if(!document.getElementById('lightbox').classList.contains('active')) return; if(e.key==='Escape') closeLightbox(); if(e.key==='ArrowLeft') lbNav(-1); if(e.key==='ArrowRight') lbNav(1); });
 init();
 </script>
 </body>
