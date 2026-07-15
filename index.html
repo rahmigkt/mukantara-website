@@ -8,15 +8,16 @@
 <link rel="icon" href="assets/logo/mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Cinzel:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/brand.css?v=2">
 <style>
   .hero{position:relative; min-height:0; display:flex; align-items:center; overflow:hidden; padding:170px 0 90px;}
   .hero-inner{position:relative; z-index:2; width:100%; display:grid; grid-template-columns:1.15fr 0.85fr; align-items:center; gap:40px;}
   .hero-glow{position:absolute; inset:0; z-index:0; background:radial-gradient(circle at 78% 42%, rgba(122,199,154,0.10), transparent 60%);}
-  .hero-content{max-width:600px;}
-  .hero-content h1{font-family:'Sora', sans-serif; font-weight:700; font-size:clamp(26px, 3.4vw, 38px); line-height:1.25; margin:18px 0 16px; color:var(--ink);}
-  .hero-content p{font-size:16px; color:var(--ink-dim); margin:0 0 26px;}
+  .hero-content{max-width:720px;}
+  .hero-content h1{font-family:'EB Garamond', serif; font-style:italic; font-weight:500; font-size:clamp(28px, 3.8vw, 42px); line-height:1.3; margin:20px 0 28px; color:var(--ink);}
+  .hero-content .hero-body p{font-family:'EB Garamond', serif; font-size:clamp(18px, 2vw, 21px); line-height:1.8; color:var(--ink-dim); margin:0 0 24px;}
+  .hero-content .hero-body p:first-child{color:var(--ink);}
   .hero-visual{position:relative; display:flex; align-items:center; justify-content:center;}
   .hero-visual svg{width:100%; max-width:380px; height:auto;}
   @media (max-width:900px){ .hero-inner{grid-template-columns:1fr;} .hero-visual{order:-1; max-width:220px; margin:0 auto 10px;} }
@@ -121,7 +122,7 @@
     <div class="hero-content">
       <span class="eyebrow" id="heroTag">Eser No.</span>
       <h1 id="heroTitle"></h1>
-      <p id="heroBody"></p>
+      <div class="hero-body" id="heroBody"></div>
       <div class="hero-ctas">
         <a href="#koleksiyon" class="btn btn-solid">Koleksiyonu Gör →</a>
         <a href="#manifesto" class="btn btn-line">Manifesto</a>
@@ -129,6 +130,43 @@
     </div>
   </div>
 </section>
+
+<section id="deneyimler" style="padding-top:0;">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Dijital Kütüphane</span>
+      <h2>Eserleri canlı deneyimleyin</h2>
+    </div>
+    <div class="exp-showcase">
+      <div class="exp-frame">
+        <iframe id="expFrame" src="deneyimler/ulugbey-zij/index.html" loading="lazy" title="Dijital deneyim önizleme"></iframe>
+      </div>
+      <div class="exp-tabs" id="expTabs"></div>
+    </div>
+    <p style="text-align:center; margin-top:20px;">
+      <a id="expOpenLink" href="deneyimler/ulugbey-zij/index.html" class="btn btn-line">Tam Ekranda Aç →</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .exp-showcase{border:1px solid var(--hairline); background:var(--bg-panel);}
+  .exp-frame{position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; background:#000;}
+  .exp-frame iframe{position:absolute; inset:0; width:100%; height:100%; border:0; pointer-events:none;}
+  .exp-tabs{display:flex; flex-wrap:wrap; border-top:1px solid var(--hairline);}
+  .exp-tab{
+    flex:1; min-width:150px; padding:16px 18px; cursor:pointer; text-decoration:none; color:var(--ink-dim);
+    border-right:1px solid var(--hairline); transition:background .2s, color .2s; position:relative;
+  }
+  .exp-tab:last-child{border-right:none;}
+  .exp-tab .et-tag{display:block; font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--label); margin-bottom:4px;}
+  .exp-tab .et-title{font-family:'Sora', sans-serif; font-size:13.5px; font-weight:600; color:var(--ink-dim);}
+  .exp-tab.active{background:var(--bg-panel-2);}
+  .exp-tab.active .et-title{color:var(--brass-light);}
+  .exp-tab.active::after{content:''; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--brass-light);}
+  .exp-tab-open{display:block; margin-top:6px; font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:0.06em; color:var(--brass-light); text-decoration:none;}
+  @media (max-width:760px){ .exp-tab{min-width:50%; border-bottom:1px solid var(--hairline);} }
+</style>
 
 <section class="featured-banner" style="padding:0;">
   <div class="featured-grid" id="featuredGrid"></div>
@@ -157,36 +195,7 @@
   </div>
 </section>
 
-<section id="deneyimler">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Dijital Kütüphane</span>
-      <h2>Eserleri canlı deneyimleyin</h2>
-    </div>
-    <div class="experience-grid">
-      <a class="exp-tile" href="deneyimler/ulugbey-zij/index.html">
-        <span class="live-dot"><i></i> Canlı</span>
-        <span class="exp-tag">Envanter No 03</span>
-        <h4>Zīj-i Sulṭānī Gök Küresi</h4>
-      </a>
-      <a class="exp-tile" href="deneyimler/tusi-cifti/index.html">
-        <span class="live-dot"><i></i> Canlı</span>
-        <span class="exp-tag">Envanter No 06</span>
-        <h4>Tusi Çifti Kozmolojik Saati</h4>
-      </a>
-      <a class="exp-tile" href="deneyimler/halazun/index.html">
-        <span class="live-dot"><i></i> Canlı</span>
-        <span class="exp-tag">Envanter No 08</span>
-        <h4>Halazûn — Evrensel Güneş Saati</h4>
-      </a>
-      <a class="exp-tile" href="deneyimler/islam-bilim-tarihi/index.html">
-        <span class="live-dot"><i></i> Sergi</span>
-        <span class="exp-tag">Dijital Sergi</span>
-        <h4>İslam Bilim Tarihi</h4>
-      </a>
-    </div>
-  </div>
-</section>
+
 
 <section id="atolye">
   <div class="wrap">
@@ -242,7 +251,10 @@ async function loadSiteContent(){
 
   if (map.hero_tag) document.getElementById('heroTag').textContent = map.hero_tag;
   if (map.hero_title) document.getElementById('heroTitle').textContent = map.hero_title;
-  if (map.hero_body) document.getElementById('heroBody').textContent = map.hero_body;
+  if (map.hero_body) {
+    const paragraphs = map.hero_body.split(/\n\s*\n/).map(p => '<p>'+escapeHtml(p.trim())+'</p>').join('');
+    document.getElementById('heroBody').innerHTML = paragraphs;
+  }
   if (map.curator_tag) document.getElementById('curatorTag').textContent = map.curator_tag;
   if (map.curator_quote) document.getElementById('curatorQuote').textContent = map.curator_quote;
   if (map.curator_body) document.getElementById('curatorBody').textContent = map.curator_body;
@@ -324,6 +336,40 @@ loadCategories();
 loadFeatured();
 loadWorkshopPhotos();
 loadVideos();
+
+// ---- Dijital deneyimler vitrini ----
+const expData = [
+  { tag: 'Envanter No 03', title: 'Zīj-i Sulṭānī Gök Küresi', path: 'deneyimler/ulugbey-zij/index.html' },
+  { tag: 'Envanter No 06', title: 'Tusi Çifti Kozmolojik Saati', path: 'deneyimler/tusi-cifti/index.html' },
+  { tag: 'Envanter No 08', title: 'Halazûn — Evrensel Güneş Saati', path: 'deneyimler/halazun/index.html' },
+  { tag: 'Dijital Sergi', title: 'İslam Bilim Tarihi', path: 'deneyimler/islam-bilim-tarihi/index.html' }
+];
+let expIndex = 0;
+let expTimer = null;
+
+function renderExpTabs(){
+  const tabs = document.getElementById('expTabs');
+  tabs.innerHTML = expData.map((e,i) =>
+    '<div class="exp-tab'+(i===0?' active':'')+'" data-i="'+i+'">'+
+      '<span class="et-tag">'+e.tag+'</span><span class="et-title">'+e.title+'</span>'+
+    '</div>'
+  ).join('');
+  tabs.querySelectorAll('.exp-tab').forEach(tab => {
+    tab.addEventListener('click', () => { showExp(parseInt(tab.dataset.i,10)); restartExpTimer(); });
+  });
+}
+function showExp(i){
+  expIndex = i;
+  document.getElementById('expFrame').src = expData[i].path;
+  document.getElementById('expOpenLink').href = expData[i].path;
+  document.querySelectorAll('.exp-tab').forEach(t => t.classList.toggle('active', parseInt(t.dataset.i,10) === i));
+}
+function restartExpTimer(){
+  if (expTimer) clearInterval(expTimer);
+  expTimer = setInterval(() => showExp((expIndex+1) % expData.length), 6000);
+}
+renderExpTabs();
+restartExpTimer();
 </script>
 </body>
 </html>
