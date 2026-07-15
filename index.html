@@ -12,12 +12,14 @@
 <link rel="stylesheet" href="assets/brand.css?v=2">
 <style>
   .hero{position:relative; min-height:0; display:flex; align-items:center; overflow:hidden; padding:170px 0 90px;}
-  .hero-bg{position:absolute; inset:0; z-index:0; background:var(--bg-panel);}
-  .hero-bg img{width:100%; height:100%; object-fit:cover; object-position:center 30%; display:block;}
-  .hero-scrim{position:absolute; inset:0; z-index:1; background:linear-gradient(to top, rgba(13,17,23,0.94) 10%, rgba(13,17,23,0.5) 45%, rgba(13,17,23,0.1) 70%);}
-  .hero-content{position:relative; z-index:2; width:100%; padding-bottom:64px; max-width:640px; margin:0 32px;}
-  .hero-content h1{font-family:'Sora', sans-serif; font-weight:700; font-size:clamp(26px, 3.4vw, 38px); line-height:1.25; margin:18px 0 16px; color:#fff;}
-  .hero-content p{font-size:16px; color:rgba(255,255,255,0.72); margin:0 0 26px;}
+  .hero-inner{position:relative; z-index:2; width:100%; display:grid; grid-template-columns:1.15fr 0.85fr; align-items:center; gap:40px;}
+  .hero-glow{position:absolute; inset:0; z-index:0; background:radial-gradient(circle at 78% 42%, rgba(122,199,154,0.10), transparent 60%);}
+  .hero-content{max-width:600px;}
+  .hero-content h1{font-family:'Sora', sans-serif; font-weight:700; font-size:clamp(26px, 3.4vw, 38px); line-height:1.25; margin:18px 0 16px; color:var(--ink);}
+  .hero-content p{font-size:16px; color:var(--ink-dim); margin:0 0 26px;}
+  .hero-visual{position:relative; display:flex; align-items:center; justify-content:center;}
+  .hero-visual svg{width:100%; max-width:380px; height:auto;}
+  @media (max-width:900px){ .hero-inner{grid-template-columns:1fr;} .hero-visual{order:-1; max-width:220px; margin:0 auto 10px;} }
   .hero-ctas{display:flex; gap:16px; flex-wrap:wrap;}
 
   .featured-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:2px; background:var(--hairline);}
@@ -114,15 +116,30 @@
 </header>
 
 <section class="hero">
-  <div class="hero-bg" id="heroBg"></div>
-  <div class="hero-scrim"></div>
-  <div class="hero-content">
-    <span class="eyebrow" id="heroTag">Eser No.</span>
-    <h1 id="heroTitle"></h1>
-    <p id="heroBody"></p>
-    <div class="hero-ctas">
-      <a href="#koleksiyon" class="btn btn-solid">Koleksiyonu Gör →</a>
-      <a href="#manifesto" class="btn btn-line" style="border-color:rgba(255,255,255,0.4); color:#fff;">Manifesto</a>
+  <div class="hero-glow"></div>
+  <div class="wrap hero-inner">
+    <div class="hero-content">
+      <span class="eyebrow" id="heroTag">Eser No.</span>
+      <h1 id="heroTitle"></h1>
+      <p id="heroBody"></p>
+      <div class="hero-ctas">
+        <a href="#koleksiyon" class="btn btn-solid">Koleksiyonu Gör →</a>
+        <a href="#manifesto" class="btn btn-line">Manifesto</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <svg viewBox="0 0 400 400" id="astroSvg">
+        <circle cx="200" cy="200" r="172" fill="none" stroke="var(--brass)" stroke-width="1" opacity="0.35"/>
+        <g id="degreeMarks" stroke="var(--brass)" stroke-width="1" opacity="0.3"></g>
+        <circle cx="200" cy="200" r="132" fill="none" stroke="var(--brass-light)" stroke-width="1" opacity="0.55"/>
+        <circle cx="200" cy="200" r="92" fill="none" stroke="var(--patina)" stroke-width="1" opacity="0.4"/>
+        <g id="rete" stroke="var(--brass-light)" stroke-width="1.2" fill="none" opacity="0.8">
+          <polygon points="200,60 218,148 306,148 234,202 262,290 200,236 138,290 166,202 94,148 182,148" />
+        </g>
+        <g id="starPoints" fill="var(--patina)"></g>
+        <line id="alidade" x1="60" y1="200" x2="340" y2="200" stroke="var(--ink)" stroke-width="1.4" opacity="0.75"/>
+        <circle cx="200" cy="200" r="4" fill="var(--ink)"/>
+      </svg>
     </div>
   </div>
 </section>
@@ -244,11 +261,6 @@ async function loadSiteContent(){
   if (map.curator_quote) document.getElementById('curatorQuote').textContent = map.curator_quote;
   if (map.curator_body) document.getElementById('curatorBody').textContent = map.curator_body;
 
-  const heroImg = publicImageUrl(map.hero_image);
-  if (heroImg) {
-    document.getElementById('heroBg').innerHTML = '<img src="'+heroImg+'" alt="Mukantara">';
-  }
-
   const phoneDigits = (map.contact_phone||'').replace(/\D/g,'');
   const card = document.getElementById('contactCard');
   card.innerHTML =
@@ -326,6 +338,50 @@ loadCategories();
 loadFeatured();
 loadWorkshopPhotos();
 loadVideos();
+
+// ---- İmza görsel: usturlap animasyonu ----
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ns = 'http://www.w3.org/2000/svg';
+  var cx=200, cy=200;
+
+  var degreeMarks = document.getElementById('degreeMarks');
+  for (var i=0;i<72;i++){
+    var ang = (i/72)*Math.PI*2;
+    var len = (i%6===0) ? 14 : 7;
+    var r1 = 172, r2 = 172-len;
+    var line = document.createElementNS(ns,'line');
+    line.setAttribute('x1', cx+r1*Math.cos(ang)); line.setAttribute('y1', cy+r1*Math.sin(ang));
+    line.setAttribute('x2', cx+r2*Math.cos(ang)); line.setAttribute('y2', cy+r2*Math.sin(ang));
+    degreeMarks.appendChild(line);
+  }
+
+  var starPoints = document.getElementById('starPoints');
+  for (var s=0;s<10;s++){
+    var sang = (s/10)*Math.PI*2 + 0.3;
+    var sr = 92;
+    var sx = cx+sr*Math.cos(sang), sy = cy+sr*Math.sin(sang);
+    var c = document.createElementNS(ns,'circle');
+    c.setAttribute('cx', sx); c.setAttribute('cy', sy); c.setAttribute('r', 2.6);
+    starPoints.appendChild(c);
+  }
+
+  if (!reduced){
+    var rete = document.getElementById('rete');
+    var alidade = document.getElementById('alidade');
+    var a1=0, a2=0;
+    function frame(ts){
+      if(!frame.last) frame.last = ts;
+      var dt = (ts-frame.last)/1000; frame.last = ts;
+      a1 += dt*3.2;
+      a2 += dt*7;
+      rete.setAttribute('transform','rotate('+a1+' 200 200)');
+      alidade.setAttribute('transform','rotate('+a2+' 200 200)');
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+})();
 </script>
 </body>
 </html>
