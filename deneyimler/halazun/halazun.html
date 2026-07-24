@@ -885,9 +885,7 @@ btnNow.addEventListener('click',()=>{
   curDate=new Date();
   const doy=getDOY(curDate);slDate.value=doy;
   dateVal.textContent=curDate.toLocaleDateString('tr-TR',{month:'short',day:'numeric'});
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(p=>{nLat.value=slLat.value=p.coords.latitude.toFixed(4);nLon.value=slLon.value=p.coords.longitude.toFixed(4);update();},()=>update());
-  } else update();
+  update();
 });
 // (toggle pill buttons wired above via .tg click handler)
 
